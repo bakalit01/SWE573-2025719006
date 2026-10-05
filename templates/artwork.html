@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ art.title }} · Traditional Art Gallery{% endblock %}
+{% block content %}
+<article class="detail">
+  <img src="{{ url_for('static', filename=art.image) }}" alt="{{ art.title }}">
+  <div>
+    <p class="eyebrow">{{ art.tradition or "Traditional art" }}</p>
+    <h1>{{ art.title }}</h1>
+    <dl>
+      {% if art.artist %}<dt>Artist</dt><dd>{{ art.artist }}</dd>{% endif %}
+      {% if art.year %}<dt>Year</dt><dd>{{ art.year }}</dd>{% endif %}
+      {% if art.username %}<dt>Added by</dt><dd>{{ art.username }}</dd>{% endif %}
+    </dl>
+    {% if art.description %}<p>{{ art.description }}</p>{% endif %}
+    <p><a href="{{ url_for('index') }}">← Back to the collection</a></p>
+    {% if user and art.added_by == user.id %}
+    <form method="post" action="{{ url_for('delete_artwork', art_id=art.id) }}"
+          onsubmit="return confirm('Remove this artwork?');">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button class="btn danger">Remove artwork</button>
+    </form>
+    {% endif %}
+  </div>
+</article>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Sign up · Traditional Art Gallery{% endblock %}
+{% block content %}
+<div class="panel narrow">
+  <h1>Create an account</h1>
+  <form method="post" class="form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label>Username<input name="username" required minlength="3" maxlength="40" autocomplete="username"></label>
+    <label>Email <span class="muted">(optional)</span>
+      <input type="email" name="email" maxlength="200" autocomplete="email" placeholder="You can leave this empty"></label>
+    <label>Password <span class="muted">(at least 8 characters)</span>
+      <input type="password" name="password" required minlength="8" autocomplete="new-password"></label>
+    <button class="btn">Sign up</button>
+  </form>
+  <p class="muted">Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
+</div>
+{% endblock %}

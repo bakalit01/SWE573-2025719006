@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#f4ecd8"/>
+<g fill="none" stroke-width="14" stroke-linecap="round">
+<path d="M-20 60 C60 10 120 110 200 60 S340 10 420 60" stroke="#1f4e79"/>
+<path d="M-20 110 C60 60 120 160 200 110 S340 60 420 110" stroke="#c98b2b"/>
+<path d="M-20 160 C60 110 120 210 200 160 S340 110 420 160" stroke="#b5432a"/>
+<path d="M-20 210 C60 160 120 260 200 210 S340 160 420 210" stroke="#2f7a6d"/>
+<path d="M-20 260 C60 210 120 310 200 260 S340 210 420 260" stroke="#1f4e79"/></g>
+<g fill="#fff" opacity=".85"><circle cx="90" cy="95" r="10"/><circle cx="300" cy="140" r="14"/><circle cx="180" cy="230" r="8"/><circle cx="330" cy="240" r="6"/></g></svg>

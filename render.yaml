@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: traditional-art-gallery
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: REQUIRE_LOGIN_TO_VIEW
+        value: "0"

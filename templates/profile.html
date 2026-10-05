@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Your profile · Traditional Art Gallery{% endblock %}
+{% block content %}
+<div class="panel narrow">
+  <h1>{{ user.username }}</h1>
+  <dl>
+    <dt>Email</dt>
+    <dd>{% if user.email %}{{ user.email }}{% else %}<span class="muted">Not provided</span>{% endif %}</dd>
+    <dt>Member since</dt><dd>{{ user.created_at[:10] }}</dd>
+    <dt>Artworks added</dt><dd>{{ art_count }}</dd>
+  </dl>
+  <h2>{% if user.email %}Change or remove email{% else %}Add an email{% endif %}</h2>
+  <form method="post" class="form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label>Email <span class="muted">(leave empty to remove)</span>
+      <input type="email" name="email" value="{{ user.email or '' }}" maxlength="200"></label>
+    <button class="btn">Save</button>
+  </form>
+</div>
+{% endblock %}

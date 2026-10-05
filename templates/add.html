@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Add artwork · Traditional Art Gallery{% endblock %}
+{% block content %}
+<div class="panel">
+  <h1>Add an artwork</h1>
+  <form method="post" enctype="multipart/form-data" class="form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label>Title *<input name="title" required maxlength="120"></label>
+    <label>Artist<input name="artist" maxlength="120"></label>
+    <label>Tradition
+      <input name="tradition" list="traditions" maxlength="80" placeholder="e.g. Ebru, Iznik, Kilim, Hat (calligraphy)">
+      <datalist id="traditions">
+        <option value="Ebru (paper marbling)"><option value="Iznik ceramics">
+        <option value="Kilim weaving"><option value="Miniature painting">
+        <option value="Calligraphy"><option value="Illumination (tezhip)">
+      </datalist>
+    </label>
+    <label>Year / period<input name="year" maxlength="40" placeholder="e.g. 1580 or 16th century"></label>
+    <label>Description<textarea name="description" rows="4" maxlength="2000"></textarea></label>
+    <label>Image * <span class="muted">(PNG, JPG, GIF or WEBP, up to 5 MB)</span>
+      <input type="file" name="image" accept=".png,.jpg,.jpeg,.gif,.webp" required></label>
+    <button class="btn">Add to collection</button>
+  </form>
+</div>
+{% endblock %}
