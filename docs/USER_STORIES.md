@@ -5,6 +5,23 @@ Source of truth for GitHub issues: `scripts/seed_github.py` turns every `### US-
 **Epics:** E0 Setup & DevOps · E1 Accounts · E2 Craft catalogue · E3 Flexible attributes · E4 Discovery · E5 Media · E6 Cultural protocols · E7 Administration · E8 Quality
 **Milestones:** M1 Demo (wk 2) · M2 Contribute (wk 4) · M3 MVP (wk 6) · M4 Enrich (wk 8) · M5 Final (wk 10)
 
+## Delivery order
+
+Stories are grouped by epic below. This is the order to build them in; details and dependencies are in [PROJECT_PLAN §3a](PROJECT_PLAN.md#3a-story-sequence-what-to-build-in-order).
+
+| Week | Milestone | Items |
+|---|---|---|
+| 1 (12–18 Oct) | M1 | T-01 [#24](https://github.com/bakalit01/SWE573-2025719006/issues/24) → T-02 [#25](https://github.com/bakalit01/SWE573-2025719006/issues/25) → T-03 [#26](https://github.com/bakalit01/SWE573-2025719006/issues/26) → T-04 [#27](https://github.com/bakalit01/SWE573-2025719006/issues/27) → T-08 [#29](https://github.com/bakalit01/SWE573-2025719006/issues/29) → T-06 [#30](https://github.com/bakalit01/SWE573-2025719006/issues/30) → T-07 [#31](https://github.com/bakalit01/SWE573-2025719006/issues/31) |
+| 2 (19–25 Oct) | M1 | T-05 [#28](https://github.com/bakalit01/SWE573-2025719006/issues/28) → US-01 [#32](https://github.com/bakalit01/SWE573-2025719006/issues/32) → US-02 [#33](https://github.com/bakalit01/SWE573-2025719006/issues/33) → US-06 [#37](https://github.com/bakalit01/SWE573-2025719006/issues/37) → US-07 [#38](https://github.com/bakalit01/SWE573-2025719006/issues/38) |
+| 3 (26 Oct–1 Nov) | M2 | US-08 [#39](https://github.com/bakalit01/SWE573-2025719006/issues/39) → US-11 [#42](https://github.com/bakalit01/SWE573-2025719006/issues/42) → US-12 [#43](https://github.com/bakalit01/SWE573-2025719006/issues/43) |
+| 4 (2–8 Nov) | M2 | US-20 [#51](https://github.com/bakalit01/SWE573-2025719006/issues/51) → US-09 [#40](https://github.com/bakalit01/SWE573-2025719006/issues/40) → US-03 [#34](https://github.com/bakalit01/SWE573-2025719006/issues/34) → US-04 [#35](https://github.com/bakalit01/SWE573-2025719006/issues/35) |
+| 5 (9–15 Nov) | M3 | US-05 [#36](https://github.com/bakalit01/SWE573-2025719006/issues/36) → US-22 [#53](https://github.com/bakalit01/SWE573-2025719006/issues/53) → US-15 [#46](https://github.com/bakalit01/SWE573-2025719006/issues/46) → US-16 [#47](https://github.com/bakalit01/SWE573-2025719006/issues/47) |
+| 6 (16–22 Nov) | M3 | US-23 [#54](https://github.com/bakalit01/SWE573-2025719006/issues/54) → US-24 [#55](https://github.com/bakalit01/SWE573-2025719006/issues/55) → US-25 [#56](https://github.com/bakalit01/SWE573-2025719006/issues/56) → US-17 [#48](https://github.com/bakalit01/SWE573-2025719006/issues/48) → US-27 [#58](https://github.com/bakalit01/SWE573-2025719006/issues/58) |
+| 7 (23–29 Nov) | M4 | US-13 [#44](https://github.com/bakalit01/SWE573-2025719006/issues/44) → US-26 [#57](https://github.com/bakalit01/SWE573-2025719006/issues/57) → US-21 [#52](https://github.com/bakalit01/SWE573-2025719006/issues/52) |
+| 8 (30 Nov–6 Dec) | M4 | US-10 [#41](https://github.com/bakalit01/SWE573-2025719006/issues/41) → US-18 [#49](https://github.com/bakalit01/SWE573-2025719006/issues/49) → US-28 [#59](https://github.com/bakalit01/SWE573-2025719006/issues/59) → US-29 [#60](https://github.com/bakalit01/SWE573-2025719006/issues/60) → US-19 [#50](https://github.com/bakalit01/SWE573-2025719006/issues/50) |
+| 9 (7–13 Dec) | M5 | US-30 [#61](https://github.com/bakalit01/SWE573-2025719006/issues/61) → US-31 [#62](https://github.com/bakalit01/SWE573-2025719006/issues/62) → US-14 [#45](https://github.com/bakalit01/SWE573-2025719006/issues/45) |
+| 10 (14–20 Dec) | M5 | US-32 [#63](https://github.com/bakalit01/SWE573-2025719006/issues/63) |
+
 ---
 
 ## Technical tasks
@@ -111,7 +128,7 @@ As a **registered user**, I want to **log in and log out**, so that **my account
 - [ ] Logging out ends the session server-side (POST logout, CSRF-protected)
 
 ### US-03 · Reset a forgotten password
-**Epic:** E1 · **Milestone:** M3 · **Priority:** Should · **Points:** 3
+**Epic:** E1 · **Milestone:** M2 · **Priority:** Should · **Points:** 3
 
 As a **registered user**, I want to **reset my password by email**, so that **I can recover my account**.
 
@@ -120,7 +137,7 @@ As a **registered user**, I want to **reset my password by email**, so that **I 
 - [ ] Response is the same whether or not the email exists
 
 ### US-04 · Manage my profile
-**Epic:** E1 · **Milestone:** M3 · **Priority:** Should · **Points:** 3
+**Epic:** E1 · **Milestone:** M2 · **Priority:** Should · **Points:** 3
 
 As a **maker**, I want to **edit my display name, bio, photo and community affiliation**, so that **visitors know who made the work**.
 

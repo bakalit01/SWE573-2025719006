@@ -14,8 +14,8 @@ A website that documents and showcases Indigenous crafts, where registered users
 | Milestone | Due | Gate | What a viewer can do |
 |---|---|---|---|
 | **M1 — Running Demo** | Sun 25 Oct (end wk 2) | Deployed URL, CI green | Browse seeded crafts, open a craft page, sign up / log in / log out |
-| **M2 — Contribute** | Sun 8 Nov (end wk 4) | v0.4 | Logged-in users add/edit crafts with photos; attributes change by craft type |
-| **M3 — MVP** | Sun 22 Nov (end wk 6) | v0.6, user test #1 | Search & filter, roles (maker / steward / admin), visibility & consent, moderation queue, maker profiles |
+| **M2 — Contribute** | Sun 8 Nov (end wk 4) | v0.4 | Logged-in users add/edit crafts with photos; attributes change by craft type; password reset and profiles |
+| **M3 — MVP** | Sun 22 Nov (end wk 6) | v0.6, user test #1 | Search & filter, roles (maker / steward / admin), visibility & consent, steward review, reporting, community pages |
 | **M4 — Enrich** | Sun 6 Dec (end wk 8) | v0.8 | Admin-managed craft types & attributes, Traditional Knowledge labels, multilingual names, favourites/collections, accessibility pass |
 | **M5 — Final** | Sun 20 Dec (end wk 10) | v1.0, user test #2 | Hardened, documented, tested, performant production release |
 
@@ -26,15 +26,74 @@ A website that documents and showcases Indigenous crafts, where registered users
 | 1 | 12–18 Oct | Requirements, user stories, issues, tech decision (ADR), repo + CI + hosting, data model draft, wireframes | v0.1 — "hello world" deployed |
 | 2 | 19–25 Oct | Auth (sign up / log in), craft list + detail from seed data, basic layout | **v0.2 — Demo (M1)** |
 | 3 | 26 Oct–1 Nov | Create/edit craft form, craft types, flexible attribute engine v1 | v0.3 |
-| 4 | 2–8 Nov | Image upload & gallery, validation, my-crafts page | v0.4 (M2) |
+| 4 | 2–8 Nov | Image upload & gallery, edit/delete, password reset, profiles | v0.4 (M2) |
 | 5 | 9–15 Nov | Search & filters, roles & permissions, visibility levels | v0.5 |
-| 6 | 16–22 Nov | Consent records, moderation queue, maker profiles, user test #1 | **v0.6 — MVP (M3)** |
+| 6 | 16–22 Nov | Consent records, steward review queue, reporting, community pages, user test #1 | **v0.6 — MVP (M3)** |
 | 7 | 23–29 Nov | Admin UI for craft types/attributes, TK labels, feedback fixes | v0.7 |
 | 8 | 30 Nov–6 Dec | Multilingual names, favourites/collections, accessibility audit | v0.8 (M4) |
 | 9 | 7–13 Dec | Security review, performance, test coverage, user test #2 | v0.9 (RC) |
 | 10 | 14–20 Dec | Bug fixes, documentation, final demo & handover | **v1.0 — Final (M5)** |
 
 **Incremental-improvement evidence:** each Friday tag a release (`v0.x`) with GitHub-generated release notes listing closed issues; keep a `CHANGELOG.md`; record a 2-minute demo clip or screenshots per release; the Projects board "Done" column per milestone shows burn-down.
+
+## 3a. Story sequence (what to build, in order)
+
+Each week's items build on the previous week's. "Depends on" lists what must be merged first. Issue links point to GitHub. A live checklist is kept in the [Roadmap issue #65](https://github.com/bakalit01/SWE573-2025719006/issues/65).
+
+| Week | Dates | ID | Issue | Story / task | Pts | Depends on |
+|---|---|---|---|---|---|---|
+| 1 | 12–18 Oct | T-01 | [#24](https://github.com/bakalit01/SWE573-2025719006/issues/24) | Repo, branch protection, project board | 1 | — |
+|  |  | T-02 | [#25](https://github.com/bakalit01/SWE573-2025719006/issues/25) | Stack & hosting ADR | 1 | — |
+|  |  | T-03 | [#26](https://github.com/bakalit01/SWE573-2025719006/issues/26) | Scaffold Django project, deploy hello world | 2 | T-02 |
+|  |  | T-04 | [#27](https://github.com/bakalit01/SWE573-2025719006/issues/27) | CI pipeline | 2 | T-03 |
+|  |  | T-08 | [#29](https://github.com/bakalit01/SWE573-2025719006/issues/29) | Test setup & factories | 2 | T-03 |
+|  |  | T-06 | [#30](https://github.com/bakalit01/SWE573-2025719006/issues/30) | Wireframes | 2 | — |
+|  |  | T-07 | [#31](https://github.com/bakalit01/SWE573-2025719006/issues/31) | Release process & CHANGELOG | 1 | T-03 |
+| | | | | ➜ **Release v0.1: hello world deployed** · 11 pts | | |
+| 2 | 19–25 Oct | T-05 | [#28](https://github.com/bakalit01/SWE573-2025719006/issues/28) | Django models v1 + sample data | 3 | T-03 |
+|  |  | US-01 | [#32](https://github.com/bakalit01/SWE573-2025719006/issues/32) | Register an account | 3 | T-05 |
+|  |  | US-02 | [#33](https://github.com/bakalit01/SWE573-2025719006/issues/33) | Log in and log out | 2 | US-01 |
+|  |  | US-06 | [#37](https://github.com/bakalit01/SWE573-2025719006/issues/37) | Browse the craft catalogue | 3 | T-05 |
+|  |  | US-07 | [#38](https://github.com/bakalit01/SWE573-2025719006/issues/38) | View craft details | 3 | US-06 |
+| | | | | ➜ **Release **v0.2: running demo (M1)**** · 14 pts | | |
+| 3 | 26 Oct–1 Nov | US-08 | [#39](https://github.com/bakalit01/SWE573-2025719006/issues/39) | Add a craft | 5 | US-02, T-05 |
+|  |  | US-11 | [#42](https://github.com/bakalit01/SWE573-2025719006/issues/42) | Craft-type-specific fields in the form | 8 | US-08 |
+|  |  | US-12 | [#43](https://github.com/bakalit01/SWE573-2025719006/issues/43) | Show craft-specific attributes | 2 | US-11 |
+| | | | | ➜ **Release v0.3** · 15 pts | | |
+| 4 | 2–8 Nov | US-20 | [#51](https://github.com/bakalit01/SWE573-2025719006/issues/51) | Upload images with alt text & credit | 5 | US-08 |
+|  |  | US-09 | [#40](https://github.com/bakalit01/SWE573-2025719006/issues/40) | Edit or delete my craft | 3 | US-08 |
+|  |  | US-03 | [#34](https://github.com/bakalit01/SWE573-2025719006/issues/34) | Reset a forgotten password | 3 | US-02 |
+|  |  | US-04 | [#35](https://github.com/bakalit01/SWE573-2025719006/issues/35) | Manage my profile | 3 | US-02 |
+| | | | | ➜ **Release v0.4: contribute (M2)** · 14 pts | | |
+| 5 | 9–15 Nov | US-05 | [#36](https://github.com/bakalit01/SWE573-2025719006/issues/36) | Roles and permissions | 5 | US-02 |
+|  |  | US-22 | [#53](https://github.com/bakalit01/SWE573-2025719006/issues/53) | Set visibility of a craft | 5 | US-05 |
+|  |  | US-15 | [#46](https://github.com/bakalit01/SWE573-2025719006/issues/46) | Search crafts | 5 | US-22 |
+|  |  | US-16 | [#47](https://github.com/bakalit01/SWE573-2025719006/issues/47) | Filter and sort the catalogue | 5 | US-15 |
+| | | | | ➜ **Release v0.5** · 20 pts | | |
+| 6 | 16–22 Nov | US-23 | [#54](https://github.com/bakalit01/SWE573-2025719006/issues/54) | Record consent | 3 | US-22 |
+|  |  | US-24 | [#55](https://github.com/bakalit01/SWE573-2025719006/issues/55) | Steward review queue | 5 | US-05, US-23 |
+|  |  | US-25 | [#56](https://github.com/bakalit01/SWE573-2025719006/issues/56) | Report a record / request removal | 3 | US-24 |
+|  |  | US-17 | [#48](https://github.com/bakalit01/SWE573-2025719006/issues/48) | Community pages | 3 | US-06 |
+|  |  | US-27 | [#58](https://github.com/bakalit01/SWE573-2025719006/issues/58) | Manage users (largely Django admin) | 3 | US-05 |
+| | | | | ➜ **Release **v0.6: MVP (M3)** + user test #1** · 17 pts | | |
+| 7 | 23–29 Nov | US-13 | [#44](https://github.com/bakalit01/SWE573-2025719006/issues/44) | Manage craft types and attributes | 8 | US-11 |
+|  |  | US-26 | [#57](https://github.com/bakalit01/SWE573-2025719006/issues/57) | Traditional Knowledge labels | 3 | US-24 |
+|  |  | US-21 | [#52](https://github.com/bakalit01/SWE573-2025719006/issues/52) | Sensitive image notice | 2 | US-20 |
+| | | | | ➜ **Release v0.7** · 13 pts | | |
+| 8 | 30 Nov–6 Dec | US-10 | [#41](https://github.com/bakalit01/SWE573-2025719006/issues/41) | Names in multiple languages | 3 | US-08 |
+|  |  | US-18 | [#49](https://github.com/bakalit01/SWE573-2025719006/issues/49) | Favourites and collections | 5 | US-22 |
+|  |  | US-28 | [#59](https://github.com/bakalit01/SWE573-2025719006/issues/59) | Manage taxonomies | 3 | US-27 |
+|  |  | US-29 | [#60](https://github.com/bakalit01/SWE573-2025719006/issues/60) | Accessible site | 5 | — |
+|  |  | US-19 | [#50](https://github.com/bakalit01/SWE573-2025719006/issues/50) | Filter by craft-specific attributes *(stretch)* | 5 | US-16, US-13 |
+| | | | | ➜ **Release v0.8: enrich (M4)** · 21 pts | | |
+| 9 | 7–13 Dec | US-30 | [#61](https://github.com/bakalit01/SWE573-2025719006/issues/61) | Security and privacy hardening | 5 | — |
+|  |  | US-31 | [#62](https://github.com/bakalit01/SWE573-2025719006/issues/62) | Fast on mobile | 3 | — |
+|  |  | US-14 | [#45](https://github.com/bakalit01/SWE573-2025719006/issues/45) | Suggest a new craft type or attribute *(stretch)* | 3 | US-13 |
+| | | | | ➜ **Release v0.9: release candidate + user test #2** · 11 pts | | |
+| 10 | 14–20 Dec | US-32 | [#63](https://github.com/bakalit01/SWE573-2025719006/issues/63) | Final documentation and handover | 3 | all |
+| | | | | ➜ **Release **v1.0: final product (M5)**** · 3 pts | | |
+
+**Capacity note:** roughly 12–20 points per week. US-03 and US-04 were moved from M3 to M2 (week 4) so the MVP weeks aren't overloaded. Items marked *stretch* are dropped first if time runs short.
 
 ## 4. Tech stack — Python (recorded in ADR-001, issue T-02)
 

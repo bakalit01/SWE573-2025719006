@@ -28,9 +28,9 @@ Priority uses MoSCoW. Milestone: M1 Demo (wk 2), M2 (wk 4), M3 MVP (wk 6), M4 (w
 |---|---|---|---|
 | FR-A1 | Users can register with email + password | Must | M1 |
 | FR-A2 | Users can log in and log out; sessions persist securely | Must | M1 |
-| FR-A3 | Users can reset a forgotten password via email | Should | M3 |
+| FR-A3 | Users can reset a forgotten password via email | Should | M2 |
 | FR-A4 | Role-based access control (member, maker, steward, admin) | Must | M3 |
-| FR-A5 | Users can edit their profile (display name, bio, community affiliation, photo) | Should | M3 |
+| FR-A5 | Users can edit their profile (display name, bio, community affiliation, photo) | Should | M2 |
 | FR-A6 | Optional social login (Google) | Could | M4 |
 | FR-A7 | Users can delete their account and personal data | Should | M5 |
 
