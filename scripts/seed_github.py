@@ -26,28 +26,28 @@ STORIES = ROOT / "docs" / "USER_STORIES.md"
 
 MILESTONES = {
     "M1": (
-        "M1 – Running demo (week 2)",
-        "2026-10-25T20:59:59Z",
+        "M1 – Running demo (week 1)",
+        "2026-10-13T20:59:59Z",
         "Deployed site: browse sample crafts, craft detail page, sign up / log in / log out.",
     ),
     "M2": (
-        "M2 – Contribute (week 4)",
-        "2026-11-08T20:59:59Z",
+        "M2 – Contribute (week 2)",
+        "2026-10-25T20:59:59Z",
         "Logged-in users add/edit crafts with photos; fields change by craft type.",
     ),
     "M3": (
-        "M3 – MVP (week 6)",
-        "2026-11-22T20:59:59Z",
+        "M3 – MVP (week 4)",
+        "2026-11-08T20:59:59Z",
         "Search/filter, roles, visibility & consent, steward review, reporting, profiles.",
     ),
     "M4": (
-        "M4 – Enrich (week 8)",
-        "2026-12-06T20:59:59Z",
+        "M4 – Enrich (week 6)",
+        "2026-11-22T20:59:59Z",
         "Admin-managed attributes, TK labels, multilingual names, collections, accessibility.",
     ),
     "M5": (
-        "M5 – Final product (week 10)",
-        "2026-12-20T20:59:59Z",
+        "M5 – Final product (week 8)",
+        "2026-12-06T20:59:59Z",
         "Hardened, documented, tested v1.0 release.",
     ),
 }
@@ -146,7 +146,13 @@ AREA = {
 }
 
 FUNCTIONAL = {
-    "Functional requirement-Accounts and login": {"US-01", "US-02", "US-03", "US-04", "US-05"},
+    "Functional requirement-Accounts and login": {
+        "US-01",
+        "US-02",
+        "US-03",
+        "US-04",
+        "US-05",
+    },
     "Functional requirement-Email": {"US-03"},
     "Functional requirement-Gallery": {"US-06", "US-20", "US-21"},
 }
@@ -177,7 +183,11 @@ def parse():
     for line in STORIES.read_text(encoding="utf-8").splitlines():
         m = HEADER.match(line)
         if m:
-            cur = {"id": m.group(1), "title": f"{m.group(1)} · {m.group(2)}", "lines": []}
+            cur = {
+                "id": m.group(1),
+                "title": f"{m.group(1)} · {m.group(2)}",
+                "lines": [],
+            }
             items.append(cur)
         elif cur and (line.startswith("## ") or line.strip() == "---"):
             cur = None

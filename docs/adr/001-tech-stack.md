@@ -9,12 +9,12 @@ The project must be Python-based and deliver a running demo by week 2, an MVP by
 ## Decision
 - **Django 5.2 LTS** on Python 3.12+, **PostgreSQL 16**
 - Craft-specific attributes in a `JSONField` (jsonb), validated against `AttributeDefinition` rows; forms built at runtime
-- Server-rendered templates + **HTMX** + Tailwind CSS (no separate SPA)
+- Server-rendered templates (no separate SPA); plain CSS for M1, with HTMX added when pages need partial updates (M2)
 - `django-allauth` for sign-up/login/reset; `rules` (django-rules) for object-level permissions
 - Django admin as the back-office for M1–M3
 - `django-storages` + S3-compatible storage for images; Pillow for resizing
 - pytest / pytest-django / factory_boy / Playwright for Python; ruff; uv
-- Docker + gunicorn + whitenoise; deploy via GitHub Actions to a PaaS with PR previews
+- Docker + gunicorn + whitenoise; **hosting: Render** (free web service + PostgreSQL, defined in `render.yaml`), chosen on 13 Oct 2026
 
 ## Alternatives considered
 - **FastAPI + SQLAlchemy + separate front end:** more flexible API, but auth, admin, forms and migrations would all be built by hand, putting the week-2 demo at risk.
