@@ -16,6 +16,7 @@ All notable changes per release. Releases are tagged on GitHub (`vX.Y.Z`).
 - CI: ruff, Django checks, migration check, deploy check, tests with coverage ≥ 80 %, dependency audit (#27).
 - Deployment: Dockerfile, docker-compose, Render Blueprint (`render.yaml`), `/healthz` (#26).
 - UI screenshots as the design reference in `docs/design/` (#30).
+- Release workflow: publishing a version in this file creates the GitHub release and tag (#31).
 
 ## [v0.1.0] – 13 Oct 2026 · Planning
 ### Added

@@ -1,0 +1,52 @@
+name: Release
+# Publishes a GitHub release (and tag) for the newest version in CHANGELOG.md
+# whenever CHANGELOG.md changes on main. Run manually to back-fill an older version.
+on:
+  push:
+    branches: [main]
+    paths: [CHANGELOG.md]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Version to release, e.g. v0.1.0 (must have a section in CHANGELOG.md)"
+        required: true
+      target:
+        description: "Commit SHA or branch to tag"
+        default: main
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create release from CHANGELOG
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_TAG: ${{ inputs.tag }}
+          INPUT_TARGET: ${{ inputs.target || github.sha }}
+        run: |
+          python3 - <<'PY'
+          import os, re, subprocess, sys
+          text = open("CHANGELOG.md", encoding="utf-8").read()
+          sections = re.findall(r"^## \[(v[\d.]+)\] – ([^\n]*)\n(.*?)(?=^## \[|\Z)", text, re.M | re.S)
+          if not sections:
+              sys.exit("No versions found in CHANGELOG.md")
+          wanted = os.environ.get("INPUT_TAG") or sections[0][0]
+          match = next((s for s in sections if s[0] == wanted), None)
+          if not match:
+              sys.exit(f"{wanted} has no section in CHANGELOG.md")
+          tag, heading, notes = match
+          exists = subprocess.run(["gh", "release", "view", tag], capture_output=True).returncode == 0
+          if exists:
+              print(f"{tag} already released, nothing to do")
+              sys.exit(0)
+          title = f"{tag} – {heading.split('·', 1)[-1].strip()}"
+          with open("notes.md", "w", encoding="utf-8") as f:
+              f.write(f"_{heading}_\n\n{notes.strip()}\n")
+          subprocess.run(["gh", "release", "create", tag, "--target", os.environ["INPUT_TARGET"],
+                          "--title", title, "--notes-file", "notes.md"], check=True)
+          print(f"Released {tag}")
+          PY
