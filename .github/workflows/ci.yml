@@ -6,7 +6,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     services:
       postgres:
         image: postgres:16
@@ -35,7 +35,9 @@ jobs:
         run: |
           uv run python manage.py check
           uv run python manage.py makemigrations --check --dry-run
-          DJANGO_SETTINGS_MODULE=config.settings.prod uv run python manage.py check --deploy --fail-level WARNING
+          DJANGO_SETTINGS_MODULE=config.settings.prod \
+          DJANGO_SECRET_KEY="$(python -c 'import secrets; print(secrets.token_urlsafe(50))')" \
+            uv run python manage.py check --deploy --fail-level WARNING
       - name: requirements.txt matches uv.lock
         run: |
           uv export --no-dev --no-hashes --format requirements-txt -q -o /tmp/req.txt
