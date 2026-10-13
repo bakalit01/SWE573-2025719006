@@ -1,0 +1,18 @@
+<li class="card">
+  <a class="card-link" href="{{ craft.get_absolute_url }}">
+    {% with cover=craft.cover %}
+      {% if cover %}
+        <img class="card-img" src="{{ cover.url }}" alt="{{ cover.alt_text }}" loading="lazy" width="480" height="360">
+      {% else %}
+        <div class="card-img card-img-empty" aria-hidden="true"></div>
+      {% endif %}
+    {% endwith %}
+    <div class="card-body">
+      <p class="eyebrow">{{ craft.craft_type.name }}</p>
+      <h3 class="card-title">{{ craft.title }}</h3>
+      <p class="card-meta">{{ craft.community.name }}</p>
+      {% if craft.is_sample %}<span class="badge badge-sample">Sample data</span>{% endif %}
+      {% if craft.visibility == "members" %}<span class="badge badge-members">Members only</span>{% endif %}
+    </div>
+  </a>
+</li>

@@ -1,0 +1,63 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block head_title %}{% endblock head_title %}{% if request.path != "/" %} · {% endif %}Indigenous Crafts</title>
+  <meta name="description" content="Documenting Indigenous crafts, credited to the makers and communities who keep them alive.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Domine:wght@500;700&family=Nunito+Sans:wght@400;600;700;800&display=swap">
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+  {% block extra_head %}{% endblock extra_head %}
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container header-row">
+      <a class="brand" href="{% url 'home' %}">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>Indigenous Crafts</span>
+      </a>
+      <nav aria-label="Main">
+        <ul class="nav">
+          <li><a href="{% url 'crafts:list' %}"{% if request.resolver_match.app_name == "crafts" %} aria-current="page"{% endif %}>Browse crafts</a></li>
+          {% if user.is_authenticated %}
+            <li class="nav-user">Signed in as <strong>{{ user.public_name }}</strong></li>
+            <li>
+              <form method="post" action="{% url 'account_logout' %}" class="inline-form">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-ghost">Log out</button>
+              </form>
+            </li>
+          {% else %}
+            <li><a href="{% url 'account_login' %}">Log in</a></li>
+            <li><a class="btn btn-primary" href="{% url 'account_signup' %}">Sign up</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  {% if messages %}
+    <div class="container" role="status" aria-live="polite">
+      <ul class="messages">
+        {% for message in messages %}<li class="message message-{{ message.tags }}">{{ message }}</li>{% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <main id="main" class="{% block main_class %}container{% endblock main_class %}">
+    {% block content %}{% endblock content %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-row">
+      <p>Built for SWE 573 · <a href="{{ REPO_URL }}">Source on GitHub</a> · {{ APP_VERSION }}</p>
+      <p>Records marked <span class="badge badge-sample">Sample data</span> are fictional examples, not real cultural content.</p>
+    </div>
+  </footer>
+  {% block extra_body %}{% endblock extra_body %}
+</body>
+</html>

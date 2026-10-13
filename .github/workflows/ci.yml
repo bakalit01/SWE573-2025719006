@@ -26,19 +26,23 @@ jobs:
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: "3.12"
-      - run: uv sync --all-groups
+      - run: uv sync --all-groups --frozen
       - name: Lint
         run: |
           uv run ruff check .
           uv run ruff format --check .
-      - name: Skip until Django project exists (T-03)
-        id: has_django
-        run: test -f manage.py && echo "yes=1" >> "$GITHUB_OUTPUT" || echo "manage.py not yet present"
-      - name: Migrations up to date
-        if: steps.has_django.outputs.yes == '1'
-        run: uv run python manage.py makemigrations --check --dry-run
-      - name: Tests
-        if: steps.has_django.outputs.yes == '1'
-        run: uv run pytest --cov --cov-report=term-missing
+      - name: Django checks
+        run: |
+          uv run python manage.py check
+          uv run python manage.py makemigrations --check --dry-run
+          DJANGO_SETTINGS_MODULE=config.settings.prod uv run python manage.py check --deploy --fail-level WARNING
+      - name: requirements.txt matches uv.lock
+        run: |
+          uv export --no-dev --no-hashes --format requirements-txt -q -o /tmp/req.txt
+          diff <(grep -v '^#' requirements.txt) <(grep -v '^#' /tmp/req.txt)
+      - name: Install browser for end-to-end tests
+        run: uv run playwright install --with-deps chromium
+      - name: Tests (unit, integration, end-to-end)
+        run: uv run pytest --cov --cov-report=term-missing --cov-fail-under=80
       - name: Dependency audit
         run: uv run pip-audit || true

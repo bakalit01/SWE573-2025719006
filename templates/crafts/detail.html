@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block head_title %}{{ craft.title }}{% endblock %}
+{% block content %}
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="{% url 'crafts:list' %}">Browse crafts</a> / <a href="{% url 'crafts:list' %}?type={{ craft.craft_type.slug }}">{{ craft.craft_type.name }}</a></nav>
+
+<article class="detail">
+  <div class="detail-media">
+    {% for m in craft.media.all %}
+      <figure>
+        <img src="{{ m.url }}" alt="{{ m.alt_text }}" width="960" height="720"{% if not forloop.first %} loading="lazy"{% endif %}>
+        {% if m.caption or m.credit %}<figcaption>{{ m.caption }}{% if m.credit %} · {{ m.credit }}{% endif %}</figcaption>{% endif %}
+      </figure>
+    {% empty %}
+      <div class="card-img card-img-empty" aria-hidden="true"></div>
+    {% endfor %}
+  </div>
+
+  <div class="detail-body">
+    <p class="eyebrow">{{ craft.craft_type.name }}</p>
+    <h1>{{ craft.title }}</h1>
+    <div class="badges">
+      {% if craft.is_sample %}<span class="badge badge-sample">Sample data</span>{% endif %}
+      <span class="badge badge-members">{{ craft.get_visibility_display }}</span>
+    </div>
+    {% if craft.summary %}<p class="lead">{{ craft.summary }}</p>{% endif %}
+
+    <dl class="credits">
+      <div><dt>Made by</dt><dd>{{ craft.maker_credit }}</dd></div>
+      <div><dt>Community</dt><dd><a href="{{ craft.community.get_absolute_url }}">{{ craft.community.name }}</a></dd></div>
+      {% if craft.region %}<div><dt>Region</dt><dd>{{ craft.region }}</dd></div>{% endif %}
+      {% if craft.period %}<div><dt>Made</dt><dd>{{ craft.period }}</dd></div>{% endif %}
+    </dl>
+
+    {% if craft.description %}<h2>About this craft</h2><p>{{ craft.description|linebreaksbr }}</p>{% endif %}
+
+    {% if craft.materials.all or craft.techniques.all %}
+      <dl class="tags">
+        {% if craft.materials.all %}<div><dt>Materials</dt><dd>{% for m in craft.materials.all %}<span class="tag">{{ m.name }}</span>{% endfor %}</dd></div>{% endif %}
+        {% if craft.techniques.all %}<div><dt>Techniques</dt><dd>{% for t in craft.techniques.all %}<span class="tag">{{ t.name }}</span>{% endfor %}</dd></div>{% endif %}
+      </dl>
+    {% endif %}
+
+    {% if attribute_rows %}
+      <h2>{{ craft.craft_type.name }} details</h2>
+      <dl class="attributes">
+        {% for label, value in attribute_rows %}<div><dt>{{ label }}</dt><dd>{{ value }}</dd></div>{% endfor %}
+      </dl>
+    {% endif %}
+
+    {% if craft.cultural_context %}<h2>Cultural context</h2><p>{{ craft.cultural_context|linebreaksbr }}</p>{% endif %}
+
+    <aside class="report" aria-label="Report this record">
+      <p>Something wrong or shared without permission? <a href="{{ report_url }}" rel="noopener">Report or request removal</a></p>
+    </aside>
+  </div>
+</article>
+{% endblock %}

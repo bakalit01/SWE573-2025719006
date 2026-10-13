@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block head_title %}Home{% endblock %}
+{% block main_class %}{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="container hero-inner">
+    <p class="eyebrow eyebrow-light">A living record</p>
+    <h1>Indigenous crafts, credited to the people who make them</h1>
+    <p class="lead">Explore textiles, pottery, beadwork, basketry and more, each described with the details that matter for its own tradition.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary btn-lg" href="{% url 'crafts:list' %}">Browse crafts</a>
+      {% if not user.is_authenticated %}<a class="btn btn-light btn-lg" href="{% url 'account_signup' %}">Create an account</a>{% endif %}
+    </div>
+    <ul class="stats" aria-label="Collection at a glance">
+      <li><strong>{{ craft_count }}</strong> crafts</li>
+      <li><strong>{{ type_count }}</strong> craft types</li>
+      <li><strong>{{ community_count }}</strong> communities</li>
+    </ul>
+  </div>
+</section>
+
+<section class="container section">
+  <div class="section-head">
+    <h2>Featured crafts</h2>
+    <a href="{% url 'crafts:list' %}">See all crafts →</a>
+  </div>
+  {% if featured %}
+    <ul class="grid">{% for craft in featured %}{% include "crafts/_card.html" %}{% endfor %}</ul>
+  {% else %}
+    <p class="empty">No crafts have been published yet.</p>
+  {% endif %}
+</section>
+
+<section class="container section principles">
+  <h2 class="sr-only">Our principles</h2>
+  <div class="principle"><h3>Document</h3><p>Each craft type has its own fields, so a woven textile and a clay vessel are both described properly.</p></div>
+  <div class="principle"><h3>Credit</h3><p>Every record names its makers and community.</p></div>
+  <div class="principle"><h3>Protect</h3><p>Communities decide what is shared and with whom. Some records are visible to members only.</p></div>
+</section>
+{% endblock %}

@@ -21,7 +21,7 @@ The platform documents, preserves and showcases Indigenous crafts. It lets regis
 
 ## 3. Functional requirements
 
-Priority uses MoSCoW. Milestone: M1 Demo (wk 2), M2 (wk 4), M3 MVP (wk 6), M4 (wk 8), M5 Final (wk 10).
+Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (wk 2), M3 MVP (wk 4), M4 (wk 6), M5 Final (wk 8); weeks 9–10 buffer.
 
 ### 3.1 Accounts & authentication
 | ID | Requirement | Priority | Milestone |
