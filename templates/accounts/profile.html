@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block head_title %}{{ maker.public_name }}{% endblock %}
+{% block content %}
+<header class="profile-head">
+  <div class="avatar" aria-hidden="true">{{ maker.public_name|slice:":1"|upper }}</div>
+  <div>
+    <p class="eyebrow">Maker profile</p>
+    <h1>{{ maker.public_name }}</h1>
+    <p class="muted">
+      {% if maker.community %}<a href="{{ maker.community.get_absolute_url }}">{{ maker.community.name }}</a>{% endif %}
+      {% if maker.community and maker.location %} · {% endif %}{{ maker.location }}
+      {% if maker.community or maker.location %} · {% endif %}Member since {{ maker.date_joined|date:"F Y" }}
+    </p>
+    {% if user == maker %}<a class="btn btn-ghost" href="{% url 'accounts:edit_profile' %}">Edit profile</a>{% endif %}
+  </div>
+</header>
+{% if maker.bio %}<section class="story"><h2>About</h2><p>{{ maker.bio|linebreaksbr }}</p></section>{% endif %}
+<section class="section">
+  <h2>Crafts added ({{ crafts|length }})</h2>
+  {% if crafts %}
+    <ul class="grid">{% for craft in crafts %}{% include "crafts/_card.html" %}{% endfor %}</ul>
+  {% else %}
+    <p class="empty">No published crafts yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

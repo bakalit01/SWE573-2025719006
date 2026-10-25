@@ -94,6 +94,7 @@ ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_PREVENT_ENUMERATION = False  # US-01: duplicate email shows a clear error
+ACCOUNT_FORMS = {"reset_password": "accounts.forms.SameResponseResetPasswordForm"}  # US-03
 ACCOUNT_SESSION_REMEMBER = None
 ACCOUNT_LOGOUT_ON_GET = False  # US-02: logout is a CSRF-protected POST
 LOGIN_URL = "account_login"
@@ -112,7 +113,10 @@ STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = env("MEDIA_ROOT", default=str(BASE_DIR / "media"))
+SERVE_MEDIA = env.bool("SERVE_MEDIA", default=False)
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024
+DATA_UPLOAD_MAX_MEMORY_SIZE = 12 * 1024 * 1024
 
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
@@ -122,4 +126,4 @@ STORAGES = {
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REPO_URL = env("REPO_URL", default="https://github.com/bakalit01/SWE573-2025719006")
-APP_VERSION = env("APP_VERSION", default="v0.2.0")
+APP_VERSION = env("APP_VERSION", default="v0.4.0")

@@ -22,9 +22,11 @@
       </a>
       <nav aria-label="Main">
         <ul class="nav">
-          <li><a href="{% url 'crafts:list' %}"{% if request.resolver_match.app_name == "crafts" %} aria-current="page"{% endif %}>Browse crafts</a></li>
+          <li><a href="{% url 'crafts:list' %}"{% if request.resolver_match.url_name == "list" or request.resolver_match.url_name == "detail" %} aria-current="page"{% endif %}>Browse crafts</a></li>
           {% if user.is_authenticated %}
-            <li class="nav-user">Signed in as <strong>{{ user.public_name }}</strong></li>
+            <li><a href="{% url 'crafts:create' %}"{% if request.resolver_match.url_name == "create" %} aria-current="page"{% endif %}>Add a craft</a></li>
+            <li><a href="{% url 'crafts:mine' %}"{% if request.resolver_match.url_name == "mine" %} aria-current="page"{% endif %}>My crafts</a></li>
+            <li class="nav-user">Signed in as <a href="{{ user.get_absolute_url }}"><strong>{{ user.public_name }}</strong></a></li>
             <li>
               <form method="post" action="{% url 'account_logout' %}" class="inline-form">
                 {% csrf_token %}

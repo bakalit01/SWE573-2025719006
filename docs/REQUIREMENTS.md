@@ -82,12 +82,13 @@ Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (wk 2), M3 MVP (
 ### 4.1 Core entities
 - **User** — id, email, password hash, display name, bio, avatar, role(s), community affiliations, created_at
 - **Community** — id, name(s) (self-designated name first), region, description, steward users
-- **Craft** — id, slug, title, names[] (lang, text), summary, description, craft_type_id, community_id, region, makers[] (User or named person not on platform), period/date made, materials[], techniques[], dimensions, cultural_context, **attributes (JSONB)**, visibility, status (draft / pending review / published / unpublished), consent_id, tk_labels[], created_by, timestamps
+- **Craft** — id, slug, title, names[] (lang, text), summary, description, process (how it is made), craft_type_id, community_id, maker credit (made by), year made + circa flag or period (made in), **place name, country, latitude, longitude, location precision (exact / approximate / hidden)**, **height × width × depth + length unit, weight + weight unit, local/traditional measure**, materials[] and techniques[] (via CraftMaterial: origin, notes; CraftTechnique: notes), cultural_context, **attributes (JSONB)**, visibility, status (draft / pending review / published / unpublished), consent_id, tk_labels[], created_by, timestamps
 - **CraftType** — id, name (Textile, Pottery, Beadwork, Basketry, Carving, Metalwork, Leatherwork, Jewellery, …), description, **attribute_schema**
 - **AttributeDefinition** — id, craft_type_id, key, label, data type, unit, options[], required, help text, order
 - **Media** — id, craft_id, url, alt_text, caption, credit, is_sensitive, order
 - **Consent** — id, craft_id, granted_by (name/role), date, scope, notes, document (optional)
-- **Material / Technique / Region** — controlled vocabularies (many-to-many with Craft)
+- **Material / Technique** — controlled vocabularies with a short description; linked to crafts through CraftMaterial / CraftTechnique, which hold per-craft detail
+- **Units** — lengths mm, cm, m, in, ft; weights g, kg, oz, lb; values shown as entered plus a converted metric/imperial value
 - **Favourite / Collection** — user_id, craft_id(s)
 - **Report / ModerationAction** — who, what, reason, status, timestamps
 

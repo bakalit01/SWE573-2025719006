@@ -52,7 +52,7 @@ CRAFT_TYPES = [
             ("clay_source", "Clay source", "text", "", []),
             ("forming_method", "Forming method", "choice", "", ["Coil", "Pinch", "Slab", "Wheel"]),
             ("firing_method", "Firing method", "choice", "", ["Open pit", "Kiln", "Bonfire"]),
-            ("height", "Height", "number", "cm", []),
+            ("vessel_form", "Vessel form", "choice", "", ["Jar", "Bowl", "Cup", "Plate"]),
         ],
     },
     {
@@ -146,7 +146,7 @@ CRAFTS = [
             "clay_source": "Riverbank",
             "forming_method": "Coil",
             "firing_method": "Open pit",
-            "height": 34,
+            "vessel_form": "Jar",
         },
         "A round-bodied jar built up from coils, burnished and fired in an open pit.",
     ),
@@ -162,7 +162,7 @@ CRAFTS = [
             "clay_source": "Riverbank",
             "forming_method": "Pinch",
             "firing_method": "Bonfire",
-            "height": 9,
+            "vessel_form": "Cup",
         },
         "A small cup shaped by hand from a single ball of clay.",
     ),
@@ -279,3 +279,175 @@ CULTURAL_CONTEXT = (
     "Real records include context written or approved by the community, such as how the "
     "craft is used and who may make or see it. Sample records leave this as an example."
 )
+
+
+# Extra detail per sample craft (feedback FB-01…FB-04). Places are broad, approximate sample
+# locations, never real community sites; units vary on purpose to show international units.
+SAMPLE_PLACE_NOTE = "Approximate sample location"
+
+DETAILS = {
+    "sample-backstrap-woven-sash": {
+        "year_made": 2019,
+        "place": ("Sample upland plateau", "", -15.8, -70.0),
+        "size": (None, 9, 210, "cm"),  # (height, width, depth/length, unit): a long narrow sash
+        "weight": (180, "g"),
+        "traditional_measure": "About three arm-spans long",
+        "materials": [
+            ("Wool", "Sheep raised by the (sample) household", "Spun by hand on a drop spindle"),
+            ("Plant dye", "Roots and leaves gathered nearby", "Mordanted with alum for red"),
+        ],
+        "techniques": [("Weaving", "Warp-faced weave on a backstrap loom tied to a post")],
+        "process": "Wool is washed, spun and dyed. The warp is wound on stakes, tied to a "
+        "post and to the weaver's waist, and the diamond band is picked up by hand.",
+    },
+    "sample-felted-saddle-blanket": {
+        "year_made": 1985,
+        "year_is_approximate": True,
+        "place": ("Sample upland plateau", "", -16.4, -69.3),
+        "size": (4, 90, 120, "cm"),
+        "weight": (2.6, "kg"),
+        "materials": [("Wool", "Mixed fleece", "Laid out in thin crossing layers")],
+        "techniques": [("Felting", "Rolled in a reed mat with hot water and pressed for hours")],
+        "process": "Layers of loose wool are wetted with hot water, rolled tightly inside a mat "
+        "and pressed until the fibres lock into a dense felt.",
+    },
+    "sample-coil-built-storage-jar": {
+        "year_made": 2021,
+        "place": ("Sample river valley", "", 9.0, 38.7),
+        "size": (34, 28, 28, "cm"),
+        "weight": (4.1, "kg"),
+        "materials": [
+            ("River clay", "Dug from the riverbank in the dry season", "Mixed with sand as temper"),
+            ("Mineral pigment", "Red earth", "Painted on as a slip before burnishing"),
+        ],
+        "techniques": [
+            ("Coiling", "Rolled coils are pinched together and smoothed with a gourd scraper"),
+            ("Burnishing", "Polished with a river pebble while leather-hard"),
+        ],
+        "process": "Clay is cleaned, tempered and rolled into coils that are built up in rings. "
+        "The jar is scraped thin, slipped, burnished and fired in an open pit.",
+    },
+    "sample-pinch-pot-water-cup": {
+        "year_made": 2023,
+        "place": ("Sample river valley", "", 9.3, 38.9),
+        "size": (9, 8, 8, "cm"),
+        "weight": (210, "g"),
+        "traditional_measure": "Fits in one palm",
+        "materials": [("River clay", "Riverbank", "Used without temper for a fine wall")],
+        "techniques": [("Pinching", "Opened with the thumb and thinned by turning in the hand")],
+        "process": "A ball of clay is opened with the thumb and pinched evenly while turning, "
+        "then dried slowly and fired in a bonfire.",
+    },
+    "sample-beaded-shoulder-bag": {
+        "year_made": 2015,
+        "place": ("Sample boreal forest", "", 54.0, -105.0),
+        "size": (11, 9, 1.5, "in"),
+        "weight": (14, "oz"),
+        "materials": [
+            ("Glass beads", "Traded seed beads", "Size 11 beads in six colours"),
+            ("Leather", "Smoked hide", "Smoking gives colour and keeps it soft"),
+        ],
+        "techniques": [("Appliqué beading", "Beads strung on one thread, couched with a second")],
+        "process": "The floral design is drawn on the hide, then beads are laid along the lines "
+        "and stitched down every two or three beads with a second needle.",
+    },
+    "sample-shell-bead-necklace": {
+        "year_made": 1960,
+        "year_is_approximate": True,
+        "place": ("Sample coastline", "", -33.9, 151.2),
+        "precision": "approximate",
+        "size": (None, None, 76, "cm"),
+        "weight": (95, "g"),
+        "materials": [
+            ("Shell", "Collected on the shore", "Broken into blanks and ground into discs"),
+            ("Plant fibre cord", "Twisted bark fibre", "Two-ply cord"),
+        ],
+        "techniques": [
+            ("Drilling", "Pump drill with a stone point"),
+            ("Stringing", "Discs graded by size from the centre outwards"),
+        ],
+        "process": "Shell blanks are ground flat on sandstone, drilled with a pump drill, strung "
+        "and rolled together to an even edge.",
+    },
+    "sample-coiled-sedge-basket": {
+        "year_made": 2008,
+        "place": ("Sample coastline", "", 36.6, -121.9),
+        "size": (14, 30, 30, "cm"),
+        "weight": (520, "g"),
+        "materials": [
+            ("Sedge", "Root runners dug from sandy banks", "Split and soaked before use"),
+            ("Bulrush", "Marsh edge", "Used as the foundation bundle"),
+        ],
+        "techniques": [("Coiling", "Sewn with an awl, about 8 stitches per centimetre")],
+        "process": "A bundle of bulrush is wrapped and sewn in a spiral with split sedge so "
+        "tightly that the basket holds water once the fibres swell.",
+    },
+    "sample-twined-gathering-basket": {
+        "year_made": 2017,
+        "place": ("Sample boreal forest", "", 61.2, -135.0),
+        "size": (10, 12, 12, "in"),
+        "weight": (1.1, "lb"),
+        "traditional_measure": "Holds about one day's berry picking",
+        "materials": [
+            ("Spruce root", "Pulled from moss in spring", "Roasted, peeled and split"),
+            ("Bark", "Birch", "Used for the rim"),
+        ],
+        "techniques": [("Twining", "Two wefts twisted around each warp, open weave for air")],
+        "process": "Roots are roasted and split into fine strands, then twined over a warp "
+        "starting from the centre of the base and finished with a bark rim.",
+    },
+    "sample-carved-cedar-bowl": {
+        "year_made": 2012,
+        "place": ("Sample boreal forest", "", 53.3, -132.1),
+        "size": (90, 380, 240, "mm"),
+        "weight": (1.3, "kg"),
+        "materials": [("Cedar", "Windfall log", "Seasoned for a year before carving")],
+        "techniques": [
+            ("Adzing", "Bowl hollowed with an elbow adze"),
+            ("Knife carving", "Rim and handles refined with a crooked knife"),
+        ],
+        "process": "A section of log is split, roughed out with an adze, hollowed, refined with "
+        "a crooked knife and finished with oil.",
+    },
+    "sample-soapstone-figure": {
+        "year_made": 1990,
+        "year_is_approximate": True,
+        "place": ("Sample upland plateau", "", -17.0, -68.5),
+        "precision": "hidden",
+        "size": (7, 12, 5, "cm"),
+        "weight": (340, "g"),
+        "traditional_measure": "Two finger-widths tall",
+        "materials": [
+            ("Soapstone", "Local outcrop (location kept private)", "Soft and easy to file")
+        ],
+        "techniques": [
+            ("Knife carving", "Shape blocked out with knives and rasps"),
+            ("Polishing", "Sanded wet, then rubbed with oil"),
+        ],
+        "process": "The figure is blocked out with knives, refined with files and polished wet "
+        "until the stone takes a soft shine.",
+    },
+    "sample-hammered-copper-cuff": {
+        "year_made": 2022,
+        "place": ("Sample river valley", "", 9.6, 39.2),
+        "size": (3.5, 6.5, 5.5, "cm"),
+        "weight": (2.1, "oz"),
+        "materials": [("Copper", "Recycled sheet", "Annealed in charcoal to soften")],
+        "techniques": [("Hammering", "Textured with a round-faced hammer over a stake")],
+        "process": "A copper strip is annealed, shaped around a stake, textured with a "
+        "round-faced hammer and polished.",
+    },
+    "sample-silver-filigree-earrings": {
+        "year_made": 2020,
+        "place": ("Sample coastline", "", 38.4, 27.1),
+        "size": (45, 20, 3, "mm"),
+        "weight": (6.5, "g"),
+        "materials": [
+            ("Silver", "Recycled jewellery silver", "Drawn into fine wire and twisted"),
+            ("Small blue stones", "Bought from a trader", "Set in bezels at the centre"),
+        ],
+        "techniques": [("Filigree", "Twisted wire scrolls soldered into a frame")],
+        "process": "Silver wire is drawn, twisted and flattened, bent into scrolls, fitted into "
+        "a frame and soldered with a small torch.",
+    },
+}

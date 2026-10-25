@@ -1,9 +1,24 @@
+from decimal import Decimal
+
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
 from communities.models import Community
 from crafts import sample_data as data
-from crafts.models import AttributeDefinition, Craft, CraftType, Material, Media, Technique
+from crafts.models import (
+    AttributeDefinition,
+    Craft,
+    CraftMaterial,
+    CraftTechnique,
+    CraftType,
+    Material,
+    Media,
+    Technique,
+)
+
+
+def _dec(value):
+    return None if value is None else Decimal(str(value))
 
 
 class Command(BaseCommand):
@@ -29,7 +44,9 @@ class Command(BaseCommand):
                 slug=t["slug"], defaults={"name": t["name"], "description": t["description"]}
             )
             types[t["slug"]] = craft_type
+            keys = []
             for order, (key, label, data_type, unit, options) in enumerate(t["attributes"]):
+                keys.append(key)
                 AttributeDefinition.objects.update_or_create(
                     craft_type=craft_type,
                     key=key,
@@ -39,8 +56,11 @@ class Command(BaseCommand):
                         "unit": unit,
                         "options": options,
                         "order": order,
+                        "is_active": True,
                     },
                 )
+            # Fields dropped from the sample schema are retired, never deleted (data is kept).
+            craft_type.attributes.exclude(key__in=keys).update(is_active=False)
 
         for (
             slug,
@@ -54,26 +74,63 @@ class Command(BaseCommand):
             summary,
         ) in data.CRAFTS:
             community = communities[community_slug]
+            extra = data.DETAILS.get(slug, {})
+            place_name, country, lat, lng = extra.get("place", ("", "", None, None))
+            height, width, depth, size_unit = extra.get("size", (None, None, None, ""))
+            weight, weight_unit = extra.get("weight", (None, ""))
             craft, _ = Craft.objects.update_or_create(
                 slug=slug,
                 defaults={
                     "title": title,
                     "summary": summary,
                     "description": data.DESCRIPTION.format(summary=summary),
+                    "process": extra.get("process", ""),
                     "cultural_context": data.CULTURAL_CONTEXT,
                     "craft_type": types[type_slug],
                     "community": community,
-                    "region": community.region,
                     "maker_credit": "Sample maker (fictional)",
-                    "period": "Sample record",
+                    "year_made": extra.get("year_made"),
+                    "year_is_approximate": extra.get("year_is_approximate", False),
+                    "period": "",
+                    "place_name": place_name or community.region,
+                    "country": country,
+                    "latitude": _dec(lat),
+                    "longitude": _dec(lng),
+                    "location_precision": extra.get("precision", "approximate"),
+                    "height": _dec(height),
+                    "width": _dec(width),
+                    "depth": _dec(depth),
+                    "size_unit": size_unit,
+                    "weight": _dec(weight),
+                    "weight_unit": weight_unit,
+                    "traditional_measure": extra.get("traditional_measure", ""),
                     "attributes": attributes,
                     "visibility": visibility,
                     "status": Craft.Status.PUBLISHED,
                     "is_sample": True,
                 },
             )
-            craft.materials.set([Material.objects.get_or_create(name=m)[0] for m in materials])
-            craft.techniques.set([Technique.objects.get_or_create(name=t)[0] for t in techniques])
+
+            material_rows = extra.get("materials") or [(m, "", "") for m in materials]
+            craft.craft_materials.all().delete()
+            for order, (name, origin, notes) in enumerate(material_rows):
+                CraftMaterial.objects.create(
+                    craft=craft,
+                    material=Material.objects.get_or_create(name=name)[0],
+                    origin=origin,
+                    notes=notes,
+                    order=order,
+                )
+            technique_rows = extra.get("techniques") or [(t, "") for t in techniques]
+            craft.craft_techniques.all().delete()
+            for order, (name, notes) in enumerate(technique_rows):
+                CraftTechnique.objects.create(
+                    craft=craft,
+                    technique=Technique.objects.get_or_create(name=name)[0],
+                    notes=notes,
+                    order=order,
+                )
+
             Media.objects.update_or_create(
                 craft=craft,
                 order=0,
