@@ -125,5 +125,9 @@ STORAGES = {
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Other sites see only our origin (never full page paths). OpenStreetMap's tile and
+# Nominatim usage policies require a Referer, so "same-origin" (none) breaks the maps.
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+
 REPO_URL = env("REPO_URL", default="https://github.com/bakalit01/SWE573-2025719006")
-APP_VERSION = env("APP_VERSION", default="v0.4.0")
+APP_VERSION = env("APP_VERSION", default="v0.4.1")
