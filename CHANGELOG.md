@@ -2,6 +2,11 @@
 
 All notable changes per release. Releases are tagged on GitHub (`vX.Y.Z`).
 
+## [v0.4.1] – 25 Oct 2026 · Map fix
+### Fixed
+- Maps and place search failed on the deployed site: the site sent no Referer to other websites, and OpenStreetMap's tile servers and Nominatim refuse requests without one. The Referrer-Policy is now `strict-origin-when-cross-origin`, so other sites see only the site's address, never page paths.
+- Uses OpenStreetMap's current tile address (`tile.openstreetmap.org`).
+
 ## [v0.4.0] – 25 Oct 2026 · M2 Contribute
 ### Added
 - **Add a craft** page for signed-in users, in nine sections: basics, made, place, materials & techniques, size & weight, craft details, photos, story, sharing (#39).

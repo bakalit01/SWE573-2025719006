@@ -21,7 +21,7 @@
     var lat = parseFloat(el.getAttribute("data-lat")), lng = parseFloat(el.getAttribute("data-lng"));
     var approximate = el.getAttribute("data-approximate") === "true";
     var map = L.map(el, { scrollWheelZoom: false, attributionControl: true }).setView([lat, lng], approximate ? 7 : 9);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
     if (approximate) {

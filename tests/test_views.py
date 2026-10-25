@@ -76,3 +76,9 @@ class TestDetail:
 
     def test_unknown_slug_is_404(self, client):
         assert client.get(reverse("crafts:detail", args=["nope"])).status_code == 404
+
+
+def test_referrer_policy_allows_map_services(client):
+    """OpenStreetMap tiles and search refuse requests without a Referer (map bug, v0.4.0)."""
+    response = client.get(reverse("home"))
+    assert response["Referrer-Policy"] == "strict-origin-when-cross-origin"

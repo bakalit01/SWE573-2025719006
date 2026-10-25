@@ -151,7 +151,7 @@
     var hasPin = latInput.value && lngInput.value;
     map = L.map(mapEl, { scrollWheelZoom: false }).setView(
       hasPin ? [parseFloat(latInput.value), parseFloat(lngInput.value)] : [20, 10], hasPin ? 8 : 2);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
     if (hasPin) setPin(parseFloat(latInput.value), parseFloat(lngInput.value));
