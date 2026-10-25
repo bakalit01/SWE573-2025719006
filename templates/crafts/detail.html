@@ -1,57 +1,150 @@
 {% extends "base.html" %}
+{% load static %}
 {% block head_title %}{{ craft.title }}{% endblock %}
+{% block extra_head %}{% if map_point %}<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">{% endif %}{% endblock %}
 {% block content %}
 <nav class="breadcrumb" aria-label="Breadcrumb"><a href="{% url 'crafts:list' %}">Browse crafts</a> / <a href="{% url 'crafts:list' %}?type={{ craft.craft_type.slug }}">{{ craft.craft_type.name }}</a></nav>
 
-<article class="detail">
-  <div class="detail-media">
-    {% for m in craft.media.all %}
-      <figure>
-        <img src="{{ m.url }}" alt="{{ m.alt_text }}" width="960" height="720"{% if not forloop.first %} loading="lazy"{% endif %}>
-        {% if m.caption or m.credit %}<figcaption>{{ m.caption }}{% if m.credit %} · {{ m.credit }}{% endif %}</figcaption>{% endif %}
-      </figure>
-    {% empty %}
-      <div class="card-img card-img-empty" aria-hidden="true"></div>
-    {% endfor %}
-  </div>
-
-  <div class="detail-body">
-    <p class="eyebrow">{{ craft.craft_type.name }}</p>
+<header class="craft-head">
+  <div>
+    <p class="eyebrow">{{ craft.craft_type.name }} · <a href="{{ craft.community.get_absolute_url }}">{{ craft.community.name }}</a></p>
     <h1>{{ craft.title }}</h1>
+    <p class="craft-meta">
+      {% if craft.made_in %}Made {% if craft.year_made %}in {% endif %}{{ craft.made_in }}{% endif %}{% if craft.made_in and craft.place_label %} · {% endif %}{% if craft.place_label %}{{ craft.place_label }}{% endif %}
+      {% if craft.created_by %} · Added by <a href="{{ craft.created_by.get_absolute_url }}">{{ craft.created_by.public_name }}</a>{% endif %}
+    </p>
     <div class="badges">
+      {% if craft.status != "published" %}<span class="badge badge-draft">{{ craft.get_status_display }}: only you can see this</span>{% endif %}
       {% if craft.is_sample %}<span class="badge badge-sample">Sample data</span>{% endif %}
       <span class="badge badge-members">{{ craft.get_visibility_display }}</span>
     </div>
+  </div>
+  <div class="head-actions">
+    {% if can_edit %}<a class="btn btn-primary" href="{% url 'crafts:edit' craft.slug %}">Edit</a>{% endif %}
+    <a class="btn btn-ghost" href="{{ report_url }}" rel="noopener">Report</a>
+  </div>
+</header>
+
+<div class="craft-layout">
+  <div class="craft-main">
+    <div class="gallery">
+      {% with first=craft.media.all.0 %}
+        {% if first %}
+          <figure class="gallery-main">
+            <img data-gallery-main src="{{ first.url }}" alt="{{ first.alt_text }}" width="960" height="720">
+            <figcaption data-gallery-caption>{{ first.caption }}{% if first.credit %} · {{ first.credit }}{% endif %}</figcaption>
+          </figure>
+        {% else %}
+          <div class="gallery-main card-img card-img-empty" aria-hidden="true"></div>
+        {% endif %}
+      {% endwith %}
+      {% if craft.media.all|length > 1 %}
+        <ul class="thumbs" aria-label="More photos">
+          {% for m in craft.media.all %}
+            <li><button type="button" data-gallery-thumb data-src="{{ m.url }}" data-alt="{{ m.alt_text }}" data-caption="{{ m.caption }}{% if m.credit %} · {{ m.credit }}{% endif %}" aria-current="{% if forloop.first %}true{% else %}false{% endif %}">
+              <img src="{{ m.url }}" alt="Show photo {{ forloop.counter }}: {{ m.alt_text }}" width="96" height="72" loading="lazy">
+            </button></li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+
     {% if craft.summary %}<p class="lead">{{ craft.summary }}</p>{% endif %}
 
-    <dl class="credits">
-      <div><dt>Made by</dt><dd>{{ craft.maker_credit }}</dd></div>
-      <div><dt>Community</dt><dd><a href="{{ craft.community.get_absolute_url }}">{{ craft.community.name }}</a></dd></div>
-      {% if craft.region %}<div><dt>Region</dt><dd>{{ craft.region }}</dd></div>{% endif %}
-      {% if craft.period %}<div><dt>Made</dt><dd>{{ craft.period }}</dd></div>{% endif %}
-    </dl>
+    {% if craft.description %}
+      <section class="story"><h2>About this craft</h2><p>{{ craft.description|linebreaksbr }}</p></section>
+    {% endif %}
 
-    {% if craft.description %}<h2>About this craft</h2><p>{{ craft.description|linebreaksbr }}</p>{% endif %}
+    {% if craft.process %}
+      <section class="story"><h2>How it is made</h2><p>{{ craft.process|linebreaksbr }}</p></section>
+    {% endif %}
 
-    {% if craft.materials.all or craft.techniques.all %}
-      <dl class="tags">
-        {% if craft.materials.all %}<div><dt>Materials</dt><dd>{% for m in craft.materials.all %}<span class="tag">{{ m.name }}</span>{% endfor %}</dd></div>{% endif %}
-        {% if craft.techniques.all %}<div><dt>Techniques</dt><dd>{% for t in craft.techniques.all %}<span class="tag">{{ t.name }}</span>{% endfor %}</dd></div>{% endif %}
-      </dl>
+    {% if craft.craft_materials.all %}
+      <section class="story">
+        <h2>Materials</h2>
+        <ul class="detail-list">
+          {% for cm in craft.craft_materials.all %}
+            <li>
+              <h3>{{ cm.material.name }}</h3>
+              {% if cm.origin %}<p><span class="label">From</span> {{ cm.origin }}</p>{% endif %}
+              {% if cm.notes %}<p><span class="label">Use</span> {{ cm.notes }}</p>{% endif %}
+              {% if cm.material.description %}<p class="muted">{{ cm.material.description }}</p>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+    {% endif %}
+
+    {% if craft.craft_techniques.all %}
+      <section class="story">
+        <h2>Techniques</h2>
+        <ul class="detail-list">
+          {% for ct in craft.craft_techniques.all %}
+            <li>
+              <h3>{{ ct.technique.name }}</h3>
+              {% if ct.notes %}<p>{{ ct.notes }}</p>{% endif %}
+              {% if ct.technique.description %}<p class="muted">{{ ct.technique.description }}</p>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
     {% endif %}
 
     {% if attribute_rows %}
-      <h2>{{ craft.craft_type.name }} details</h2>
-      <dl class="attributes">
-        {% for label, value in attribute_rows %}<div><dt>{{ label }}</dt><dd>{{ value }}</dd></div>{% endfor %}
-      </dl>
+      <section class="story">
+        <h2>{{ craft.craft_type.name }} details</h2>
+        <dl class="attributes">
+          {% for label, value in attribute_rows %}<div><dt>{{ label }}</dt><dd>{{ value }}</dd></div>{% endfor %}
+        </dl>
+      </section>
     {% endif %}
 
-    {% if craft.cultural_context %}<h2>Cultural context</h2><p>{{ craft.cultural_context|linebreaksbr }}</p>{% endif %}
+    {% if craft.cultural_context %}
+      <section class="story"><h2>Cultural context</h2><p>{{ craft.cultural_context|linebreaksbr }}</p></section>
+    {% endif %}
 
     <aside class="report" aria-label="Report this record">
       <p>Something wrong or shared without permission? <a href="{{ report_url }}" rel="noopener">Report or request removal</a></p>
     </aside>
   </div>
-</article>
+
+  <aside class="craft-side" aria-label="Craft facts">
+    <section class="side-card">
+      <h2>At a glance</h2>
+      <dl class="facts">
+        <div><dt>Made by</dt><dd>{{ craft.maker_credit }}</dd></div>
+        {% if craft.made_from %}<div><dt>Made from</dt><dd>{{ craft.made_from }}</dd></div>{% endif %}
+        {% if craft.made_in %}<div><dt>Made in</dt><dd>{{ craft.made_in }}</dd></div>{% endif %}
+        {% if craft.place_label %}<div><dt>Place</dt><dd>{{ craft.place_label }}</dd></div>{% endif %}
+        <div><dt>Community</dt><dd><a href="{{ craft.community.get_absolute_url }}">{{ craft.community.name }}</a></dd></div>
+        <div><dt>Craft type</dt><dd><a href="{% url 'crafts:list' %}?type={{ craft.craft_type.slug }}">{{ craft.craft_type.name }}</a></dd></div>
+        {% if craft.craft_techniques.all %}<div><dt>Techniques</dt><dd>{% for ct in craft.craft_techniques.all %}{{ ct.technique.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</dd></div>{% endif %}
+        {% with size=craft.size %}{% if size %}
+          <div><dt>Size</dt><dd>{{ size.original }} <span class="muted">({{ size.axes }})</span><br><span class="muted">{{ size.converted }}</span></dd></div>
+        {% endif %}{% endwith %}
+        {% with w=craft.weight_display %}{% if w %}
+          <div><dt>Weight</dt><dd>{{ w.original }} <span class="muted">{{ w.converted }}</span></dd></div>
+        {% endif %}{% endwith %}
+        {% if craft.traditional_measure %}<div><dt>Local measure</dt><dd>{{ craft.traditional_measure }}</dd></div>{% endif %}
+      </dl>
+    </section>
+
+    {% if craft.place_label or map_point %}
+    <section class="side-card">
+      <h2>Where it's from</h2>
+      {% if craft.place_label %}<p>{{ craft.place_label }}</p>{% endif %}
+      {% if map_point %}
+        <div class="map map-side" data-craft-map data-lat="{{ map_point.lat }}" data-lng="{{ map_point.lng }}" data-approximate="{{ map_point.approximate|yesno:'true,false' }}" role="img" aria-label="Map showing {% if map_point.approximate %}the approximate area of {% endif %}{{ craft.place_label|default:'the place' }}"></div>
+        {% if map_point.approximate %}<p class="help">Shown as an approximate area.</p>{% endif %}
+      {% elif craft.location_precision == "hidden" %}
+        <p class="help">The exact location is kept private at the community's request.</p>
+      {% endif %}
+    </section>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}
+{% block extra_body %}
+<script src="{% static 'js/craft_page.js' %}" defer></script>
+{% if map_point %}<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="" async onload="window.dispatchEvent(new Event('leaflet:ready'))" onerror="window.dispatchEvent(new Event('leaflet:failed'))"></script>{% endif %}
 {% endblock %}

@@ -47,3 +47,37 @@ def test_no_horizontal_scroll_on_phone(live_server, browser, seeded):
         phone.goto(live_server.url + path)
         assert not phone.evaluate("document.documentElement.scrollWidth > innerWidth"), path
     context.close()
+
+
+def test_add_craft_in_browser(live_server, page, seeded):
+    """US-08/US-11 + feedback: type-specific fields appear, rows can be added, page shows Made."""
+    page.goto(f"{live_server.url}/accounts/signup/")
+    page.fill("input[name=email]", "maker@example.com")
+    page.fill("input[name=password1]", "Woven-Basket-2026")
+    page.fill("input[name=password2]", "Woven-Basket-2026")
+    page.locator("button[type=submit]").click()
+
+    page.get_by_role("link", name="Add a craft").click()
+    page.wait_for_selector("form[data-ready=true]", state="attached")
+    page.fill("#id_title", "Twined bag")
+    page.select_option("#id_craft_type", label="Basketry")
+    page.wait_for_selector("#id_attr-weave")  # fields for the chosen type load
+    page.select_option("#id_attr-weave", "Twined")
+    page.select_option("#id_community", index=1)
+    page.fill("#id_maker_credit", "E2E Maker")
+    page.fill("#id_year_made", "2001")
+    page.fill("#id_mat-0-name", "Spruce root")
+    page.fill("#id_mat-0-origin", "Forest floor")
+    page.get_by_role("button", name="+ Add material").click()
+    page.fill("#id_mat-1-name", "Bark")
+    page.fill("#id_height", "30")
+    page.select_option("#id_size_unit", "cm")
+    page.locator("button[value=publish]").click()
+
+    facts = page.locator(".facts").inner_text()
+    assert "E2E Maker" in facts
+    assert "Spruce root, Bark" in facts
+    assert "2001" in facts
+    assert "30 cm" in facts and "11.8 in" in facts
+    assert page.get_by_text("Forest floor").is_visible()
+    assert page.get_by_role("link", name="Edit").is_visible()

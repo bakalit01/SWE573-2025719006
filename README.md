@@ -10,18 +10,18 @@ A website to document and showcase Indigenous crafts. Registered users can recor
 | **Timeline** | 12 Oct – 6 Dec 2026 (feature-complete), buffer to 20 Dec |
 
 ## Project status
-**M1 running demo delivered on 13 Oct 2026 (week 1, ahead of plan): [release v0.2.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.2.0).** The timeline was pulled forward by two weeks.
+**M2 Contribute delivered on 25 Oct 2026: [release v0.4.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.4.0).** Signed-in users can add, edit and delete crafts with photos, a map location, detailed materials and techniques, and sizes in their own units. (M1 running demo: 13 Oct, v0.2.0.)
 
 | Milestone | Due | Deliverable |
 |---|---|---|
 | [M1 – Running demo](https://github.com/bakalit01/SWE573-2025719006/milestone/2) | ✅ 13 Oct (week 1) | Browse sample crafts, craft page, sign up / log in / log out |
-| [M2 – Contribute](https://github.com/bakalit01/SWE573-2025719006/milestone/3) | 25 Oct (week 2) | Add/edit crafts with photos, craft-type-specific fields, profiles |
+| [M2 – Contribute](https://github.com/bakalit01/SWE573-2025719006/milestone/3) | ✅ 25 Oct (week 2) | Add/edit crafts with photos, craft-type-specific fields, profiles |
 | [M3 – MVP](https://github.com/bakalit01/SWE573-2025719006/milestone/4) | 8 Nov (week 4) | Search & filter, roles, visibility & consent, steward review |
 | [M4 – Enrich](https://github.com/bakalit01/SWE573-2025719006/milestone/5) | 22 Nov (week 6) | Admin-managed attributes, TK labels, multilingual names, accessibility |
 | [M5 – Final product](https://github.com/bakalit01/SWE573-2025719006/milestone/6) | 6 Dec (week 8) | Hardened, documented, tested v1.0 |
 | Buffer | 7–20 Dec (weeks 9–10) | Feedback, polish, stretch goals, final presentation |
 
-![Craft detail page](docs/design/screenshots/03-craft-detail.png)
+![Craft page](docs/design/screenshots/09-craft-page-m2.png)
 
 ## Documentation
 | Document | Contents |
@@ -55,12 +55,15 @@ uv run python manage.py runserver             # → http://localhost:8000
 
 **Deploy (Render, free tier):** in Render choose **New → Blueprint**, then pick this repository. `render.yaml` creates the web service and the PostgreSQL database, then runs migrations and loads the sample data on start.
 
-### Demo script (M1)
-1. Open the home page, then **Browse crafts**. A visitor sees 10 public sample crafts.
-2. Filter by **Pottery** and open a craft. It shows credits, materials, *Pottery details* (fields specific to the craft type) and a report link.
-3. **Sign up** with a password under 10 characters to show the validation message. Then sign up properly: you are signed in and your name appears in the header.
-4. **Browse crafts** again. Members now see 12 crafts, including the members-only ones.
-5. **Log out**, then log in with a wrong password to show the generic error message.
+### Demo script (M2)
+1. **Browse crafts**, then open a sample craft. Show the "At a glance" card (made by / from / in, size with its converted value, weight, local measure) and the Materials and Techniques sections.
+2. **Sign up** (password ≥ 10 characters), then open **Add a craft**.
+3. Pick a **craft type**: its own fields appear under "Craft details". Search a place or click the map to drop a pin; the place name fills in. Add two materials with origins, a technique, a size in inches or cm, and a photo with alt text.
+4. **Publish**. The craft page shows everything, with the size converted. Click **Edit**, change the year, then **Save as draft**: the record is now visible only to you (**My crafts**).
+5. Open your name in the header to see your **maker profile**; **Edit profile** to add a bio and community.
+6. Log out, then use **Forgot your password?** on the login page. The reset email appears in the server console in development.
+
+**Adding crafts as an admin:** `/admin/` → Crafts. Materials, techniques and photos are inline rows.
 
 ## Working on the backlog
 - Branch per issue (`us-11-dynamic-fields`), PR with `Closes #n`, CI must pass.

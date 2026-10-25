@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head_title %}{% if editing %}Edit {{ craft.title }}{% else %}Add a craft{% endif %}{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+{% endblock %}
+{% block main_class %}container form-page{% endblock %}
+{% block content %}
+<div class="form-head">
+  <p class="eyebrow">{% if editing %}Edit craft{% else %}Contribute{% endif %}</p>
+  <h1>{% if editing %}Edit “{{ craft.title }}”{% else %}Add a craft{% endif %}</h1>
+  <p class="muted">Fields marked <span class="req">*</span> are required. Save a draft at any time; only you can see drafts. Anyone can report a published record that is inaccurate or shared without permission.</p>
+</div>
+
+<div class="notice draft-notice" data-draft-notice hidden>
+  <span>We brought back the unsaved text from your last visit. Photos are not kept.</span>
+  <button type="button" class="link-button" data-draft-clear>Start over</button>
+</div>
+
+{% if form.non_field_errors or materials.non_form_errors %}
+<div class="notice notice-error" role="alert">
+  {% for e in form.non_field_errors %}<p>{{ e }}</p>{% endfor %}
+  {% for e in materials.non_form_errors %}<p>{{ e }}</p>{% endfor %}
+</div>
+{% endif %}
+
+<div class="form-layout">
+  <nav class="form-steps" aria-label="Form sections">
+    <ol>
+      <li><a href="#sec-basics">Basics</a></li>
+      <li><a href="#sec-made">Made</a></li>
+      <li><a href="#sec-place">Place</a></li>
+      <li><a href="#sec-materials">Materials &amp; techniques</a></li>
+      <li><a href="#sec-size">Size &amp; weight</a></li>
+      <li><a href="#sec-details">Craft details</a></li>
+      <li><a href="#sec-photos">Photos</a></li>
+      <li><a href="#sec-story">Story</a></li>
+      <li><a href="#sec-sharing">Sharing</a></li>
+    </ol>
+  </nav>
+
+  <form method="post" enctype="multipart/form-data" class="craft-form" data-craft-form
+        data-fields-url="{% url 'crafts:attribute_fields' %}" data-craft-slug="{{ craft.slug|default:'' }}"
+        data-draft-key="{% if editing %}{% else %}craft-draft-v1{% endif %}" novalidate>
+    {% csrf_token %}
+
+    <section class="form-card" id="sec-basics">
+      <h2><span class="step">1</span> Basics</h2>
+      {% include "crafts/_field.html" with field=form.title %}
+      <div class="field-row">
+        {% include "crafts/_field.html" with field=form.craft_type %}
+        {% include "crafts/_field.html" with field=form.community %}
+      </div>
+      {% include "crafts/_field.html" with field=form.summary %}
+    </section>
+
+    <section class="form-card" id="sec-made">
+      <h2><span class="step">2</span> Made</h2>
+      {% include "crafts/_field.html" with field=form.maker_credit %}
+      <div class="field-row">
+        {% include "crafts/_field.html" with field=form.year_made %}
+        {% include "crafts/_field.html" with field=form.period %}
+      </div>
+      {% include "crafts/_field.html" with field=form.year_is_approximate %}
+    </section>
+
+    <section class="form-card" id="sec-place">
+      <h2><span class="step">3</span> Place</h2>
+      <p class="help">Search for a town or region, or click the map to drop a pin. The place name is filled in for you, and you can edit it.</p>
+      <div class="search-row">
+        <label class="sr-only" for="place-search">Search for a place</label>
+        <input type="search" id="place-search" placeholder="e.g. Eskişehir, Türkiye" data-map-search autocomplete="off">
+        <button type="button" class="btn btn-primary" data-map-search-button>Find on map</button>
+      </div>
+      <p class="help" data-map-status aria-live="polite"></p>
+      <div class="map map-form" data-map-picker role="application" aria-label="Map: click to place the pin"></div>
+      <div class="field-row">
+        {% include "crafts/_field.html" with field=form.place_name %}
+        {% include "crafts/_field.html" with field=form.country %}
+      </div>
+      <details class="coords" {% if form.latitude.errors or form.longitude.errors %}open{% endif %}>
+        <summary>Coordinates</summary>
+        <div class="field-row">
+          {% include "crafts/_field.html" with field=form.latitude %}
+          {% include "crafts/_field.html" with field=form.longitude %}
+        </div>
+        <button type="button" class="link-button" data-map-clear>Remove pin</button>
+      </details>
+      {% include "crafts/_field.html" with field=form.location_precision %}
+    </section>
+
+    <section class="form-card" id="sec-materials">
+      <h2><span class="step">4</span> Materials &amp; techniques</h2>
+      <h3>Materials <span class="req" aria-hidden="true">*</span></h3>
+      {{ materials.management_form }}
+      {% for e in materials.non_form_errors %}<p class="error" role="alert">{{ e }}</p>{% endfor %}
+      <div class="rows" data-rows="mat">
+        {% for row in materials %}
+          <div class="row-card" data-row>
+            <div class="field-row three">
+              {% include "crafts/_field.html" with field=row.name %}
+              {% include "crafts/_field.html" with field=row.origin %}
+              {% include "crafts/_field.html" with field=row.notes %}
+            </div>
+            <button type="button" class="link-button remove-row" data-remove-row aria-label="Remove this material">Remove</button>
+          </div>
+        {% endfor %}
+      </div>
+      <template data-row-template="mat">
+        <div class="row-card" data-row>
+          <div class="field-row three">
+            {% include "crafts/_field.html" with field=materials.empty_form.name %}
+            {% include "crafts/_field.html" with field=materials.empty_form.origin %}
+            {% include "crafts/_field.html" with field=materials.empty_form.notes %}
+          </div>
+          <button type="button" class="link-button remove-row" data-remove-row aria-label="Remove this material">Remove</button>
+        </div>
+      </template>
+      <button type="button" class="btn btn-ghost" data-add-row="mat">+ Add material</button>
+
+      <h3>Techniques</h3>
+      {{ techniques.management_form }}
+      <div class="rows" data-rows="tec">
+        {% for row in techniques %}
+          <div class="row-card" data-row>
+            <div class="field-row two-one">
+              {% include "crafts/_field.html" with field=row.name %}
+              {% include "crafts/_field.html" with field=row.notes %}
+            </div>
+            <button type="button" class="link-button remove-row" data-remove-row aria-label="Remove this technique">Remove</button>
+          </div>
+        {% endfor %}
+      </div>
+      <template data-row-template="tec">
+        <div class="row-card" data-row>
+          <div class="field-row two-one">
+            {% include "crafts/_field.html" with field=techniques.empty_form.name %}
+            {% include "crafts/_field.html" with field=techniques.empty_form.notes %}
+          </div>
+          <button type="button" class="link-button remove-row" data-remove-row aria-label="Remove this technique">Remove</button>
+        </div>
+      </template>
+      <button type="button" class="btn btn-ghost" data-add-row="tec">+ Add technique</button>
+
+      {% include "crafts/_field.html" with field=form.process %}
+      <datalist id="material-options">{% for n in material_names %}<option value="{{ n }}">{% endfor %}</datalist>
+      <datalist id="technique-options">{% for n in technique_names %}<option value="{{ n }}">{% endfor %}</datalist>
+    </section>
+
+    <section class="form-card" id="sec-size">
+      <h2><span class="step">5</span> Size &amp; weight</h2>
+      <p class="help">Use the units you measured in. The craft page also shows a converted value.</p>
+      <div class="field-row four">
+        {% include "crafts/_field.html" with field=form.height %}
+        {% include "crafts/_field.html" with field=form.width %}
+        {% include "crafts/_field.html" with field=form.depth %}
+        {% include "crafts/_field.html" with field=form.size_unit %}
+      </div>
+      <div class="field-row four">
+        {% include "crafts/_field.html" with field=form.weight %}
+        {% include "crafts/_field.html" with field=form.weight_unit %}
+      </div>
+      {% include "crafts/_field.html" with field=form.traditional_measure %}
+    </section>
+
+    <section class="form-card" id="sec-details">
+      <h2><span class="step">6</span> Craft details</h2>
+      <div data-attribute-fields aria-live="polite">{% include "crafts/_attribute_fields.html" %}</div>
+    </section>
+
+    <section class="form-card" id="sec-photos">
+      <h2><span class="step">7</span> Photos</h2>
+      {% if editing and craft.media.all %}
+        <ul class="existing-media">
+          {% for m in craft.media.all %}
+            <li>
+              <img src="{{ m.url }}" alt="{{ m.alt_text }}" width="120" height="90">
+              <div>
+                <label for="media-{{ m.pk }}-alt">Alt text</label>
+                <input type="text" id="media-{{ m.pk }}-alt" name="media-{{ m.pk }}-alt_text" value="{{ m.alt_text }}" maxlength="300">
+                <label class="check"><input type="checkbox" name="remove_media" value="{{ m.pk }}"> <span>Remove this photo</span></label>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+      {{ images.management_form }}
+      <div class="rows" data-rows="img">
+        {% for row in images %}
+          <div class="row-card" data-row>
+            <div class="field-row two">
+              {% include "crafts/_field.html" with field=row.image %}
+              {% include "crafts/_field.html" with field=row.alt_text %}
+              {% include "crafts/_field.html" with field=row.credit %}
+              {% include "crafts/_field.html" with field=row.caption %}
+            </div>
+            <img class="upload-preview" data-preview alt="" hidden>
+          </div>
+        {% endfor %}
+      </div>
+      <template data-row-template="img">
+        <div class="row-card" data-row>
+          <div class="field-row two">
+            {% include "crafts/_field.html" with field=images.empty_form.image %}
+            {% include "crafts/_field.html" with field=images.empty_form.alt_text %}
+            {% include "crafts/_field.html" with field=images.empty_form.credit %}
+            {% include "crafts/_field.html" with field=images.empty_form.caption %}
+          </div>
+          <img class="upload-preview" data-preview alt="" hidden>
+          <button type="button" class="link-button remove-row" data-remove-row>Remove</button>
+        </div>
+      </template>
+      <button type="button" class="btn btn-ghost" data-add-row="img">+ Add another photo</button>
+      <p class="help">JPEG, PNG or WebP, up to 10 MB each. Large photos are resized automatically.</p>
+    </section>
+
+    <section class="form-card" id="sec-story">
+      <h2><span class="step">8</span> Story</h2>
+      {% include "crafts/_field.html" with field=form.description %}
+      {% include "crafts/_field.html" with field=form.cultural_context %}
+    </section>
+
+    <section class="form-card" id="sec-sharing">
+      <h2><span class="step">9</span> Sharing</h2>
+      {% include "crafts/_field.html" with field=form.visibility %}
+      <p class="help">Before publishing real cultural knowledge, make sure the makers and community agree to it being shared. Consent records arrive in the next release.</p>
+    </section>
+
+    <div class="form-actions">
+      <button type="submit" name="action" value="publish" class="btn btn-primary btn-lg">{% if editing and craft.status == "published" %}Save changes{% else %}Publish{% endif %}</button>
+      <button type="submit" name="action" value="draft" class="btn btn-ghost btn-lg">Save as draft</button>
+      {% if editing %}<a href="{{ craft.get_absolute_url }}">Cancel</a>{% else %}<a href="{% url 'crafts:list' %}">Cancel</a>{% endif %}
+    </div>
+  </form>
+</div>
+{% endblock %}
+{% block extra_body %}
+<script src="{% static 'js/craft_form.js' %}" defer></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="" async onload="window.dispatchEvent(new Event('leaflet:ready'))" onerror="window.dispatchEvent(new Event('leaflet:failed'))"></script>
+{% endblock %}

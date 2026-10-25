@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block head_title %}My crafts{% endblock %}
+{% block content %}
+<div class="page-head page-head-row">
+  <div>
+    <h1>My crafts</h1>
+    <p class="muted">Drafts are visible only to you. Published crafts follow their visibility setting.</p>
+  </div>
+  <a class="btn btn-primary" href="{% url 'crafts:create' %}">+ Add a craft</a>
+</div>
+{% if crafts %}
+<table class="table">
+  <thead><tr><th scope="col">Craft</th><th scope="col">Type</th><th scope="col">Status</th><th scope="col">Visibility</th><th scope="col">Updated</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
+  <tbody>
+  {% for craft in crafts %}
+    <tr>
+      <td><a href="{{ craft.get_absolute_url }}">{{ craft.title }}</a></td>
+      <td>{{ craft.craft_type.name }}</td>
+      <td><span class="badge {% if craft.status == 'published' %}badge-members{% else %}badge-draft{% endif %}">{{ craft.get_status_display }}</span></td>
+      <td>{{ craft.get_visibility_display }}</td>
+      <td>{{ craft.updated_at|date:"j M Y" }}</td>
+      <td class="actions"><a href="{% url 'crafts:edit' craft.slug %}">Edit</a> · <a href="{% url 'crafts:delete' craft.slug %}">Delete</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="empty">You haven't added any crafts yet. <a href="{% url 'crafts:create' %}">Add your first craft</a></p>
+{% endif %}
+{% endblock %}

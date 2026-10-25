@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block head_title %}Edit profile{% endblock %}
+{% block main_class %}container auth-card form-narrow{% endblock %}
+{% block content %}
+<h1>Edit profile</h1>
+<form method="post" class="craft-form" novalidate>
+  {% csrf_token %}
+  {% for field in form %}{% include "crafts/_field.html" with field=field %}{% endfor %}
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Save profile</button>
+    <a href="{{ user.get_absolute_url }}">Cancel</a>
+  </div>
+</form>
+<p class="muted small">Password: <a href="{% url 'account_change_password' %}">change it</a> or <a href="{% url 'account_reset_password' %}">reset it by email</a>.</p>
+{% endblock %}
