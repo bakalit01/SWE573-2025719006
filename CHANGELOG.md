@@ -13,23 +13,23 @@ All notable changes per release. Releases are tagged on GitHub (`vX.Y.Z`).
 
 ## [v0.4.4] – 26 Oct 2026 · Boğaziçi colours
 ### Changed
-- New colour scheme based on Boğaziçi University's corporate colours (Kurumsal Kimlik Kılavuzu 2020): **navy #1e4a8b** (PANTONE 7686C) for links, buttons, the header rule and the hero; **blue #8cc8ea** (PANTONE 297C) for highlights and the woven pattern; cool blue-white backgrounds. Contrast stays at WCAG AA or better.
+- New colour scheme based on Boğaziçi University's corporate colours (Kurumsal Kimlik Kılavuzu 2020) (#81): **navy #1e4a8b** (PANTONE 7686C) for links, buttons, the header rule and the hero; **blue #8cc8ea** (PANTONE 297C) for highlights and the woven pattern; cool blue-white backgrounds. Contrast stays at WCAG AA or better.
 - Favicon and map highlight use the same colours. Status colours (red errors, amber drafts) are unchanged.
 
 ## [v0.4.3] – 26 Oct 2026 · Real examples on every deployment
 ### Fixed
-- Deployments whose start-up command still runs `seed_sample_data` (for example a Render service created by hand rather than from the Blueprint) kept reloading the abstract placeholders. `seed_sample_data` now loads the real reference crafts and removes the placeholders by default; the fictional samples need `--fictional`.
+- (#80) Deployments whose start-up command still runs `seed_sample_data` (for example a Render service created by hand rather than from the Blueprint) kept reloading the abstract placeholders. `seed_sample_data` now loads the real reference crafts and removes the placeholders by default; the fictional samples need `--fictional`.
 
 ## [v0.4.2] – 26 Oct 2026 · Real examples
 ### Changed
-- The abstract sample crafts are replaced by **9 real Indigenous craft examples** from public sources: Diné (Navajo) weaving, Acoma Pueblo pottery, Inuit stone carving, Maasai beadwork, a Pomo coiled basket by Jenny Hughes, a Haida bentwood box, a Sámi guksi, a Māori kete and a Navajo squash blossom necklace.
+- The abstract sample crafts are replaced by **9 real Indigenous craft examples** from public sources (#80): Diné (Navajo) weaving, Acoma Pueblo pottery, Inuit stone carving, Maasai beadwork, a Pomo coiled basket by Jenny Hughes, a Haida bentwood box, a Sámi guksi, a Māori kete and a Navajo squash blossom necklace.
 - Photos come from Wikimedia Commons. The craft page shows each photo's author and license, read from Commons, and links to its file page.
 - Each real record has a "Real example · from public sources" badge, a Sources section, and an invitation to the community to correct or remove it.
 - On start-up, Render and Docker load the real examples and remove the fictional samples; crafts that users added are kept.
 
 ## [v0.4.1] – 25 Oct 2026 · Map fix
 ### Fixed
-- Maps and place search failed on the deployed site: the site sent no Referer to other websites, and OpenStreetMap's tile servers and Nominatim refuse requests without one. The Referrer-Policy is now `strict-origin-when-cross-origin`, so other sites see only the site's address, never page paths.
+- Maps and place search failed on the deployed site (#79): the site sent no Referer to other websites, and OpenStreetMap's tile servers and Nominatim refuse requests without one. The Referrer-Policy is now `strict-origin-when-cross-origin`, so other sites see only the site's address, never page paths.
 - Uses OpenStreetMap's current tile address (`tile.openstreetmap.org`).
 
 ## [v0.4.0] – 25 Oct 2026 · M2 Contribute

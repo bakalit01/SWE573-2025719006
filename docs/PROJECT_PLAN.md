@@ -16,7 +16,7 @@ A website that documents and showcases Indigenous crafts, where registered users
 | Milestone | Due (new) | Was | Gate | What a viewer can do |
 |---|---|---|---|---|
 | **M1 — Running Demo** | ✅ **Tue 13 Oct** (wk 1) | 25 Oct | v0.2.0, CI green, deployable | Browse sample crafts, open a craft page, sign up / log in / log out |
-| **M2 — Contribute** | Sun 25 Oct (end wk 2) | 8 Nov | v0.4 | Logged-in users add/edit crafts with photos; attributes change by craft type; password reset and profiles |
+| **M2 — Contribute** | ✅ **Sun 25 Oct** (end wk 2) | 8 Nov | v0.4.0 (+ feedback releases v0.4.1–v0.4.5) | Logged-in users add/edit crafts with photos; attributes change by craft type; password reset and profiles |
 | **M3 — MVP** | Sun 8 Nov (end wk 4) | 22 Nov | v0.6, user test #1 | Search & filter, roles (maker / steward / admin), visibility & consent, steward review, reporting, community pages |
 | **M4 — Enrich** | Sun 22 Nov (end wk 6) | 6 Dec | v0.8 | Admin-managed craft types & attributes, Traditional Knowledge labels, multilingual names, favourites/collections, accessibility pass |
 | **M5 — Final** | Sun 6 Dec (end wk 8) | 20 Dec | v1.0, user test #2 | Hardened, documented, tested, performant production release |
@@ -26,9 +26,9 @@ A website that documents and showcases Indigenous crafts, where registered users
 
 | Wk | Dates | Focus | Release |
 |---|---|---|---|
-| 1 | 12–18 Oct | ✅ Planning, Django project, models, sample data, sign-up/login, catalogue, detail, CI, tests (done 13 Oct). Then add-craft form with craft-type fields | ✅ v0.1.0 + **v0.2.0 Demo (M1)**, v0.3 |
-| 2 | 19–25 Oct | Image upload, edit/delete, password reset, profiles | **v0.4 (M2)** |
-| 3 | 26 Oct–1 Nov | Search & filters, roles & permissions, visibility levels | v0.5 |
+| 1 | 12–18 Oct | ✅ Planning, Django project, models, sample data, sign-up/login, catalogue, detail, CI, tests (done 13 Oct). Then add-craft form with craft-type fields | ✅ v0.1.0 + **v0.2.0 Demo (M1)**; v0.3 merged into v0.4 |
+| 2 | 19–25 Oct | ✅ Image upload, edit/delete, password reset, profiles, feedback FB-01–FB-04 | ✅ **v0.4.0 (M2)**, v0.4.1 map fix |
+| 3 | 26 Oct–1 Nov | ✅ Feedback FB-05–FB-07 (real examples, Boğaziçi colours, "Other" + tags; 26 Oct). Search & filters, roles & permissions, visibility levels | ✅ v0.4.2–v0.4.5, v0.5 |
 | 4 | 2–8 Nov | Consent records, steward review queue, reporting, community pages, user test #1 | **v0.6 — MVP (M3)** |
 | 5 | 9–15 Nov | Admin UI for craft types/attributes, TK labels, sensitive images | v0.7 |
 | 6 | 16–22 Nov | Multilingual names, favourites/collections, taxonomies, accessibility audit | **v0.8 (M4)** |
@@ -60,12 +60,22 @@ Each week's items build on the previous week's. "Depends on" lists what must be 
 | 1 | 14–18 Oct | US-08 | [#39](https://github.com/bakalit01/SWE573-2025719006/issues/39) | Add a craft | 5 | US-02, T-05 |
 |  |  | US-11 | [#42](https://github.com/bakalit01/SWE573-2025719006/issues/42) | Craft-type-specific fields in the form | 8 | US-08 |
 |  |  | US-12 | [#43](https://github.com/bakalit01/SWE573-2025719006/issues/43) | Show craft-specific attributes | 2 | US-11 |
-| | | | | ➜ Release v0.3 (Sun 18 Oct) · 15 pts | | |
+| | | | | ➜ Release v0.3 (Sun 18 Oct): skipped, shipped with v0.4 · 15 pts | | |
 | 2 | 19–25 Oct | US-20 | [#51](https://github.com/bakalit01/SWE573-2025719006/issues/51) | Upload images with alt text & credit | 5 | US-08 |
 |  |  | US-09 | [#40](https://github.com/bakalit01/SWE573-2025719006/issues/40) | Edit or delete my craft | 3 | US-08 |
 |  |  | US-03 | [#34](https://github.com/bakalit01/SWE573-2025719006/issues/34) | Reset a forgotten password | 3 | US-02 |
 |  |  | US-04 | [#35](https://github.com/bakalit01/SWE573-2025719006/issues/35) | Manage my profile | 3 | US-02 |
-| | | | | ➜ Release **v0.4: contribute (M2)** · 14 pts | | |
+|  |  | FB-01 | [#68](https://github.com/bakalit01/SWE573-2025719006/issues/68) | Place as geolocation (feedback) | — | US-08 |
+|  |  | FB-02 | [#69](https://github.com/bakalit01/SWE573-2025719006/issues/69) | Materials & techniques in detail (feedback) | — | US-08 |
+|  |  | FB-03 | [#70](https://github.com/bakalit01/SWE573-2025719006/issues/70) | Made by / from / in (feedback) | — | US-08 |
+|  |  | FB-04 | [#71](https://github.com/bakalit01/SWE573-2025719006/issues/71) | 3D size and international units (feedback) | — | US-08 |
+| | | | | ➜ Release **v0.4.0: contribute (M2)** ✅ 25 Oct · 14 pts + feedback | | |
+|  |  | BUG | [#79](https://github.com/bakalit01/SWE573-2025719006/issues/79) | Maps fail on the deployed site | — | FB-01 |
+| | | | | ➜ Release v0.4.1 ✅ 25 Oct | | |
+| 3 | 26 Oct | FB-06 | [#80](https://github.com/bakalit01/SWE573-2025719006/issues/80) | Real-life craft examples (feedback) | — | US-06 |
+|  |  | FB-07 | [#81](https://github.com/bakalit01/SWE573-2025719006/issues/81) | Boğaziçi University colours (feedback) | — | — |
+|  |  | FB-05 | [#77](https://github.com/bakalit01/SWE573-2025719006/issues/77) | "Other" for type, community, units; tags (feedback) | — | US-11 |
+| | | | | ➜ Releases v0.4.2–v0.4.5 ✅ 26 Oct | | |
 | 3 | 26 Oct–1 Nov | US-05 | [#36](https://github.com/bakalit01/SWE573-2025719006/issues/36) | Roles and permissions | 5 | US-02 |
 |  |  | US-22 | [#53](https://github.com/bakalit01/SWE573-2025719006/issues/53) | Set visibility of a craft | 5 | US-05 |
 |  |  | US-15 | [#46](https://github.com/bakalit01/SWE573-2025719006/issues/46) | Search crafts | 5 | US-22 |
@@ -105,17 +115,17 @@ Each week's items build on the previous week's. "Depends on" lists what must be 
 | Framework | Django 5.2 LTS | Batteries included: auth, sessions, CSRF, forms, ORM, migrations, admin; LTS covers the project and beyond |
 | Database | PostgreSQL 16 (managed: Render, Railway, Neon or Supabase) | Relational core + `JSONField` (stored as `jsonb`) for craft-specific attributes; GIN indexes; full-text search via `django.contrib.postgres` |
 | Auth | Django auth with a custom `User` model + `django-allauth` | Email login, sign-up, password reset, optional Google login (FR-A6) with little code |
-| Roles & permissions | Django groups/permissions + `rules` (django-rules) for object-level checks | "Steward of *this* community", "creator of *this* craft" |
+| Roles & permissions | Django groups/permissions + `rules` (django-rules) for object-level checks *(M3; so far: author-or-staff checks in views)* | "Steward of *this* community", "creator of *this* craft" |
 | Dynamic attributes | `AttributeDefinition` model → Django form fields built at runtime; values validated in `clean()` (optionally via `pydantic`) | Forms and validation generated from data, no deploy to add a field |
 | Admin back-office | Django admin (customised) | Users, roles, taxonomies and craft types for free in M1–M3; polished admin UI in M4 |
-| Front end | Server-rendered Django templates + HTMX + Tailwind CSS (via `django-tailwind` or standalone CLI) | No separate JS app; fast pages on low bandwidth; easier accessibility |
-| Images | Pillow + `django-storages` (S3-compatible: Cloudflare R2 / Supabase Storage); `sorl-thumbnail` or `django-imagekit` for resizing | Images outside the DB, resized variants |
-| Search | PostgreSQL full-text (`SearchVector`, `TrigramSimilarity`) + `django-filter` | No extra search service needed for v1 |
+| Front end | Server-rendered Django templates, hand-written CSS (Boğaziçi colours) and small plain-JavaScript enhancements; HTMX only if pages need partial reloads *(Tailwind dropped: no build step needed)* | No separate JS app; fast pages on low bandwidth; easier accessibility |
+| Images | Pillow resizes uploads to 1600 px; stored on the server disk for the demo (reset on Render redeploys). `django-storages` (S3-compatible) planned before v1.0. Real examples show Wikimedia Commons photos | Images outside the DB, resized variants |
+| Search | PostgreSQL full-text (`SearchVector`, `TrigramSimilarity`) + `django-filter` *(M3; type, community and tag filters exist)* | No extra search service needed for v1 |
 | Testing | `pytest`, `pytest-django`, `factory_boy`, `coverage`; Playwright for Python + `axe-playwright-python` for e2e/a11y | All Python, all in CI |
 | Code quality | `ruff` (lint + format), `mypy` + `django-stubs` (optional), `pre-commit` | Consistent style, fast |
 | Dependencies | `uv` with `pyproject.toml` (or pip + `requirements.txt`) | Reproducible installs |
 | Serving | `gunicorn` + `whitenoise` for static files, Docker image | Works on any host |
-| Hosting / CI | GitHub Actions → Render (or Railway / Fly.io) with PR preview environments | Every PR is demoable |
+| Hosting / CI | GitHub Actions CI; Render Blueprint (`render.yaml`) deploys `main` | Every PR is demoable |
 | Optional API | Django REST Framework or Django Ninja (M4+, only if a mobile app or external partners need it) | Not required for v1 |
 
 **Why Django suits this project:** the built-in admin, auth and forms remove most of the effort behind the week-2 demo, so the team can spend its time on the parts specific to this project: flexible attributes, visibility rules and community review.
@@ -123,8 +133,9 @@ Each week's items build on the previous week's. "Depends on" lists what must be 
 ## 5. GitHub workflow
 
 - **Issues:** one per user story (`US-xx`) or technical task (`T-xx`), labelled with the repo scheme (`type:`, `priority:`, `effort:`, `area:`, `status:`) plus `epic:`, assigned to a milestone.
-- **Project board:** Backlog → Ready → In progress → In review → Done.
-- **Branches:** `main` protected; feature branches `us-12-craft-search`; PRs link issues with `Closes #n`; 1 review + green CI to merge.
+- **Project board:** Backlog → Ready → In progress → In review → Done (still to be created, T-01). Until then, milestones and the [Roadmap issue #65](https://github.com/bakalit01/SWE573-2025719006/issues/65) show progress.
+- **Branches:** feature branches `us-12-craft-search`; PRs link issues with `Closes #n`; green CI to merge. `main` is to be protected (PR + CI check `test`); as a one-person project no approving review is required, since GitHub does not allow approving your own PR.
+- **Feedback:** each piece of instructor or user feedback becomes an `FB-xx` issue with the `feedback` label, in the milestone where it is delivered.
 - **Definition of Done:** acceptance criteria met, tests added, CI green, deployed to preview, accessible (keyboard + screen reader basics), docs updated if needed.
 - **Ceremonies:** sprint planning (Mon, wk 1/3/5/7/9), short stand-ups, demo + retro at each milestone.
 
