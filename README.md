@@ -46,7 +46,8 @@ docker compose up --build            # → http://localhost:8000
 cp .env.example .env                 # edit DATABASE_URL if needed
 uv sync --all-groups
 uv run python manage.py migrate
-uv run python manage.py seed_sample_data      # 12 fictional sample crafts
+uv run python manage.py seed_reference_crafts  # 9 real examples from public sources
+uv run python manage.py seed_sample_data       # optional: fictional samples used by tests
 uv run python manage.py createsuperuser       # for /admin/
 uv run python manage.py runserver             # → http://localhost:8000
 ```
@@ -56,7 +57,7 @@ uv run python manage.py runserver             # → http://localhost:8000
 **Deploy (Render, free tier):** in Render choose **New → Blueprint**, then pick this repository. `render.yaml` creates the web service and the PostgreSQL database, then runs migrations and loads the sample data on start.
 
 ### Demo script (M2)
-1. **Browse crafts**, then open a sample craft. Show the "At a glance" card (made by / from / in, size with its converted value, weight, local measure) and the Materials and Techniques sections.
+1. **Browse crafts**, then open a real example (e.g. the Pomo basket by Jenny Hughes). Show the "At a glance" card (made by / from / in, size with its converted value, weight, local measure) and the Materials and Techniques sections.
 2. **Sign up** (password ≥ 10 characters), then open **Add a craft**.
 3. Pick a **craft type**: its own fields appear under "Craft details". Search a place or click the map to drop a pin; the place name fills in. Add two materials with origins, a technique, a size in inches or cm, and a photo with alt text.
 4. **Publish**. The craft page shows everything, with the size converted. Click **Edit**, change the year, then **Save as draft**: the record is now visible only to you (**My crafts**).

@@ -14,6 +14,37 @@
     });
   });
 
+  /* Photo credits for Wikimedia Commons files: author and license from the Commons API. */
+  var creditEls = Array.prototype.slice.call(document.querySelectorAll("[data-commons-credit]"));
+  if (creditEls.length) {
+    var titles = creditEls.map(function (el) { return "File:" + el.getAttribute("data-commons-credit"); });
+    var url = "https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*" +
+      "&prop=imageinfo&iiprop=extmetadata&iiextmetadatafilter=Artist|LicenseShortName|Credit" +
+      "&titles=" + encodeURIComponent(titles.join("|"));
+    var plain = function (html) {
+      return (new DOMParser().parseFromString(html || "", "text/html").body.textContent || "")
+        .replace(/\s+/g, " ").trim();
+    };
+    fetch(url)
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var q = data.query || {}, alias = {};
+        (q.normalized || []).forEach(function (n) { alias[n.from] = n.to; });
+        var byTitle = {};
+        Object.keys(q.pages || {}).forEach(function (k) { byTitle[q.pages[k].title] = q.pages[k]; });
+        creditEls.forEach(function (el) {
+          var title = "File:" + el.getAttribute("data-commons-credit");
+          var page = byTitle[alias[title] || title] || byTitle[title.replace(/_/g, " ")];
+          var meta = page && page.imageinfo && page.imageinfo[0] && page.imageinfo[0].extmetadata;
+          if (!meta) return;
+          var artist = plain(meta.Artist && meta.Artist.value);
+          var license = plain(meta.LicenseShortName && meta.LicenseShortName.value);
+          el.textContent = [artist, license, "via Wikimedia Commons"].filter(Boolean).join(" · ");
+        });
+      })
+      .catch(function () { /* keep the plain "Wikimedia Commons" credit and file-page link */ });
+  }
+
   function initMap() {
     var el = document.querySelector("[data-craft-map]");
     if (!el) return;

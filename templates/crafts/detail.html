@@ -16,6 +16,7 @@
     <div class="badges">
       {% if craft.status != "published" %}<span class="badge badge-draft">{{ craft.get_status_display }}: only you can see this</span>{% endif %}
       {% if craft.is_sample %}<span class="badge badge-sample">Sample data</span>{% endif %}
+      {% if craft.is_reference %}<span class="badge badge-reference">Real example · from public sources</span>{% endif %}
       <span class="badge badge-members">{{ craft.get_visibility_display }}</span>
     </div>
   </div>
@@ -48,6 +49,17 @@
         </ul>
       {% endif %}
     </div>
+
+    {% if craft.media.all %}
+      <details class="photo-credits"{% if craft.is_reference %} open{% endif %}>
+        <summary>Photo credits</summary>
+        <ol>
+          {% for m in craft.media.all %}
+            <li>{{ m.caption|default:m.alt_text }}: <span{% if m.commons_file and m.credit == "Wikimedia Commons" %} data-commons-credit="{{ m.commons_file }}"{% endif %}>{{ m.credit|default:"Uploaded by the contributor" }}</span>{% if m.source_page %} · <a href="{{ m.source_page }}" rel="noopener">file page and license</a>{% endif %}</li>
+          {% endfor %}
+        </ol>
+      </details>
+    {% endif %}
 
     {% if craft.summary %}<p class="lead">{{ craft.summary }}</p>{% endif %}
 
@@ -102,6 +114,14 @@
     {% if craft.cultural_context %}
       <section class="story"><h2>Cultural context</h2><p>{{ craft.cultural_context|linebreaksbr }}</p></section>
     {% endif %}
+
+    {% with links=craft.source_links %}{% if links %}
+      <section class="story">
+        <h2>Sources</h2>
+        <ul class="sources">{% for title, url in links %}<li><a href="{{ url }}" rel="noopener">{{ title }}</a></li>{% endfor %}</ul>
+        {% if craft.is_reference %}<p class="help">This record summarises public sources. If you belong to the {{ craft.community.name }} community and something here is wrong or shouldn't be shared, please use the report link below.</p>{% endif %}
+      </section>
+    {% endif %}{% endwith %}
 
     <aside class="report" aria-label="Report this record">
       <p>Something wrong or shared without permission? <a href="{{ report_url }}" rel="noopener">Report or request removal</a></p>

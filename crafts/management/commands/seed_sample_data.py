@@ -6,15 +6,14 @@ from django.db import transaction
 from communities.models import Community
 from crafts import sample_data as data
 from crafts.models import (
-    AttributeDefinition,
     Craft,
     CraftMaterial,
     CraftTechnique,
-    CraftType,
     Material,
     Media,
     Technique,
 )
+from crafts.seeding import ensure_craft_types
 
 
 def _dec(value):
@@ -38,29 +37,7 @@ class Command(BaseCommand):
                 },
             )
 
-        types = {}
-        for t in data.CRAFT_TYPES:
-            craft_type, _ = CraftType.objects.update_or_create(
-                slug=t["slug"], defaults={"name": t["name"], "description": t["description"]}
-            )
-            types[t["slug"]] = craft_type
-            keys = []
-            for order, (key, label, data_type, unit, options) in enumerate(t["attributes"]):
-                keys.append(key)
-                AttributeDefinition.objects.update_or_create(
-                    craft_type=craft_type,
-                    key=key,
-                    defaults={
-                        "label": label,
-                        "data_type": data_type,
-                        "unit": unit,
-                        "options": options,
-                        "order": order,
-                        "is_active": True,
-                    },
-                )
-            # Fields dropped from the sample schema are retired, never deleted (data is kept).
-            craft_type.attributes.exclude(key__in=keys).update(is_active=False)
+        types = ensure_craft_types()
 
         for (
             slug,

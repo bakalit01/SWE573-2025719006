@@ -2,6 +2,13 @@
 
 All notable changes per release. Releases are tagged on GitHub (`vX.Y.Z`).
 
+## [v0.4.2] – 26 Oct 2026 · Real examples
+### Changed
+- The abstract sample crafts are replaced by **9 real Indigenous craft examples** from public sources: Diné (Navajo) weaving, Acoma Pueblo pottery, Inuit stone carving, Maasai beadwork, a Pomo coiled basket by Jenny Hughes, a Haida bentwood box, a Sámi guksi, a Māori kete and a Navajo squash blossom necklace.
+- Photos come from Wikimedia Commons. The craft page shows each photo's author and license, read from Commons, and links to its file page.
+- Each real record has a "Real example · from public sources" badge, a Sources section, and an invitation to the community to correct or remove it.
+- On start-up, Render and Docker load the real examples and remove the fictional samples; crafts that users added are kept.
+
 ## [v0.4.1] – 25 Oct 2026 · Map fix
 ### Fixed
 - Maps and place search failed on the deployed site: the site sent no Referer to other websites, and OpenStreetMap's tile servers and Nominatim refuse requests without one. The Referrer-Policy is now `strict-origin-when-cross-origin`, so other sites see only the site's address, never page paths.

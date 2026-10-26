@@ -1,4 +1,5 @@
 import datetime
+from urllib.parse import quote
 
 from django.conf import settings
 from django.contrib.postgres.indexes import GinIndex
@@ -211,6 +212,11 @@ class Craft(models.Model):
         max_length=20, choices=Visibility.choices, default=Visibility.MEMBERS
     )
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.DRAFT)
+    is_reference = models.BooleanField(
+        default=False,
+        help_text="Real-world example compiled from published sources (museum, encyclopedia)",
+    )
+    sources = models.TextField(blank=True, help_text="One source per line: 'Title | https://link'")
     is_sample = models.BooleanField(
         default=False, help_text="Fictional sample record, labelled on screen"
     )
@@ -289,6 +295,16 @@ class Craft(models.Model):
     def weight_display(self):
         return units.describe_weight(self.weight, self.weight_unit)
 
+    def source_links(self):
+        """[(title, url)] parsed from the sources field."""
+        links = []
+        for line in self.sources.splitlines():
+            title, _, url = line.partition("|")
+            url = url.strip() or title.strip()
+            if url.startswith(("http://", "https://")):
+                links.append((title.strip() if url != title.strip() else url, url))
+        return links
+
     def attribute_rows(self):
         """(label, value) pairs for the active attribute definitions that have a value."""
         rows = []
@@ -346,6 +362,11 @@ class Media(models.Model):
     static_path = models.CharField(
         max_length=200, blank=True, help_text="Bundled sample illustration (static file path)"
     )
+    commons_file = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="Wikimedia Commons file name (without 'File:'); the photo is shown from Commons",
+    )
     alt_text = models.CharField(max_length=300)
     caption = models.CharField(max_length=300, blank=True)
     credit = models.CharField(max_length=200, blank=True)
@@ -363,4 +384,21 @@ class Media(models.Model):
     def url(self):
         if self.image:
             return self.image.url
+        if self.commons_file:
+            return commons_image_url(self.commons_file)
         return static(self.static_path) if self.static_path else ""
+
+    @property
+    def source_page(self):
+        """Where the photo's author and license are documented."""
+        if self.commons_file:
+            return "https://commons.wikimedia.org/wiki/File:" + quote(
+                self.commons_file.replace(" ", "_")
+            )
+        return ""
+
+
+def commons_image_url(file_name, width=1280):
+    """A Commons file at a given width (Special:FilePath redirects to the thumbnail)."""
+    name = quote(file_name.replace(" ", "_"))
+    return f"https://commons.wikimedia.org/wiki/Special:FilePath/{name}?width={width}"
