@@ -37,7 +37,7 @@ def test_seed_is_idempotent():
 
 
 def test_replace_samples_keeps_user_records():
-    call_command("seed_sample_data")
+    call_command("seed_sample_data", fictional=True)
     sample_community = Community.objects.filter(is_sample=True).first()
     users_craft = CraftFactory(title="Added by a user", community=sample_community)
     call_command("seed_reference_crafts", replace_samples=True)
@@ -76,3 +76,11 @@ def test_catalogue_card_badge(client):
     call_command("seed_reference_crafts")
     html = client.get("/crafts/").content.decode()
     assert html.count("Real example") == len(reference_data.CRAFTS)
+
+
+def test_old_start_command_now_loads_real_examples():
+    """Deployments still running `seed_sample_data` get the real crafts, not placeholders."""
+    call_command("seed_sample_data", fictional=True)
+    call_command("seed_sample_data")
+    assert not Craft.objects.filter(is_sample=True).exists()
+    assert Craft.objects.filter(is_reference=True).count() == len(reference_data.CRAFTS)
