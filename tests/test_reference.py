@@ -25,6 +25,7 @@ def test_seed_creates_published_public_reference_crafts():
         assert all(url.startswith("https://") for _, url in craft.source_links())
         assert craft.media.exists(), craft.slug
         assert craft.craft_materials.exists() and craft.craft_techniques.exists()
+        assert craft.tags.count() == len(reference_data.TAGS[craft.slug])
     assert not Media.objects.filter(craft__is_reference=True, alt_text="").exists()
     assert not Media.objects.filter(craft__is_reference=True, commons_file="").exists()
 

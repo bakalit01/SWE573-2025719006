@@ -300,3 +300,17 @@ main.auth-card { background: var(--card); border: 1px solid var(--line); border-
 .hero .btn-primary:hover { background: #b5dcf2; color: var(--ink); }
 .hero .btn-light { background: transparent; color: #ffffff; border-color: rgba(255, 255, 255, .7); }
 .hero .btn-light:hover { background: rgba(255, 255, 255, .12); color: #ffffff; }
+
+/* Tags and "Other (type your own)" */
+.tag-list { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 4px 0 8px; }
+.tag-chip { display: inline-flex; align-items: center; gap: 6px; background: var(--paper-2); color: var(--accent); border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px; font-size: .9rem; font-weight: 700; text-decoration: none; }
+a.tag-chip:hover { background: var(--bu-blue); color: var(--ink); }
+.tag-chip a { text-decoration: none; font-size: 1.1rem; line-height: 1; }
+.tag-chip-button { cursor: pointer; font: inherit; font-size: .88rem; }
+.tag-chip-button:hover, .tag-chip-button:focus-visible { background: var(--bu-blue); color: var(--ink); }
+.tag-chip-button[aria-pressed="true"] { background: var(--bu-navy); color: #fff; border-color: var(--bu-navy); }
+.tag-suggest { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: -6px 0 14px; }
+.tag-suggest .help { margin: 0 4px 0 0; }
+.field-other { margin-top: -6px; }
+[hidden] { display: none !important; }
+.field-row { align-items: start; }

@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import transaction
+from django.db.models import Count
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET
@@ -12,15 +13,26 @@ from django.views.decorators.http import require_GET
 from communities.models import Community
 
 from .forms import (
+    OTHER,
     AttributesForm,
     CraftForm,
+    DetailRows,
     ImageRows,
     MaterialRows,
     TechniqueRows,
     craft_type_from,
     resized_image,
 )
-from .models import Craft, CraftMaterial, CraftTechnique, CraftType, Material, Media, Technique
+from .models import (
+    Craft,
+    CraftMaterial,
+    CraftTechnique,
+    CraftType,
+    Material,
+    Media,
+    Tag,
+    Technique,
+)
 
 PAGE_SIZE = 24
 
@@ -51,13 +63,24 @@ def craft_list(request):
     crafts = _listed(request)
     craft_type = request.GET.get("type", "")
     community = request.GET.get("community", "")
+    tag = Tag.objects.filter(slug=request.GET.get("tag", "")).first()
     if craft_type:
         crafts = crafts.filter(craft_type__slug=craft_type)
     if community:
         crafts = crafts.filter(community__slug=community)
+    if tag:
+        crafts = crafts.filter(tags=tag)
 
     page = Paginator(crafts, PAGE_SIZE).get_page(request.GET.get("page"))
-    filters = {k: v for k, v in {"type": craft_type, "community": community}.items() if v}
+    filters = {
+        k: v
+        for k, v in {
+            "type": craft_type,
+            "community": community,
+            "tag": tag.slug if tag else "",
+        }.items()
+        if v
+    }
     return render(
         request,
         "crafts/list.html",
@@ -68,6 +91,7 @@ def craft_list(request):
             "communities": Community.objects.all(),
             "selected_type": craft_type,
             "selected_community": community,
+            "selected_tag": tag,
             "filter_query": urlencode(filters),
         },
     )
@@ -82,7 +106,9 @@ def craft_detail(request, slug):
     craft = get_object_or_404(
         Craft.objects.visible_to(request.user)
         .select_related("craft_type", "community", "created_by")
-        .prefetch_related("media", "craft_materials__material", "craft_techniques__technique"),
+        .prefetch_related(
+            "media", "tags", "craft_materials__material", "craft_techniques__technique"
+        ),
         slug=slug,
     )
     report_url = f"{settings.REPO_URL}/issues/new?" + urlencode(
@@ -127,7 +153,7 @@ def _craft_form_page(request, craft=None):
     data = request.POST if request.method == "POST" else None
     files = request.FILES if request.method == "POST" else None
 
-    form = CraftForm(data, instance=craft)
+    form = CraftForm(data, instance=craft, user=request.user)
     craft_type = craft_type_from(data, craft)
     attr_form = AttributesForm(
         data, craft_type=craft_type, values=craft.attributes if craft else None
@@ -135,20 +161,26 @@ def _craft_form_page(request, craft=None):
     material_initial, technique_initial = _row_initial(craft)
     materials = MaterialRows(data, prefix="mat", initial=None if data else material_initial)
     techniques = TechniqueRows(data, prefix="tec", initial=None if data else technique_initial)
+    details = DetailRows(
+        data, prefix="det", initial=None if data else (craft.extra_details if craft else None)
+    )
     images = ImageRows(data, files, prefix="img")
 
     if request.method == "POST":
         publish = request.POST.get("action") != "draft"
         materials.require_one = publish
-        valid = all([f.is_valid() for f in (form, attr_form, materials, techniques, images)])
+        parts = (form, attr_form, materials, techniques, details, images)
+        valid = all([f.is_valid() for f in parts])
         if valid:
             with transaction.atomic():
                 craft = form.save(commit=False)
                 if not editing:
                     craft.created_by = request.user
                 craft.attributes = attr_form.json_values()
+                craft.extra_details = details.json_values()
                 craft.status = Craft.Status.PUBLISHED if publish else Craft.Status.DRAFT
                 craft.save()
+                form.save_tags(craft)
                 _save_rows(craft, materials.filled_rows(), techniques.filled_rows())
                 _save_images(request, craft, images)
             if publish:
@@ -168,9 +200,12 @@ def _craft_form_page(request, craft=None):
             "attr_form": attr_form,
             "materials": materials,
             "techniques": techniques,
+            "details": details,
             "images": images,
             "craft": craft,
             "editing": editing,
+            "new_type": form.new_type_chosen,
+            "popular_tags": Tag.objects.annotate(n=Count("crafts")).order_by("-n", "name")[:12],
             "material_names": Material.objects.values_list("name", flat=True),
             "technique_names": Technique.objects.values_list("name", flat=True),
         },
@@ -279,5 +314,8 @@ def attribute_fields(request):
     return render(
         request,
         "crafts/_attribute_fields.html",
-        {"attr_form": AttributesForm(craft_type=craft_type, values=values)},
+        {
+            "attr_form": AttributesForm(craft_type=craft_type, values=values),
+            "new_type": request.GET.get("craft_type") == OTHER,
+        },
     )

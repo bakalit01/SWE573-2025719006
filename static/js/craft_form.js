@@ -50,6 +50,68 @@
     img.hidden = false;
   });
 
+  /* ---------- "Other (type your own)": show the text box only when Other is chosen ---------- */
+  var OTHER_VALUES = ["__other__", "other"];
+  function otherChosen(name) {
+    var controls = form.querySelectorAll('[name="' + name + '"]');
+    for (var i = 0; i < controls.length; i++) {
+      var c = controls[i];
+      if (c.tagName === "SELECT" && OTHER_VALUES.indexOf(c.value) !== -1) return true;
+      if ((c.type === "checkbox" || c.type === "radio") && c.checked && OTHER_VALUES.indexOf(c.value) !== -1) return true;
+    }
+    return false;
+  }
+  function refreshOthers(scope) {
+    (scope || form).querySelectorAll("[data-other-for]").forEach(function (box) {
+      var wrap = box.closest(".field") || box;
+      var show = otherChosen(box.getAttribute("data-other-for")) || wrap.classList.contains("field-error");
+      wrap.hidden = !show;
+      wrap.classList.add("field-other");
+    });
+  }
+  form.addEventListener("change", function (e) {
+    if (!e.target.name) return;
+    var boxes = form.querySelectorAll('[data-other-for="' + e.target.name + '"]');
+    if (!boxes.length) return;
+    refreshOthers();
+    if (otherChosen(e.target.name)) {
+      var box = boxes[0];
+      if (!box.value) box.focus();
+    }
+  });
+  refreshOthers();
+
+  /* ---------- Tags: suggestions add to the comma-separated box ---------- */
+  var tagInput = form.querySelector("[data-tags]");
+  function tagList() {
+    return tagInput.value.split(",").map(function (t) { return t.trim(); }).filter(Boolean);
+  }
+  function markTagButtons() {
+    if (!tagInput) return;
+    var have = tagList().map(function (t) { return t.toLowerCase(); });
+    form.querySelectorAll("[data-add-tag]").forEach(function (b) {
+      var on = have.indexOf(b.getAttribute("data-add-tag").toLowerCase()) !== -1;
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      b.textContent = (on ? "✓ " : "+ ") + b.getAttribute("data-add-tag");
+    });
+  }
+  if (tagInput) {
+    form.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-add-tag]");
+      if (!b) return;
+      e.preventDefault();
+      var name = b.getAttribute("data-add-tag");
+      var tags = tagList();
+      var i = tags.map(function (t) { return t.toLowerCase(); }).indexOf(name.toLowerCase());
+      if (i === -1) tags.push(name); else tags.splice(i, 1);
+      tagInput.value = tags.join(", ");
+      markTagButtons();
+      saveDraft();
+    });
+    tagInput.addEventListener("input", markTagButtons);
+    markTagButtons();
+  }
+
   /* ---------- Craft-type-specific fields ---------- */
   var typeSelect = form.querySelector("[data-craft-type]");
   var attrBox = form.querySelector("[data-attribute-fields]");
@@ -60,7 +122,7 @@
       attrBox.setAttribute("aria-busy", "true");
       fetch(url, { credentials: "same-origin" })
         .then(function (r) { return r.text(); })
-        .then(function (html) { attrBox.innerHTML = html; restoreDraft(attrBox); })
+        .then(function (html) { attrBox.innerHTML = html; restoreDraft(attrBox); refreshOthers(attrBox); })
         .finally(function () { attrBox.removeAttribute("aria-busy"); });
     });
   }
@@ -176,7 +238,7 @@
   function saveDraft() {
     if (!draftKey || restoring) return;
     var data = { totals: {} , values: {} };
-    ["mat", "tec"].forEach(function (p) { var t = totalInput(p); if (t) data.totals[p] = t.value; });
+    ["mat", "tec", "det"].forEach(function (p) { var t = totalInput(p); if (t) data.totals[p] = t.value; });
     fields().forEach(function (el) {
       if (el.type === "checkbox" || el.type === "radio") {
         if (el.checked) (data.values[el.name] = data.values[el.name] || []).push(el.value);
@@ -207,11 +269,14 @@
     var formIsEmpty = !form.querySelector("#id_title").value && !form.querySelector(".error");
     var saved = readDraft();
     if (formIsEmpty && saved) {
-      ["mat", "tec"].forEach(function (p) {
+      ["mat", "tec", "det"].forEach(function (p) {
+        if (!totalInput(p) || !saved.totals[p]) return;
         var want = parseInt(saved.totals[p] || "0", 10), have = parseInt(totalInput(p).value, 10);
         for (var i = have; i < want; i++) addRow(p);
       });
       if (restoreDraft()) {
+        refreshOthers();
+        markTagButtons();
         if (notice) notice.hidden = false;
         if (typeSelect && typeSelect.value) typeSelect.dispatchEvent(new Event("change"));
       }

@@ -8,23 +8,84 @@ from django.core.files.base import ContentFile
 from django.utils.text import slugify
 from PIL import Image, ImageOps
 
+from communities.models import Community
+
 from . import units
-from .models import AttributeDefinition, Craft, CraftType
+from .models import AttributeDefinition, Craft, CraftType, Tag
+
+OTHER = "__other__"  # "Other (type your own)" in craft type, community and choice fields
+MAX_TAGS = 15
+MAX_TAG_LENGTH = 40
 
 MAX_IMAGE_BYTES = 10 * 1024 * 1024
 MAX_IMAGE_SIDE = 1600
 ALLOWED_IMAGE_FORMATS = {"JPEG", "PNG", "WEBP"}
 
 
+def other_box(label, select_name, max_length=120, **attrs):
+    """A text box shown when "Other" is chosen in the select or checkbox group `select_name`."""
+    return forms.CharField(
+        label=label,
+        max_length=max_length,
+        required=False,
+        widget=forms.TextInput(attrs={"data-other-for": select_name, **attrs}),
+    )
+
+
+def parse_tags(text):
+    """'Ceremonial, natural dye, #ceremonial' → ['Ceremonial', 'natural dye'].
+
+    The first spelling of a tag wins; a leading # is dropped.
+    """
+    seen, tags = set(), []
+    for raw in (text or "").replace("\n", ",").split(","):
+        name = " ".join(raw.strip().lstrip("#").split())
+        if name and name.lower() not in seen:
+            seen.add(name.lower())
+            tags.append(name)
+    return tags
+
+
+def unique_slug_for(model, name, field="slug"):
+    base = slugify(name, allow_unicode=True)[:100] or model.__name__.lower()
+    slug, n = base, 2
+    while model.objects.filter(**{field: slug}).exists():
+        slug, n = f"{base}-{n}", n + 1
+    return slug
+
+
 class CraftForm(forms.ModelForm):
-    """Core fields shared by every craft."""
+    """Core fields shared by every craft.
+
+    Craft type and community offer "Other (type your own)": the typed name is matched to an
+    existing entry (ignoring case) or added as a new one, marked as added by this user.
+    """
+
+    craft_type = forms.ChoiceField(
+        label="Craft type", widget=forms.Select(attrs={"data-craft-type": ""})
+    )
+    craft_type_other = other_box("Name of the craft type", "craft_type")
+    community = forms.ChoiceField(label="Community")
+    community_other = other_box(
+        "Name of the community",
+        "community",
+        max_length=200,
+        placeholder="The community's own name for itself",
+    )
+    tags = forms.CharField(
+        label="Tags",
+        required=False,
+        max_length=800,
+        help_text=(
+            "Your own keywords, separated by commas, e.g. ceremonial, natural dye, everyday use."
+        ),
+        widget=forms.TextInput(attrs={"data-tags": "", "autocomplete": "off"}),
+    )
 
     class Meta:
         model = Craft
         fields = [
             "title",
-            "craft_type",
-            "community",
             "summary",
             "maker_credit",
             "year_made",
@@ -40,8 +101,10 @@ class CraftForm(forms.ModelForm):
             "width",
             "depth",
             "size_unit",
+            "size_unit_other",
             "weight",
             "weight_unit",
+            "weight_unit_other",
             "traditional_measure",
             "description",
             "cultural_context",
@@ -58,7 +121,9 @@ class CraftForm(forms.ModelForm):
             "location_precision": "How precisely to show the place",
             "process": "How it is made",
             "size_unit": "Unit",
+            "size_unit_other": "Your unit",
             "weight_unit": "Unit",
+            "weight_unit_other": "Your unit",
             "description": "About this craft",
             "cultural_context": "Cultural context",
         }
@@ -82,11 +147,34 @@ class CraftForm(forms.ModelForm):
             "year_made": forms.NumberInput(
                 attrs={"min": 1, "max": 9999, "placeholder": "e.g. 1998"}
             ),
-            "craft_type": forms.Select(attrs={"data-craft-type": ""}),
+            "size_unit_other": forms.TextInput(
+                attrs={"data-other-for": "size_unit", "placeholder": "e.g. karış, hand spans"}
+            ),
+            "weight_unit_other": forms.TextInput(
+                attrs={"data-other-for": "weight_unit", "placeholder": "e.g. okka, dirhem"}
+            ),
         }
 
-    def __init__(self, *args, **kwargs):
+    field_order = ["title", "craft_type", "craft_type_other", "community", "community_other"]
+
+    def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
+        self.user = user
+        other = [(OTHER, "Other (type your own)")]
+        self.fields["craft_type"].choices = (
+            [("", "Choose a craft type")]
+            + [(str(t.pk), t.name) for t in CraftType.objects.all()]
+            + other
+        )
+        self.fields["community"].choices = (
+            [("", "Choose a community")]
+            + [(str(c.pk), c.name) for c in Community.objects.all()]
+            + other
+        )
+        if self.instance.pk:
+            self.initial.setdefault("craft_type", str(self.instance.craft_type_id))
+            self.initial.setdefault("community", str(self.instance.community_id))
+            self.initial.setdefault("tags", ", ".join(t.name for t in self.instance.tags.all()))
         # Community-only and restricted visibility arrive with steward review (M3).
         self.fields["visibility"].choices = [
             (Craft.Visibility.PUBLIC, "Public: anyone can see it"),
@@ -95,8 +183,6 @@ class CraftForm(forms.ModelForm):
         self.fields["visibility"].widget = forms.RadioSelect(
             choices=self.fields["visibility"].choices
         )
-        self.fields["craft_type"].empty_label = "Choose a craft type"
-        self.fields["community"].empty_label = "Choose a community"
         self.fields["size_unit"].choices = [("", "Choose unit")] + list(units.LENGTH_UNITS)
         self.fields["weight_unit"].choices = [("", "Choose unit")] + list(units.WEIGHT_UNITS)
         for name in ("height", "width", "depth", "weight"):
@@ -104,13 +190,66 @@ class CraftForm(forms.ModelForm):
         self.fields["latitude"].label = "Latitude"
         self.fields["longitude"].label = "Longitude"
 
+    def _pick(self, name, model, max_length):
+        """The chosen entry, or the name typed under "Other" (validated, not yet saved)."""
+        value = self.cleaned_data.get(name)
+        if value != OTHER:
+            return model.objects.filter(pk=value).first() if value else None
+        typed = " ".join((self.cleaned_data.get(f"{name}_other") or "").split())
+        if not typed:
+            self.add_error(f"{name}_other", "Type the name, or choose one from the list.")
+            return None
+        return model.objects.filter(name__iexact=typed).first() or typed[:max_length]
+
+    def clean(self):
+        data = super().clean()
+        data["craft_type"] = self._pick("craft_type", CraftType, 120)
+        data["community"] = self._pick("community", Community, 200)
+        tags = parse_tags(data.get("tags"))
+        if len(tags) > MAX_TAGS:
+            self.add_error("tags", f"Use at most {MAX_TAGS} tags.")
+        long = [t for t in tags if len(t) > MAX_TAG_LENGTH]
+        if long:
+            self.add_error("tags", f"Keep each tag under {MAX_TAG_LENGTH} characters: {long[0]}")
+        data["tag_names"] = tags
+        return data
+
+    def _saved(self, value, model):
+        if isinstance(value, model) or value is None:
+            return value
+        existing = model.objects.filter(name__iexact=value).first()
+        if existing:
+            return existing
+        added_by = self.user if self.user and self.user.is_authenticated else None
+        return model.objects.create(
+            name=value, slug=unique_slug_for(model, value), added_by=added_by
+        )
+
+    @property
+    def new_type_chosen(self):
+        return self.data.get("craft_type") == OTHER if self.is_bound else False
+
     def save(self, commit=True):
         craft = super().save(commit=False)
+        craft.craft_type = self._saved(self.cleaned_data["craft_type"], CraftType)
+        craft.community = self._saved(self.cleaned_data["community"], Community)
+        if craft.size_unit != units.OTHER:
+            craft.size_unit_other = ""
+        if craft.weight_unit != units.OTHER:
+            craft.weight_unit_other = ""
         if not craft.slug:
             craft.slug = unique_slug(craft.title)
         if commit:
             craft.save()
+            self.save_tags(craft)
         return craft
+
+    def save_tags(self, craft):
+        tags = []
+        for name in self.cleaned_data.get("tag_names", []):
+            tag = Tag.objects.filter(name__iexact=name).first()
+            tags.append(tag or Tag.objects.create(name=name, slug=unique_slug_for(Tag, name)))
+        craft.tags.set(tags)
 
 
 RESERVED_SLUGS = {"add", "mine", "fields"}
@@ -141,11 +280,12 @@ def field_for(definition: AttributeDefinition, initial=None):
         return forms.CharField(widget=forms.Textarea(attrs={"rows": 3}), **common)
     if definition.data_type == T.NUMBER:
         return forms.DecimalField(widget=forms.NumberInput(attrs={"step": "any"}), **common)
+    other = [(OTHER, "Other (type your own)")]
     if definition.data_type == T.CHOICE:
-        return forms.ChoiceField(choices=[("", "—")] + options, **common)
+        return forms.ChoiceField(choices=[("", "—")] + options + other, **common)
     if definition.data_type == T.MULTI_CHOICE:
         return forms.MultipleChoiceField(
-            choices=options, widget=forms.CheckboxSelectMultiple, **common
+            choices=options + other, widget=forms.CheckboxSelectMultiple, **common
         )
     if definition.data_type == T.BOOLEAN:
         return forms.ChoiceField(choices=YES_NO, **common)
@@ -164,27 +304,120 @@ class AttributesForm(forms.Form):
         self.craft_type = craft_type
         self.definitions = list(craft_type.attributes.filter(is_active=True)) if craft_type else []
         values = values or {}
+        T = AttributeDefinition.DataType
         for d in self.definitions:
             self.fields[d.key] = field_for(d)
             value = values.get(d.key)
-            if d.data_type == AttributeDefinition.DataType.BOOLEAN and value is not None:
+            if d.data_type in (T.CHOICE, T.MULTI_CHOICE):
+                self.fields[self.other_key(d)] = other_box(
+                    f"Other {d.label.lower()}",
+                    f"{self.prefix}-{d.key}",
+                    max_length=200,
+                    placeholder=(
+                        "Separate several with commas" if d.data_type == T.MULTI_CHOICE else ""
+                    ),
+                )
+                value = self._split_other(d, value)
+            if d.data_type == T.BOOLEAN and value is not None:
                 value = "yes" if value else "no"
             if value not in (None, ""):
                 self.initial[d.key] = value
 
+    @staticmethod
+    def other_key(definition):
+        return f"{definition.key}__other"
+
+    def _split_other(self, d, value):
+        """Saved values that aren't in the option list go back into the "Other" box."""
+        options = set(d.options or [])
+        if d.data_type == AttributeDefinition.DataType.CHOICE:
+            if value and value not in options:
+                self.initial[self.other_key(d)] = value
+                return OTHER
+            return value
+        values = value if isinstance(value, list) else ([value] if value else [])
+        extra = [v for v in values if v not in options]
+        if extra:
+            self.initial[self.other_key(d)] = ", ".join(str(v) for v in extra)
+            return [v for v in values if v in options] + [OTHER]
+        return values
+
+    def clean(self):
+        data = super().clean()
+        for d in self.definitions:
+            value = data.get(d.key)
+            chose_other = value == OTHER or (isinstance(value, list) and OTHER in value)
+            if chose_other and not (data.get(self.other_key(d)) or "").strip():
+                self.add_error(self.other_key(d), "Type your own value, or choose one above.")
+        return data
+
     def json_values(self):
         """Cleaned values as JSON-safe data for Craft.attributes."""
         out = {}
+        T = AttributeDefinition.DataType
         for d in self.definitions:
             value = self.cleaned_data.get(d.key)
+            typed = (self.cleaned_data.get(self.other_key(d)) or "").strip()
+            if d.data_type == T.CHOICE and value == OTHER:
+                value = " ".join(typed.split())
+            elif d.data_type == T.MULTI_CHOICE and value:
+                value = [v for v in value if v != OTHER]
+                if OTHER in self.cleaned_data.get(d.key):
+                    value += [t for t in parse_tags(typed) if t not in value]
             if value in (None, "", []):
                 continue
             if isinstance(value, Decimal):
                 value = int(value) if value == value.to_integral() else float(value)
-            if d.data_type == AttributeDefinition.DataType.BOOLEAN:
+            if d.data_type == T.BOOLEAN:
                 value = value == "yes"
             out[d.key] = value
         return out
+
+
+# ---------- The contributor's own details (any label, any value) ----------
+
+
+class DetailRowForm(forms.Form):
+    label = forms.CharField(
+        label="Detail",
+        max_length=80,
+        required=False,
+        widget=forms.TextInput(attrs={"placeholder": "e.g. Dye source"}),
+    )
+    value = forms.CharField(
+        label="Value",
+        max_length=300,
+        required=False,
+        widget=forms.TextInput(attrs={"placeholder": "e.g. walnut husks"}),
+    )
+
+    def clean(self):
+        data = super().clean()
+        label, value = (data.get("label") or "").strip(), (data.get("value") or "").strip()
+        if value and not label:
+            self.add_error("label", "Name this detail.")
+        elif label and not value:
+            self.add_error("value", "Add a value, or remove the row.")
+        return data
+
+
+class DetailFormSet(forms.BaseFormSet):
+    def json_values(self):
+        rows = []
+        for form in self.forms:
+            if form.is_valid() and form.cleaned_data.get("label"):
+                rows.append(
+                    {
+                        "label": form.cleaned_data["label"].strip(),
+                        "value": form.cleaned_data["value"].strip(),
+                    }
+                )
+        return rows
+
+
+DetailRows = forms.formset_factory(
+    DetailRowForm, formset=DetailFormSet, extra=0, min_num=1, max_num=30
+)
 
 
 # ---------- Materials and techniques with detail (FB-02) ----------
@@ -323,7 +556,8 @@ def resized_image(upload):
 
 
 def craft_type_from(data, instance=None):
-    raw = (data or {}).get("craft_type") or (instance.craft_type_id if instance else None)
+    raw = (data or {}).get("craft_type") if data else None
+    raw = raw or (instance.craft_type_id if instance else None)
     try:
         return CraftType.objects.get(pk=int(raw)) if raw else None
     except (ValueError, CraftType.DoesNotExist):

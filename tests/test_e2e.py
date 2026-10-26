@@ -81,3 +81,37 @@ def test_add_craft_in_browser(live_server, page, seeded):
     assert "30 cm" in facts and "11.8 in" in facts
     assert page.get_by_text("Forest floor").is_visible()
     assert page.get_by_role("link", name="Edit").is_visible()
+
+
+def test_other_choices_and_tags_in_browser(live_server, page, seeded):
+    """'Other (type your own)' boxes appear only when chosen; tags can be added from suggestions."""
+    page.goto(f"{live_server.url}/accounts/signup/")
+    page.fill("input[name=email]", "other@example.com")
+    page.fill("input[name=password1]", "Woven-Basket-2026")
+    page.fill("input[name=password2]", "Woven-Basket-2026")
+    page.locator("button[type=submit]").click()
+
+    page.goto(f"{live_server.url}/crafts/add/")
+    page.wait_for_selector("form[data-ready=true]", state="attached")
+    assert not page.locator("#id_craft_type_other").is_visible()
+    page.fill("#id_title", "Felt rug")
+    page.select_option("#id_craft_type", "__other__")
+    page.fill("#id_craft_type_other", "Felt making")
+    page.wait_for_selector("text=A new craft type has no set fields yet")
+    page.select_option("#id_community", "__other__")
+    page.fill("#id_community_other", "Yörük")
+    page.fill("#id_maker_credit", "A Yörük family")
+    page.fill("#id_tags", "nomadic")
+    page.fill("#id_mat-0-name", "Wool")
+    page.fill("#id_height", "3")
+    page.select_option("#id_size_unit", "other")
+    page.fill("#id_size_unit_other", "karış")
+    page.fill("#id_det-0-label", "Dye source")
+    page.fill("#id_det-0-value", "Madder root")
+    page.locator("button[value=publish]").click()
+
+    assert page.get_by_role("heading", name="Felt rug").is_visible()
+    facts = page.locator(".facts").inner_text()
+    assert "Felt making" in facts and "Yörük" in facts and "3 karış" in facts
+    assert page.get_by_text("Madder root").is_visible()
+    assert page.get_by_role("link", name="#nomadic").is_visible()

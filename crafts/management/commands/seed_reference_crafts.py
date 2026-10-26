@@ -5,7 +5,16 @@ from django.db import transaction
 
 from communities.models import Community
 from crafts import reference_data as data
-from crafts.models import Craft, CraftMaterial, CraftTechnique, Material, Media, Technique
+from crafts.forms import unique_slug_for
+from crafts.models import (
+    Craft,
+    CraftMaterial,
+    CraftTechnique,
+    Material,
+    Media,
+    Tag,
+    Technique,
+)
 from crafts.seeding import ensure_craft_types
 
 COMMUNITY_NOTE = (
@@ -94,6 +103,12 @@ class Command(BaseCommand):
                     technique=Technique.objects.get_or_create(name=name)[0],
                     notes=notes,
                     order=order,
+                )
+
+            for name in data.TAGS.get(record["slug"], []):  # added; tags users gave are kept
+                tag = Tag.objects.filter(name__iexact=name).first()
+                craft.tags.add(
+                    tag or Tag.objects.create(name=name, slug=unique_slug_for(Tag, name))
                 )
 
             craft.media.filter(image="").delete()  # keep any photos users uploaded
