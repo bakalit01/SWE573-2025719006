@@ -56,7 +56,7 @@
       maxZoom: 18, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
     if (approximate) {
-      L.circle([lat, lng], { radius: 12000, color: "#a54826", fillColor: "#a54826", fillOpacity: 0.18 }).addTo(map);
+      L.circle([lat, lng], { radius: 12000, color: "#1e4a8b", fillColor: "#8cc8ea", fillOpacity: 0.18 }).addTo(map);
     } else {
       L.marker([lat, lng]).addTo(map);
     }

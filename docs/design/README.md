@@ -11,6 +11,11 @@ The low-fidelity wireframes (T-06) were replaced by the working pages of the M1 
 | Signed in: name in header, members-only crafts visible | ![Signed in](screenshots/05-signed-in-catalogue.png) | |
 | Login with generic error message | ![Login error](screenshots/06-login-error.png) | |
 
+## Colours
+Based on Boğaziçi University's corporate identity guide (2020): navy **#1e4a8b** (PANTONE 7686C) as the primary colour, blue **#8cc8ea** (PANTONE 297C) as the secondary. Text is dark navy #0f2340 on blue-white #f4f8fc. Earlier screenshots below show the original earth-tone palette.
+
+![Home in the Boğaziçi palette](screenshots/14-home-bogazici-palette.png)
+
 ## Layout principles
 - **Credit first:** maker and community sit directly under the title on every craft page.
 - **Sample data is always labelled.** No real cultural content is shown without consent.
