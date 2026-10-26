@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Count
+from django.db.models.functions import Lower
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET
@@ -205,7 +206,9 @@ def _craft_form_page(request, craft=None):
             "craft": craft,
             "editing": editing,
             "new_type": form.new_type_chosen,
-            "popular_tags": Tag.objects.annotate(n=Count("crafts")).order_by("-n", "name")[:12],
+            "popular_tags": Tag.objects.annotate(n=Count("crafts")).order_by("-n", Lower("name"))[
+                :12
+            ],
             "material_names": Material.objects.values_list("name", flat=True),
             "technique_names": Technique.objects.values_list("name", flat=True),
         },
