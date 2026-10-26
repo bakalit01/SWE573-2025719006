@@ -13,12 +13,7 @@
       {% if craft.made_in %}Made {% if craft.year_made %}in {% endif %}{{ craft.made_in }}{% endif %}{% if craft.made_in and craft.place_label %} · {% endif %}{% if craft.place_label %}{{ craft.place_label }}{% endif %}
       {% if craft.created_by %} · Added by <a href="{{ craft.created_by.get_absolute_url }}">{{ craft.created_by.public_name }}</a>{% endif %}
     </p>
-    <div class="badges">
-      {% if craft.status != "published" %}<span class="badge badge-draft">{{ craft.get_status_display }}: only you can see this</span>{% endif %}
-      {% if craft.is_sample %}<span class="badge badge-sample">Sample data</span>{% endif %}
-      {% if craft.is_reference %}<span class="badge badge-reference">Real example · from public sources</span>{% endif %}
-      <span class="badge badge-members">{{ craft.get_visibility_display }}</span>
-    </div>
+    {% if craft.status != "published" %}<div class="badges"><span class="badge badge-draft">{{ craft.get_status_display }}: only you can see this</span></div>{% endif %}
     {% if craft.tags.all %}
       <ul class="tag-list" aria-label="Tags">
         {% for t in craft.tags.all %}<li><a class="tag-chip" href="{{ t.get_absolute_url }}">#{{ t.name }}</a></li>{% endfor %}

@@ -2,6 +2,11 @@
 
 All notable changes per release. Releases are tagged on GitHub (`vX.Y.Z`).
 
+## [v0.4.6] – 26 Oct 2026 · Fewer remarks
+### Removed
+- The footer note "Records marked Sample data are fictional examples, not real cultural content".
+- The "Real example · from public sources", "Sample data", "Public" and "Members only" badges on craft pages and cards. Real examples still show their Sources and photo credits. Authors still see "Draft: only you can see this" on their own drafts.
+
 ## [v0.4.5] – 26 Oct 2026 · "Other" and your own tags
 ### Added
 - **"Other (type your own)"** for craft type and community. A typed name reuses an existing entry when it matches (ignoring case); otherwise it is added for everyone and recorded as added by that user, so staff can review it in the admin (#77).

@@ -55,10 +55,10 @@ def test_commons_urls_are_encoded():
     )
 
 
-def test_craft_page_shows_sources_credits_and_badge(client):
+def test_craft_page_shows_sources_and_credits(client):
     call_command("seed_reference_crafts")
     html = client.get("/crafts/pomo-coiled-dowry-basket-jenny-hughes/").content.decode()
-    assert "Real example · from public sources" in html
+    assert "Real example" not in html and "badge-members" not in html  # no remark badges
     assert "Jenny Hughes (Pomo)" in html
     assert "https://en.wikipedia.org/wiki/Pomo" in html
     assert "https://commons.wikimedia.org/wiki/Special:FilePath/" in html
@@ -73,10 +73,10 @@ def test_public_domain_credit_is_static(client):
     assert "data-commons-credit" not in html  # no lookup needed for known public domain
 
 
-def test_catalogue_card_badge(client):
+def test_catalogue_cards_have_no_remark_badges(client):
     call_command("seed_reference_crafts")
     html = client.get("/crafts/").content.decode()
-    assert html.count("Real example") == len(reference_data.CRAFTS)
+    assert "Real example" not in html and "Sample data" not in html
 
 
 def test_old_start_command_now_loads_real_examples():

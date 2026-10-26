@@ -135,7 +135,7 @@ Example attribute schemas:
 - Follow the **CARE Principles for Indigenous Data Governance** (Collective benefit, Authority to control, Responsibility, Ethics).
 - Use communities' own names and spellings; let communities correct them.
 - Until community partners contribute their own records, the site shows **reference records**: publicly documented, non-restricted crafts summarised from museum and encyclopedia sources, with openly licensed photos credited to their authors, a Sources section, and an invitation to the community to correct or remove them. Sacred or restricted items are excluded.
-- Other demo data is clearly marked as sample.
+- Fictional demo data is used only in automated tests, not on the site.
 - Provide a visible takedown/contact route on every craft page.
 
 ## 7. Open questions
