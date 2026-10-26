@@ -8,9 +8,9 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from PIL import Image
 
-from crafts.models import AttributeDefinition, Craft, CraftMaterial, Media
+from crafts.models import Craft, CraftMaterial, Media
 
-from .factories import AttributeDefinitionFactory, CommunityFactory, CraftFactory, CraftTypeFactory
+from .factories import AttributeDefinitionFactory, CraftFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -24,20 +24,6 @@ def photo(name="photo.jpg", size=(2400, 1200)):
     buffer = io.BytesIO()
     Image.new("RGB", size, (180, 120, 80)).save(buffer, "JPEG")
     return SimpleUploadedFile(name, buffer.getvalue(), content_type="image/jpeg")
-
-
-@pytest.fixture
-def setup():
-    craft_type = CraftTypeFactory(name="Carving", slug="carving")
-    AttributeDefinitionFactory(craft_type=craft_type, key="tools", label="Tools")
-    AttributeDefinitionFactory(
-        craft_type=craft_type,
-        key="finish",
-        label="Finish",
-        data_type=AttributeDefinition.DataType.CHOICE,
-        options=["Oiled", "Waxed"],
-    )
-    return {"type": craft_type, "community": CommunityFactory()}
 
 
 def payload(setup, **overrides):
@@ -79,6 +65,10 @@ def payload(setup, **overrides):
         "tec-MAX_NUM_FORMS": "30",
         "tec-0-name": "Knife carving",
         "tec-0-notes": "Carved wet",
+        "det-TOTAL_FORMS": "1",
+        "det-INITIAL_FORMS": "0",
+        "det-MIN_NUM_FORMS": "1",
+        "det-MAX_NUM_FORMS": "30",
         "img-TOTAL_FORMS": "1",
         "img-INITIAL_FORMS": "0",
         "img-MIN_NUM_FORMS": "0",

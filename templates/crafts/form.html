@@ -48,10 +48,24 @@
       <h2><span class="step">1</span> Basics</h2>
       {% include "crafts/_field.html" with field=form.title %}
       <div class="field-row">
-        {% include "crafts/_field.html" with field=form.craft_type %}
-        {% include "crafts/_field.html" with field=form.community %}
+        <div>
+          {% include "crafts/_field.html" with field=form.craft_type %}
+          {% include "crafts/_field.html" with field=form.craft_type_other %}
+        </div>
+        <div>
+          {% include "crafts/_field.html" with field=form.community %}
+          {% include "crafts/_field.html" with field=form.community_other %}
+        </div>
       </div>
+      <p class="help">Not in the list? Choose “Other (type your own)”. A new craft type or community joins the list for everyone, and site staff can review it.</p>
       {% include "crafts/_field.html" with field=form.summary %}
+      {% include "crafts/_field.html" with field=form.tags %}
+      {% if popular_tags %}
+        <div class="tag-suggest" data-tag-suggestions>
+          <span class="help">Used by others:</span>
+          {% for t in popular_tags %}<button type="button" class="tag-chip tag-chip-button" data-add-tag="{{ t.name }}">+ {{ t.name }}</button>{% endfor %}
+        </div>
+      {% endif %}
     </section>
 
     <section class="form-card" id="sec-made">
@@ -149,16 +163,22 @@
 
     <section class="form-card" id="sec-size">
       <h2><span class="step">5</span> Size &amp; weight</h2>
-      <p class="help">Use the units you measured in. The craft page also shows a converted value.</p>
+      <p class="help">Use the units you measured in. The craft page also shows a converted value. For any other unit, choose “Other” and type it; it is shown as you wrote it.</p>
       <div class="field-row four">
         {% include "crafts/_field.html" with field=form.height %}
         {% include "crafts/_field.html" with field=form.width %}
         {% include "crafts/_field.html" with field=form.depth %}
-        {% include "crafts/_field.html" with field=form.size_unit %}
+        <div>
+          {% include "crafts/_field.html" with field=form.size_unit %}
+          {% include "crafts/_field.html" with field=form.size_unit_other %}
+        </div>
       </div>
       <div class="field-row four">
         {% include "crafts/_field.html" with field=form.weight %}
-        {% include "crafts/_field.html" with field=form.weight_unit %}
+        <div>
+          {% include "crafts/_field.html" with field=form.weight_unit %}
+          {% include "crafts/_field.html" with field=form.weight_unit_other %}
+        </div>
       </div>
       {% include "crafts/_field.html" with field=form.traditional_measure %}
     </section>
@@ -166,6 +186,31 @@
     <section class="form-card" id="sec-details">
       <h2><span class="step">6</span> Craft details</h2>
       <div data-attribute-fields aria-live="polite">{% include "crafts/_attribute_fields.html" %}</div>
+
+      <h3>Your own details</h3>
+      <p class="help">Anything else worth recording, with your own name for it, e.g. “Dye source: walnut husks” or “Used for: weddings”.</p>
+      {{ details.management_form }}
+      <div class="rows" data-rows="det">
+        {% for row in details %}
+          <div class="row-card" data-row>
+            <div class="field-row two">
+              {% include "crafts/_field.html" with field=row.label %}
+              {% include "crafts/_field.html" with field=row.value %}
+            </div>
+            <button type="button" class="link-button remove-row" data-remove-row aria-label="Remove this detail">Remove</button>
+          </div>
+        {% endfor %}
+      </div>
+      <template data-row-template="det">
+        <div class="row-card" data-row>
+          <div class="field-row two">
+            {% include "crafts/_field.html" with field=details.empty_form.label %}
+            {% include "crafts/_field.html" with field=details.empty_form.value %}
+          </div>
+          <button type="button" class="link-button remove-row" data-remove-row aria-label="Remove this detail">Remove</button>
+        </div>
+      </template>
+      <button type="button" class="btn btn-ghost" data-add-row="det">+ Add a detail</button>
     </section>
 
     <section class="form-card" id="sec-photos">

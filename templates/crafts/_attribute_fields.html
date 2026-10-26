@@ -1,12 +1,14 @@
 {% if attr_form.craft_type %}
   {% if attr_form.fields %}
-    <p class="help">Fields for <strong>{{ attr_form.craft_type.name }}</strong>. They change when you choose another craft type.</p>
+    <p class="help">Fields for <strong>{{ attr_form.craft_type.name }}</strong>. They change when you choose another craft type. Where a list doesn't fit, choose “Other” and type your own.</p>
     <div class="field-grid">
       {% for field in attr_form %}{% include "crafts/_field.html" with field=field %}{% endfor %}
     </div>
   {% else %}
-    <p class="help">{{ attr_form.craft_type.name }} has no extra fields yet.</p>
+    <p class="help">{{ attr_form.craft_type.name }} has no set fields yet. Add what matters under “Your own details” below.</p>
   {% endif %}
+{% elif new_type %}
+  <p class="help">A new craft type has no set fields yet. Add what matters under “Your own details” below.</p>
 {% else %}
   <p class="help placeholder-note">Choose a craft type in <a href="#sec-basics">Basics</a> to see the fields for it, for example loom type for textiles or firing method for pottery.</p>
 {% endif %}

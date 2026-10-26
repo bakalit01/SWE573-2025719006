@@ -8,6 +8,7 @@ from .models import (
     CraftType,
     Material,
     Media,
+    Tag,
     Technique,
 )
 
@@ -20,7 +21,9 @@ class AttributeDefinitionInline(admin.TabularInline):
 
 @admin.register(CraftType)
 class CraftTypeAdmin(admin.ModelAdmin):
-    list_display = ["name", "slug"]
+    list_display = ["name", "slug", "added_by"]
+    list_filter = [("added_by", admin.EmptyFieldListFilter)]
+    search_fields = ["name"]
     prepopulated_fields = {"slug": ("name",)}
     inlines = [AttributeDefinitionInline]
 
@@ -60,6 +63,7 @@ class CraftAdmin(admin.ModelAdmin):
     search_fields = ["title", "summary", "description", "maker_credit", "place_name"]
     prepopulated_fields = {"slug": ("title",)}
     inlines = [CraftMaterialInline, CraftTechniqueInline, MediaInline]
+    filter_horizontal = ["tags"]
     fieldsets = (
         (None, {"fields": ("title", "slug", "craft_type", "community", "summary")}),
         ("Story", {"fields": ("description", "process", "cultural_context")}),
@@ -77,12 +81,14 @@ class CraftAdmin(admin.ModelAdmin):
                     "depth",
                     "size_unit",
                     "weight",
+                    "size_unit_other",
                     "weight_unit",
+                    "weight_unit_other",
                     "traditional_measure",
                 )
             },
         ),
-        ("Craft-type details", {"fields": ("attributes",)}),
+        ("Details", {"fields": ("attributes", "extra_details", "tags")}),
         ("Publishing", {"fields": ("visibility", "status", "is_sample", "created_by")}),
     )
 
@@ -91,6 +97,13 @@ class CraftAdmin(admin.ModelAdmin):
 class TermAdmin(admin.ModelAdmin):
     list_display = ["name", "description"]
     search_fields = ["name"]
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ["name", "slug"]
+    search_fields = ["name"]
+    prepopulated_fields = {"slug": ("name",)}
 
 
 admin.site.site_header = "Indigenous Crafts Platform – admin"

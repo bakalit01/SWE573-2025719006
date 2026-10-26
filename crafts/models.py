@@ -35,12 +35,36 @@ class Technique(Term):
     pass
 
 
+class Tag(models.Model):
+    """Free keywords that contributors add themselves (e.g. 'ceremonial', 'natural dye')."""
+
+    name = models.CharField(max_length=40, unique=True)
+    slug = models.SlugField(max_length=60, unique=True, allow_unicode=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("crafts:list") + f"?tag={self.slug}"
+
+
 class CraftType(models.Model):
     """Textile, pottery, beadwork… Each type defines its own extra attributes."""
 
     name = models.CharField(max_length=120, unique=True)
     slug = models.SlugField(max_length=140, unique=True)
     description = models.TextField(blank=True)
+    added_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Set when a contributor typed a new craft type under 'Other'",
+    )
 
     class Meta:
         ordering = ["name"]
@@ -190,9 +214,13 @@ class Craft(models.Model):
     height = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     width = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     depth = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    size_unit = models.CharField(max_length=4, choices=units.LENGTH_UNITS, blank=True)
+    size_unit = models.CharField(max_length=10, choices=units.LENGTH_UNITS, blank=True)
+    size_unit_other = models.CharField(
+        "Other size unit", max_length=40, blank=True, help_text="e.g. 'karış' or 'hand spans'"
+    )
     weight = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
-    weight_unit = models.CharField(max_length=4, choices=units.WEIGHT_UNITS, blank=True)
+    weight_unit = models.CharField(max_length=10, choices=units.WEIGHT_UNITS, blank=True)
+    weight_unit_other = models.CharField("Other weight unit", max_length=40, blank=True)
     traditional_measure = models.CharField(
         "Local or traditional measure",
         max_length=200,
@@ -208,6 +236,10 @@ class Craft(models.Model):
         Technique, through="CraftTechnique", blank=True, related_name="crafts"
     )
     attributes = models.JSONField(default=dict, blank=True)
+    extra_details = models.JSONField(
+        default=list, blank=True, help_text='Contributor\'s own details: [{"label": …, "value": …}]'
+    )
+    tags = models.ManyToManyField(Tag, blank=True, related_name="crafts")
     visibility = models.CharField(
         max_length=20, choices=Visibility.choices, default=Visibility.MEMBERS
     )
@@ -257,6 +289,10 @@ class Craft(models.Model):
             raise ValidationError({"size_unit": "Choose the unit for the size."})
         if self.weight is not None and not self.weight_unit:
             raise ValidationError({"weight_unit": "Choose the unit for the weight."})
+        if self.size_unit == units.OTHER and not self.size_unit_other.strip():
+            raise ValidationError({"size_unit_other": "Type the unit you measured in."})
+        if self.weight_unit == units.OTHER and not self.weight_unit_other.strip():
+            raise ValidationError({"weight_unit_other": "Type the unit you weighed in."})
 
     # ---- "Made" summary (FB-03) ----
     @property
@@ -289,11 +325,13 @@ class Craft(models.Model):
     # ---- Size (FB-04) ----
     @property
     def size(self):
-        return units.describe_size(self.height, self.width, self.depth, self.size_unit)
+        return units.describe_size(
+            self.height, self.width, self.depth, self.size_unit, self.size_unit_other
+        )
 
     @property
     def weight_display(self):
-        return units.describe_weight(self.weight, self.weight_unit)
+        return units.describe_weight(self.weight, self.weight_unit, self.weight_unit_other)
 
     def source_links(self):
         """[(title, url)] parsed from the sources field."""
@@ -312,6 +350,9 @@ class Craft(models.Model):
             shown = definition.display_value(self.attributes.get(definition.key))
             if shown:
                 rows.append((definition.label, shown))
+        for item in self.extra_details or []:
+            if item.get("label") and item.get("value"):
+                rows.append((item["label"], item["value"]))
         return rows
 
 

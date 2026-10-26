@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
@@ -14,6 +15,14 @@ class Community(models.Model):
     description = models.TextField(blank=True)
     is_sample = models.BooleanField(
         default=False, help_text="Fictional sample record used for demos and tests"
+    )
+    added_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Set when a contributor typed a new community under 'Other'",
     )
 
     class Meta:

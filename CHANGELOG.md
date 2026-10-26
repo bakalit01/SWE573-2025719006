@@ -2,6 +2,15 @@
 
 All notable changes per release. Releases are tagged on GitHub (`vX.Y.Z`).
 
+## [v0.4.5] – 26 Oct 2026 · "Other" and your own tags
+### Added
+- **"Other (type your own)"** for craft type and community. A typed name reuses an existing entry when it matches (ignoring case); otherwise it is added for everyone and recorded as added by that user, so staff can review it in the admin (#77).
+- **"Other" units** for size and weight: type any unit (e.g. karış, okka). It is shown as typed, with no converted value.
+- **"Other" in craft details**: every choice and multiple-choice field has an Other box; several values can be typed, separated by commas.
+- **Your own details**: rows with any label and value (e.g. "Dye source: walnut husks"). Useful for new craft types that have no set fields yet.
+- **Tags**: add your own keywords, separated by commas, or pick from tags already in use. Tags appear on the craft page and filter the catalogue (`/crafts/?tag=…`). The real examples come with a few starter tags.
+- Tests: 97 (unit, integration, browser), 92 % coverage.
+
 ## [v0.4.4] – 26 Oct 2026 · Boğaziçi colours
 ### Changed
 - New colour scheme based on Boğaziçi University's corporate colours (Kurumsal Kimlik Kılavuzu 2020): **navy #1e4a8b** (PANTONE 7686C) for links, buttons, the header rule and the hero; **blue #8cc8ea** (PANTONE 297C) for highlights and the woven pattern; cool blue-white backgrounds. Contrast stays at WCAG AA or better.

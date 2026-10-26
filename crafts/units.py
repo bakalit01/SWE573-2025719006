@@ -7,18 +7,22 @@ no fixed conversion (a hand span, a "karış", an "arşın") are kept as free te
 
 from decimal import Decimal
 
+OTHER = "other"  # any unit the contributor types; shown as typed, not converted
+
 LENGTH_UNITS = [
     ("mm", "millimetres (mm)"),
     ("cm", "centimetres (cm)"),
     ("m", "metres (m)"),
     ("in", "inches (in)"),
     ("ft", "feet (ft)"),
+    (OTHER, "Other (type your own)"),
 ]
 WEIGHT_UNITS = [
     ("g", "grams (g)"),
     ("kg", "kilograms (kg)"),
     ("oz", "ounces (oz)"),
     ("lb", "pounds (lb)"),
+    (OTHER, "Other (type your own)"),
 ]
 
 _TO_CM = {
@@ -59,13 +63,19 @@ def convert_weight(value, unit, target):
     return Decimal(value) * _TO_G[unit] / _TO_G[target]
 
 
-def describe_size(height, width, depth, unit):
-    """('24 × 18 × 9 cm', 'H × W × D', '≈ 9.45 × 7.09 × 3.54 in') or None if no size."""
+def describe_size(height, width, depth, unit, other_unit=""):
+    """('24 × 18 × 9 cm', 'H × W × D', '≈ 9.45 × 7.09 × 3.54 in') or None if no size.
+
+    A unit the contributor typed under "Other" is shown as typed, with no conversion.
+    """
     parts = [(label, v) for label, v in (("H", height), ("W", width), ("D", depth)) if v]
     if not parts or not unit:
         return None
-    original = " × ".join(fmt(v) for _, v in parts) + f" {unit}"
     axes = " × ".join(label for label, _ in parts)
+    if unit == OTHER:
+        original = " × ".join(fmt(v) for _, v in parts) + f" {other_unit}".rstrip()
+        return {"original": original, "axes": axes, "converted": ""}
+    original = " × ".join(fmt(v) for _, v in parts) + f" {unit}"
     if unit in METRIC_LENGTH:
         target = "in"
     else:
@@ -74,9 +84,11 @@ def describe_size(height, width, depth, unit):
     return {"original": original, "axes": axes, "converted": f"{converted} {target}"}
 
 
-def describe_weight(weight, unit):
+def describe_weight(weight, unit, other_unit=""):
     if not weight or not unit:
         return None
+    if unit == OTHER:
+        return {"original": f"{fmt(weight)} {other_unit}".rstrip(), "converted": ""}
     if unit in METRIC_WEIGHT:
         target = "lb" if convert_weight(weight, unit, "g") >= 454 else "oz"
     else:

@@ -430,3 +430,17 @@ CRAFTS = [
         ],
     },
 ]
+
+
+# Starter tags for the reference records (users add their own; these are only descriptive).
+TAGS = {
+    "dine-navajo-rug-on-an-upright-loom": ["wool", "loom weaving", "geometric design"],
+    "acoma-pueblo-water-pot": ["hand-coiled", "painted", "water vessel"],
+    "inuit-stone-sculpture": ["soapstone", "sculpture", "Arctic"],
+    "maasai-beaded-jewellery": ["beads", "adornment", "East Africa"],
+    "pomo-coiled-dowry-basket-jenny-hughes": ["coiled", "museum collection", "California"],
+    "haida-bentwood-box": ["cedar", "painted", "Northwest Coast"],
+    "sami-guksi-drinking-cup": ["birch burl", "drinking cup", "Sápmi"],
+    "maori-kete-harakeke-basket": ["harakeke", "woven", "Aotearoa"],
+    "navajo-squash-blossom-necklace": ["silver", "turquoise", "jewellery"],
+}

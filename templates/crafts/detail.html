@@ -19,6 +19,11 @@
       {% if craft.is_reference %}<span class="badge badge-reference">Real example · from public sources</span>{% endif %}
       <span class="badge badge-members">{{ craft.get_visibility_display }}</span>
     </div>
+    {% if craft.tags.all %}
+      <ul class="tag-list" aria-label="Tags">
+        {% for t in craft.tags.all %}<li><a class="tag-chip" href="{{ t.get_absolute_url }}">#{{ t.name }}</a></li>{% endfor %}
+      </ul>
+    {% endif %}
   </div>
   <div class="head-actions">
     {% if can_edit %}<a class="btn btn-primary" href="{% url 'crafts:edit' craft.slug %}">Edit</a>{% endif %}
@@ -104,7 +109,7 @@
 
     {% if attribute_rows %}
       <section class="story">
-        <h2>{{ craft.craft_type.name }} details</h2>
+        <h2>Details</h2>
         <dl class="attributes">
           {% for label, value in attribute_rows %}<div><dt>{{ label }}</dt><dd>{{ value }}</dd></div>{% endfor %}
         </dl>
@@ -140,7 +145,7 @@
         <div><dt>Craft type</dt><dd><a href="{% url 'crafts:list' %}?type={{ craft.craft_type.slug }}">{{ craft.craft_type.name }}</a></dd></div>
         {% if craft.craft_techniques.all %}<div><dt>Techniques</dt><dd>{% for ct in craft.craft_techniques.all %}{{ ct.technique.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</dd></div>{% endif %}
         {% with size=craft.size %}{% if size %}
-          <div><dt>Size</dt><dd>{{ size.original }} <span class="muted">({{ size.axes }})</span><br><span class="muted">{{ size.converted }}</span></dd></div>
+          <div><dt>Size</dt><dd>{{ size.original }} <span class="muted">({{ size.axes }})</span>{% if size.converted %}<br><span class="muted">{{ size.converted }}</span>{% endif %}</dd></div>
         {% endif %}{% endwith %}
         {% with w=craft.weight_display %}{% if w %}
           <div><dt>Weight</dt><dd>{{ w.original }} <span class="muted">{{ w.converted }}</span></dd></div>
