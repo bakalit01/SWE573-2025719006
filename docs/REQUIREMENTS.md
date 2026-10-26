@@ -129,7 +129,8 @@ Example attribute schemas:
 ## 6. Ethics & cultural guidelines
 - Follow the **CARE Principles for Indigenous Data Governance** (Collective benefit, Authority to control, Responsibility, Ethics).
 - Use communities' own names and spellings; let communities correct them.
-- No real cultural content is published without documented consent; seed data is clearly marked as sample.
+- Until community partners contribute their own records, the site shows **reference records**: publicly documented, non-restricted crafts summarised from museum and encyclopedia sources, with openly licensed photos credited to their authors, a Sources section, and an invitation to the community to correct or remove them. Sacred or restricted items are excluded.
+- Other demo data is clearly marked as sample.
 - Provide a visible takedown/contact route on every craft page.
 
 ## 7. Open questions
