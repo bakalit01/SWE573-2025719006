@@ -39,6 +39,7 @@ Next: **M3 MVP** (search, roles, visibility and consent, steward review), due 8 
 | [ADR-001 Tech stack](docs/adr/001-tech-stack.md) | Why Python / Django, hosting on Render |
 | [UI design](docs/design/README.md) | Screenshots of every page (desktop and phone) |
 | [Changelog](CHANGELOG.md) | What changed in each release |
+| [AI acknowledgement](AI_ACKNOWLEDGEMENT.md) | How Claude Opus 5.5 (Medium) was used in this project |
 | [Issues](https://github.com/bakalit01/SWE573-2025719006/issues) | One issue per story/task (#24–#63) and per feedback item (#68–#71, #77, #80, #81); [Roadmap #65](https://github.com/bakalit01/SWE573-2025719006/issues/65) is the weekly checklist |
 
 ## Getting started
