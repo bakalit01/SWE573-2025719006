@@ -9,7 +9,7 @@ To retake them, push a commit whose message contains `[take screenshots]` to any
 | Page | Desktop | Phone (390 px) |
 |---|---|---|
 | Home: hero, featured real examples, what the site is for | ![Home](screenshots/01-home.png) | ![Home on phone](screenshots/07-mobile-home.png) |
-| Catalogue: filters by craft type and community; "Real example" badges | ![Catalogue](screenshots/02-catalogue.png) | |
+| Catalogue: filters by craft type and community | ![Catalogue](screenshots/02-catalogue.png) | |
 | Catalogue filtered by a tag (`?tag=painted`), removable as a chip | ![Tag filter](screenshots/09-catalogue-tag-filter.png) | |
 | Craft page: tags, gallery with photo credits and licences, "At a glance", map, materials and techniques in detail, details, sources, report link | ![Craft page](screenshots/03-craft-detail.png) | ![Craft page on phone](screenshots/08-mobile-detail.png) |
 
@@ -36,7 +36,7 @@ Based on Boğaziçi University's corporate identity guide (2020): navy **#1e4a8b
 
 ## Layout principles
 - **Credit first:** maker and community sit directly under the title on every craft page, and every photo names its author and licence.
-- **Real or sample is always labelled:** real examples carry a "Real example · from public sources" badge and a Sources section; fictional records carry "Sample data".
+- **Sources shown, no remark badges:** real examples list their Sources and photo credits on the craft page; pages carry no status remarks ("Real example", "Sample data", "Public"), except "Draft" for the author.
 - **Nothing forced into a list:** every choice offers "Other (type your own)", and contributors can add their own details and tags.
 - **Craft-type details** come from the attribute definitions, so each type shows its own fields.
 - **Accessible basics:** skip link, visible focus ring, labelled form fields, alt text on every image, AA colour contrast.

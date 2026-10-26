@@ -49,9 +49,10 @@ class TestCatalogue:
         assert len(response.context["crafts"]) == 24
         assert len(client.get(reverse("crafts:list"), {"page": 2}).context["crafts"]) == 6
 
-    def test_sample_records_are_labelled(self, client):
+    def test_no_status_remarks_on_cards_or_footer(self, client):
         CraftFactory(is_sample=True)
-        assert "Sample data" in client.get(reverse("crafts:list")).content.decode()
+        html = client.get(reverse("crafts:list")).content.decode()
+        assert "Sample data" not in html and "Members only" not in html
 
 
 class TestDetail:

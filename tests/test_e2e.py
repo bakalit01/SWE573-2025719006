@@ -24,7 +24,6 @@ def test_demo_flow(live_server, page, seeded):
 
     page.locator(".card").first.click()
     assert page.get_by_text("Made by").is_visible()
-    assert page.get_by_text("Sample data").first.is_visible()
 
     page.goto(f"{live_server.url}/accounts/signup/")
     page.fill("input[name=email]", "e2e@example.com")

@@ -11,9 +11,6 @@
       <p class="eyebrow">{{ craft.craft_type.name }}</p>
       <h3 class="card-title">{{ craft.title }}</h3>
       <p class="card-meta">{{ craft.community.name }}{% if craft.made_in %} · {{ craft.made_in }}{% endif %}</p>
-      {% if craft.is_sample %}<span class="badge badge-sample">Sample data</span>{% endif %}
-      {% if craft.is_reference %}<span class="badge badge-reference">Real example</span>{% endif %}
-      {% if craft.visibility == "members" %}<span class="badge badge-members">Members only</span>{% endif %}
     </div>
   </a>
 </li>
