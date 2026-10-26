@@ -1,6 +1,6 @@
 # UI design
 
-The low-fidelity wireframes (T-06) were replaced by the working pages. These screenshots are the current UI reference for **v0.4.5** (26 Oct 2026), with the real examples, their Wikimedia Commons photos and OpenStreetMap maps.
+The low-fidelity wireframes (T-06) were replaced by the working pages. These screenshots are the current UI reference for **v0.4.7** (26 Oct 2026), with the real examples, their Wikimedia Commons photos and OpenStreetMap maps.
 
 To retake them, push a commit whose message contains `[take screenshots]` to any branch other than `main`, or run the **UI screenshots** workflow by hand. The workflow runs [`scripts/take_screenshots.py`](../../scripts/take_screenshots.py) on GitHub, which can reach Commons and OpenStreetMap, and commits the images to that branch.
 
@@ -9,7 +9,7 @@ To retake them, push a commit whose message contains `[take screenshots]` to any
 | Page | Desktop | Phone (390 px) |
 |---|---|---|
 | Home: hero, featured real examples, what the site is for | ![Home](screenshots/01-home.png) | ![Home on phone](screenshots/07-mobile-home.png) |
-| Catalogue: filters by craft type and community | ![Catalogue](screenshots/02-catalogue.png) | |
+| Catalogue: filters by craft type, community and tag | ![Catalogue](screenshots/02-catalogue.png) | |
 | Catalogue filtered by a tag (`?tag=painted`); the Tag box suggests tags and also matches part of a tag | ![Tag filter](screenshots/09-catalogue-tag-filter.png) | |
 | Craft page: tags, gallery with photo credits and licences, "At a glance", map, materials and techniques in detail, details, sources, report link | ![Craft page](screenshots/03-craft-detail.png) | ![Craft page on phone](screenshots/08-mobile-detail.png) |
 
