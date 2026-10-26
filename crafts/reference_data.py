@@ -18,6 +18,12 @@ COMMUNITIES = [
     ("haida", "Haida", "Haida Gwaii, British Columbia, Canada"),
     ("sami", "Sámi", "Sápmi: northern Norway, Sweden, Finland and Russia"),
     ("maori", "Māori", "Aotearoa New Zealand"),
+    ("yoruk", "Yörük", "Taurus Mountains and Aegean and Mediterranean coasts, Türkiye"),
+    ("syriac-tur-abdin", "Syriac (Süryani) community", "Tur Abdin, Mardin Province, Türkiye"),
+    ("ainu", "Ainu", "Hokkaido, Japan"),
+    ("guna", "Guna (Kuna)", "Guna Yala (San Blas Islands), Panama"),
+    ("wayuu", "Wayuu", "La Guajira peninsula, Colombia and Venezuela"),
+    ("shipibo-conibo", "Shipibo-Conibo", "Ucayali River, Peruvian Amazon"),
 ]
 
 NARA_CREDIT = "U.S. National Archives (NARA), 1933 · Public domain"
@@ -429,6 +435,444 @@ CRAFTS = [
             ),
         ],
     },
+    # ---- Türkiye ----
+    {
+        "slug": "yoruk-kilim",
+        "title": "Yörük kilim",
+        "type": "textile",
+        "community": "yoruk",
+        "summary": "A flat-woven Yörük kilim in slit tapestry, woven in two halves and joined "
+        "in the middle.",
+        "description": "Kilims are flat-woven rugs with no pile: the wool weft carries the "
+        "design and hides the warp. Anatolian kilims are among the best known, and most are "
+        "slit-woven. Yörük kilims share the motifs, patterns and colours of other Anatolian "
+        "weavings. On the Isparta example, the row of rhombic motifs is a 'nazarlık', an "
+        "amulet against the evil eye, and the zigzag borders are 'suyolu', running water, a "
+        "symbol of fertility.",
+        "process": "Coloured wool weft is woven back and forth over a wool warp, one colour "
+        "area at a time. Where two colours meet along a vertical line, a small slit is left "
+        "between them (slit tapestry). Wide pieces were woven in narrow parts on small "
+        "nomadic looms and sewn together.",
+        "cultural_context": "The Yörük are a Turkish subgroup of Oghuz descent living mainly "
+        "in the mountains of Anatolia, some of them historically nomadic: they went up to "
+        "the mountains in summer and down to the coastal plains in winter. Kilims were "
+        "light and portable, suited to life on the move. Researchers note that weaving has "
+        "largely disappeared as nomads settled and tourism offered other income.",
+        "maker": "Unnamed Yörük weavers",
+        "place": ("Isparta, western Taurus Mountains", "Türkiye", 37.76, 30.55),
+        "materials": [
+            ("Wool", "Sheep raised by the weavers' families", "Spun and dyed for weft and warp"),
+        ],
+        "techniques": [
+            ("Slit tapestry weaving", "Weft-faced flat weave with slits between colour areas"),
+            ("Joining panels", "Woven in two halves and sewn together in the middle"),
+        ],
+        "attributes": {"fibre": "Wool (weft and warp)"},
+        "images": [
+            (
+                "Istanbul Former Mint Kilim exposition Yörük kilim, woven in two parts and put "
+                "together (horizontally) in the middle in 2003 05.jpg",
+                "A Yörük kilim with rows of red, blue, green and yellow hexagonal motifs",
+                "Yörük kilim, woven in two parts and joined in the middle. Kilim exhibition, "
+                "Istanbul",
+                "",
+            ),
+            (
+                "Istanbul Former Mint Kilim exposition Yörük kilim, woven in two parts and put "
+                "together (horizontally) in the middle Detail in 2003 06.jpg",
+                "Close-up of a hexagonal motif in red, blue, green and yellow wool",
+                "Detail of the hexagonal motif",
+                "",
+            ),
+            (
+                "Isparta museum Large ‘kilim’ 021.jpg",
+                "A long Yörük kilim with a row of rhombic motifs and zigzag borders",
+                "Yörük slit-tapestry kilim with 'nazarlık' motifs. Isparta Museum",
+                "",
+            ),
+        ],
+        "sources": [
+            ("Wikipedia: Kilim", "https://en.wikipedia.org/wiki/Kilim"),
+            ("Wikipedia: Yörüks", "https://en.wikipedia.org/wiki/Y%C3%B6r%C3%BCks"),
+            (
+                "Weaving in the life of Antalya Yörüks (journal article)",
+                "https://bulprengpe.enu.kz/index.php/main/article/view/272",
+            ),
+        ],
+    },
+    {
+        "slug": "yoruk-black-goat-hair-tent",
+        "title": "Yörük black tent (kara çadır)",
+        "type": "textile",
+        "community": "yoruk",
+        "summary": "A nomad's tent woven from black goat hair, furnished with kilims, bags and "
+        "household goods, shown at the Antalya Museum.",
+        "description": "The 'kara çadır' (black tent), or 'kıl çadır' (goat-hair tent), is "
+        "typical of Yörük nomads and semi-nomads. Goat hair repels water, so the cloth keeps "
+        "out the rain, while its loose weave lets air through in the heat. Inside, woven "
+        "bags, kilims and cushions furnish the tent.",
+        "process": "Goat hair is spun into a strong, dark yarn and woven into cloth, which "
+        "is stretched over wooden poles and held with ropes.",
+        "cultural_context": "For most of the year the nomadic Yörüks lived in these dark "
+        "tents, moving between summer pastures in the mountains and winter camps on the "
+        "coast. The Sarıkeçili, about 200 families around Antalya and Mersin, are described "
+        "as the last Yörüks keeping the nomadic way of life.",
+        "maker": "Yörük nomads (museum reconstruction)",
+        "place": ("Antalya", "Türkiye", 36.89, 30.70),
+        "materials": [
+            ("Goat hair", "Black goats kept by the nomads", "Spun into a strong yarn; sheds water"),
+            ("Wood", "Mountain forests", "Tent poles"),
+            ("Wool", "Sheep", "Kilims, bags and cushions inside the tent"),
+        ],
+        "techniques": [
+            ("Weaving", "Goat-hair yarn woven into tent cloth"),
+        ],
+        "attributes": {"fibre": "Goat hair", "dye_source": "Undyed"},
+        "images": [
+            (
+                "Antalya Museum nomads tent 4900.jpg",
+                "A black goat-hair tent with an open front, furnished with kilims, bags and "
+                "gourds, in a museum",
+                "Yörük black tent and its interior. Antalya Museum",
+                "",
+            ),
+            (
+                "Antalya Museum nomads tent 4907.jpg",
+                "The same black tent seen from another side, with woven bags and pots inside",
+                "Another view of the tent",
+                "",
+            ),
+            (
+                "Antalya Museum nomads tent 4908.jpg",
+                "Inside the tent: woven bags, a low table with fruit and tea glasses on kilims",
+                "Inside the tent: woven bags and kilims",
+                "",
+            ),
+        ],
+        "sources": [
+            ("Wikipedia: Yörüks", "https://en.wikipedia.org/wiki/Y%C3%B6r%C3%BCks"),
+            (
+                "A Part of Yürük Life Style: Tents (Zeitschrift für die Welt der Türken)",
+                "https://dieweltdertuerken.org/index.php/ZfWT/article/view/253",
+            ),
+        ],
+    },
+    {
+        "slug": "dosemealti-carpet",
+        "title": "Döşemealtı carpet",
+        "type": "textile",
+        "community": "yoruk",
+        "summary": "A 20th-century knotted-pile carpet from Döşemealtı, north of Antalya, in "
+        "the Antalya Museum.",
+        "description": "Döşemealtı carpets come from the Döşemealtı area just north of "
+        "Antalya. Original Döşemealtı rugs were made by nomadic or semi-nomadic Yörük "
+        "tribes. Most examples in the Antalya Museum date from the early or mid 20th "
+        "century.",
+        "process": "Unlike a kilim, a carpet has a pile: short lengths of coloured wool are "
+        "knotted around the warp threads row by row, with rows of weft in between, and the "
+        "pile is then trimmed level.",
+        "cultural_context": "Yörük rugs were light and portable, suited to nomadic life; "
+        "demand fell as migration ended. The Antalya Museum's ethnographic section shows "
+        "Döşemealtı carpets among other regional weavings.",
+        "maker": "Yörük weavers of Döşemealtı (unnamed)",
+        "period": "20th century",
+        "place": ("Döşemealtı, Antalya", "Türkiye", 37.03, 30.60),
+        "materials": [("Wool", "Local sheep", "Spun, dyed and knotted as pile")],
+        "techniques": [("Pile knotting", "Wool knotted around the warp and trimmed")],
+        "attributes": {"fibre": "Wool"},
+        "images": [
+            (
+                "Antalya museum Döşemealtı carpet, 20th century 4895.jpg",
+                "Detail of a Döşemealtı carpet with a red field, blue and white border and "
+                "stepped motifs",
+                "Döşemealtı carpet, 20th century. Antalya Museum",
+                "",
+            ),
+            (
+                "Antalya museum A Döşemealtı carpet, “New”, Toplu 4900.jpg",
+                "A newer Döşemealtı carpet in the 'Toplu' pattern",
+                "A newer Döşemealtı carpet, 'Toplu' pattern. Antalya Museum",
+                "",
+            ),
+        ],
+        "sources": [
+            (
+                "Antalya Archaeological Museum: Döşemealtı rugs on display (Jozan)",
+                "https://www.jozan.net/antalya-archaeological-museum-dosemealti-rugs-on-display/",
+            ),
+            (
+                "Weaving in the life of Antalya Yörüks (journal article)",
+                "https://bulprengpe.enu.kz/index.php/main/article/view/272",
+            ),
+        ],
+    },
+    {
+        "slug": "midyat-telkari-silver-filigree",
+        "title": "Midyat telkari (silver filigree)",
+        "type": "jewellery",
+        "community": "syriac-tur-abdin",
+        "summary": "A silver filigree brooch from Midyat, made of fine silver wire curled and "
+        "soldered into an openwork elephant.",
+        "description": "Telkari is a form of filigree in silver and gold wire specific to "
+        "Midyat in Mardin Province, developed from the 15th century. Midyat's silver is "
+        "described as Syriac silver craft: handmade filigree ornaments. Craftsmen in the "
+        "region still make fine pieces today.",
+        "process": "Fine, pliable silver wire is curled, twisted and plaited into shapes, "
+        "framed with thicker wire for strength, and joined where the wires touch with "
+        "solder and a flux such as borax. Openwork filigree like this has no backing sheet.",
+        "cultural_context": "Midyat is a historic centre of the Assyrians in Turkey and was "
+        "long seen as the capital of Tur Abdin, the heartland of Syriac Christianity. The "
+        "Midyat Telkari Museum opened in December 2023 in an 1850 house built by an "
+        "Assyrian family.",
+        "maker": "Midyat telkari silversmith (unnamed)",
+        "place": ("Midyat, Mardin", "Türkiye", 37.4167, 41.3697),
+        "materials": [
+            ("Silver wire", "Drawn into very fine threads", "Curled and soldered into openwork"),
+        ],
+        "techniques": [
+            ("Filigree (telkari)", "Wire curled, twisted and soldered without a backing"),
+        ],
+        "attributes": {"metal": "Silver", "metal_technique": "Filigree"},
+        "images": [
+            (
+                "Midyat Silver Jewelry 1310249 Nevit.jpg",
+                "A silver filigree brooch in the shape of an elephant, made of curled wire",
+                "Silver filigree from Midyat",
+                "",
+            ),
+            (
+                "T.C. Midyat Beleiyesi Telkari Müzesi.jpg",
+                "Stone façade of the Midyat Telkari Museum with its sign above the door",
+                "Midyat Telkari Museum",
+                "",
+            ),
+        ],
+        "sources": [
+            ("Wikipedia: Midyat", "https://en.wikipedia.org/wiki/Midyat"),
+            ("Wikipedia: Filigree", "https://en.wikipedia.org/wiki/Filigree"),
+        ],
+    },
+    # ---- Other regions ----
+    {
+        "slug": "ainu-attus-robe",
+        "title": "Ainu attus robe",
+        "type": "textile",
+        "community": "ainu",
+        "summary": "A 19th-century Ainu coat woven from elm-bark fibre (attus), in the Tokyo "
+        "National Museum.",
+        "description": "Attus (also attush) is cloth woven by the Ainu of Hokkaido from tree "
+        "bark fibre, called ohyo. It is water-resistant and light, and is used mainly for "
+        "traditional Ainu robes. Nibutani in Biratori has produced attus since at least the "
+        "18th century, and Nibutani attus was recognised as a Traditional Craft of Japan in "
+        "2013.",
+        "process": "Inner bark is stripped mainly from lobed elm (Ulmus laciniata) or "
+        "Japanese lime, boiled, and dried into ohyo fibre, which is spun by hand into "
+        "twisted yarn. The yarn is woven on an Ainu backstrap loom, and seams are sewn with "
+        "ohyo.",
+        "cultural_context": "This coat has dark appliqué bands along the collar, front and "
+        "hems. Attus is still woven in Nibutani today.",
+        "maker": "Unrecorded Ainu weaver",
+        "period": "19th century",
+        "place": ("Hokkaido", "Japan", 43.2, 142.8),
+        "materials": [
+            (
+                "Elm bark fibre (ohyo)",
+                "Inner bark of lobed elm or Japanese lime",
+                "Boiled, dried and spun into yarn",
+            ),
+            ("Cotton cloth", "", "Dark bands sewn along the edges"),
+        ],
+        "techniques": [
+            ("Backstrap weaving", "Ohyo yarn woven on an Ainu backstrap loom"),
+            ("Appliqué", "Dark cloth bands sewn along the collar and hems"),
+        ],
+        "attributes": {
+            "loom_type": "Backstrap",
+            "fibre": "Elm bark fibre (ohyo)",
+        },
+        "images": [
+            (
+                "Coat, Ainu, Hokkaido, 1800s AD, attus (bast fiber) - Tokyo National Museum - "
+                "Ueno Park, Tokyo, Japan - DSC09077.jpg",
+                "A golden-brown attus coat with dark appliqué bands along the collar and hems",
+                "Ainu attus coat, 19th century. Tokyo National Museum",
+                "",
+            ),
+            (
+                "Attus Cloth.jpg",
+                "A roll of striped attus cloth on display",
+                "A roll of attus cloth. Upopoy National Ainu Museum",
+                "",
+            ),
+            (
+                "Ainu monogatari takekuma 08.jpg",
+                "Line drawings of the tools used to weave attus",
+                "Tools for weaving attus, from 'Ainu Monogatari' (1918)",
+                "",
+            ),
+        ],
+        "sources": [
+            ("Wikipedia: Ainu bark cloth", "https://en.wikipedia.org/wiki/Ainu_bark_cloth"),
+        ],
+    },
+    {
+        "slug": "guna-mola",
+        "title": "Guna mola (blouse panel)",
+        "type": "textile",
+        "community": "guna",
+        "summary": "A mola blouse panel from the San Blas Islands, made in layered cotton by "
+        "reverse appliqué, in the Honolulu Museum of Art.",
+        "description": "A mola is a handmade textile that forms part of the traditional "
+        "clothing of Guna women in Panama. In the Guna language, 'mola' means shirt or "
+        "clothing. A mola panel forms the front or back of a blouse, and the two panels are "
+        "often sold as a pair. Designs range from geometric patterns to flowers, sea "
+        "animals, birds and modern graphics.",
+        "process": "Several layers of cotton cloth in different colours are sewn together. "
+        "The maker cuts away parts of each layer and turns the edges under, so the design "
+        "appears in the colours below (reverse appliqué).",
+        "cultural_context": "Molas are made by women. The art likely began as geometric body "
+        "painting and moved to cloth after Spanish contact. Molas are credited with "
+        "strengthening the Guna's push for autonomy in Guna Yala.",
+        "maker": "Guna women of Wichubuala island (unnamed)",
+        "period": "20th century",
+        "place": ("Wichubuala, Guna Yala (San Blas Islands)", "Panama", 9.55, -78.90),
+        "materials": [("Cotton cloth", "Several layers in different colours", "Cut and stitched")],
+        "techniques": [
+            ("Reverse appliqué", "Layers cut away to reveal colours below, edges hand-sewn"),
+            ("Appliqué", "Small pieces sewn on top for details"),
+        ],
+        "attributes": {"loom_type": "None", "fibre": "Cotton"},
+        "images": [
+            (
+                "Mola (blouse panel), Cuna (Kuna) Indians, Honolulu Museum of Art, 3739.1.JPG",
+                "A red mola panel with two large stylised rays and fish outlined in black, "
+                "orange and yellow",
+                "Mola blouse panel from Wichubuala island, 20th century. Honolulu Museum of Art",
+                "",
+            ),
+            (
+                "Turtle in Mola blouse, Kuna peoples, San Blas Islands, Panama, 20th century, "
+                "cotton, polyester - Fernbank Museum of Natural History - DSC09997 "
+                "(cropped).JPG",
+                "Close-up of a mola with a red turtle covered in small coloured squares",
+                "Turtle mola, 20th century. Fernbank Museum of Natural History",
+                "",
+            ),
+            (
+                "Mola by Kuna women, Playon Chico.jpg",
+                "A Guna woman holding a mola in front of many molas for sale",
+                "Molas by Guna women, Playón Chico",
+                "",
+            ),
+        ],
+        "sources": [
+            ("Wikipedia: Mola (art form)", "https://en.wikipedia.org/wiki/Mola_(art_form)"),
+        ],
+    },
+    {
+        "slug": "wayuu-mochila",
+        "title": "Wayuu mochila bag",
+        "type": "textile",
+        "community": "wayuu",
+        "summary": "Crocheted Wayuu mochila bags with kanaas designs, from La Guajira.",
+        "description": "The mochila is the Wayuu's best-known weaving: a shoulder bag "
+        "crocheted by one woman, with designs called kanaas that depict society, daily "
+        "life, nature and the Wayuu world view. More complex designs make a bag more "
+        "valuable. Wayuu women also weave chinchorros (hammocks), backpacks, mats and "
+        "sandals.",
+        "process": "Each bag is crocheted by a single Wayuu woman and takes twenty to thirty "
+        "days, depending on the pattern. Traditionally the yarn was maguey cactus fibre.",
+        "cultural_context": "In Wayuu tradition, the spider Waleker taught Wayuu women to "
+        "weave. Girls learn weaving from elder women during their seclusion at puberty, and "
+        "weaving is one of the most important tasks for a Wayuu woman. Mochilas are now "
+        "sold in Colombia and abroad.",
+        "maker": "Wayuu women (unnamed)",
+        "period": "Contemporary",
+        "place": ("Riohacha, La Guajira", "Colombia", 11.54, -72.91),
+        "materials": [("Yarn", "Traditionally maguey cactus fibre", "Crocheted in colour bands")],
+        "techniques": [("Crochet", "One woman crochets the whole bag, 20–30 days per bag")],
+        "attributes": {"loom_type": "None", "fibre": "Maguey fibre (traditional)"},
+        "images": [
+            (
+                "Mochilas wayuu.png",
+                "Several brightly coloured crocheted Wayuu mochila bags",
+                "Mochilas handcrafted by the Wayuu",
+                "",
+            ),
+            (
+                "Artesanas Wayú.jpg",
+                "A Wayuu woman crocheting a mochila with a geometric design on the Riohacha "
+                "seafront",
+                "Wayuu artisan crocheting a mochila, Riohacha",
+                "",
+            ),
+            (
+                "Mochilas Wayuu, Museo del Oro Tayrona. Santa Marta.jpg",
+                "Rows of colourful Wayuu mochilas laid out under a building's overhang",
+                "Wayuu mochilas outside the Museo del Oro Tayrona, Santa Marta",
+                "",
+            ),
+        ],
+        "sources": [
+            (
+                "Colombia: The Art of Weaving – The Wayuu People (Comboni Missionaries)",
+                "https://combonimissionaries.ie/2018/02/09/colombia-the-art-of-weaving-the-wayuu-people/",
+            ),
+        ],
+    },
+    {
+        "slug": "shipibo-conibo-ceramic-vessel",
+        "title": "Shipibo-Conibo ceramic vessel",
+        "type": "pottery",
+        "community": "shipibo-conibo",
+        "summary": "A coil-built Shipibo-Conibo vessel painted with kené designs, made in 1968, "
+        "in the Museum of the Americas, Madrid.",
+        "description": "Shipibo-Conibo communities along Peru's Ucayali River have made "
+        "polychrome pottery for over 1,200 years. Only women make the pots, which are among "
+        "the largest and thinnest coil-built vessels of any Indigenous group in the "
+        "Americas. The painted designs, called kené, also appear on Shipibo textiles.",
+        "process": "The walls are built up in coils, each section dried in the sun, then "
+        "scraped and polished. A white or red slip is applied, and kené designs are painted "
+        "with small brushes. The pot is fired covered with ashes inside a metal pot over a "
+        "fire, then sealed with resin for a glossy finish.",
+        "cultural_context": "Kené reflects Shipibo cosmology, and each woman's patterns are "
+        "shaped by her dreams and visions. A chomo is a vessel for storing liquids such as "
+        "water and masato.",
+        "maker": "Shipibo-Conibo potter (unnamed)",
+        "year": 1968,
+        "place": ("Ucayali River, near Pucallpa", "Peru", -8.38, -74.55),
+        "materials": [
+            ("Clay", "Riverbanks of the Ucayali", "Coiled into thin walls"),
+            ("Slip and natural pigments", "White and red clays", "Painted kené designs"),
+            ("Resin", "Forest trees", "Seals the fired surface"),
+        ],
+        "techniques": [
+            ("Coiling", "Walls built in coils, sun-dried, scraped and polished"),
+            ("Kené painting", "Geometric designs painted with fine brushes"),
+        ],
+        "attributes": {"forming_method": "Coil", "vessel_form": "Jar"},
+        "images": [
+            (
+                "Shipibo vessel.jpg",
+                "A cream-coloured Shipibo-Conibo vessel with a face on the neck and dark kené "
+                "line designs",
+                "Shipibo vessel, 1968. Museum of the Americas, Madrid",
+                "",
+            ),
+            (
+                "Art textile par Sara Flores.jpg",
+                "Black and white kené design on cloth by the Shipibo artist Sara Flores",
+                "Kené on cloth by Sara Flores: the same designs painted on pottery",
+                "",
+            ),
+        ],
+        "sources": [
+            (
+                "Shipibo-Conibo ceramic vessel (Lam Museum of Anthropology, Wake Forest)",
+                "https://lammuseum.wfu.edu/?p=10417",
+            ),
+        ],
+    },
 ]
 
 
@@ -443,4 +887,12 @@ TAGS = {
     "sami-guksi-drinking-cup": ["birch burl", "drinking cup", "Sápmi"],
     "maori-kete-harakeke-basket": ["harakeke", "woven", "Aotearoa"],
     "navajo-squash-blossom-necklace": ["silver", "turquoise", "jewellery"],
+    "yoruk-kilim": ["wool", "kilim", "Anatolia", "nomadic"],
+    "yoruk-black-goat-hair-tent": ["goat hair", "nomadic", "Anatolia"],
+    "dosemealti-carpet": ["wool", "carpet", "Anatolia"],
+    "midyat-telkari-silver-filigree": ["silver", "filigree", "jewellery", "Mesopotamia"],
+    "ainu-attus-robe": ["bark fibre", "clothing", "woven"],
+    "guna-mola": ["cotton", "reverse appliqué", "clothing"],
+    "wayuu-mochila": ["crochet", "bag", "La Guajira"],
+    "shipibo-conibo-ceramic-vessel": ["hand-coiled", "painted", "kené"],
 }

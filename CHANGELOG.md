@@ -2,6 +2,15 @@
 
 All notable changes per release. Releases are tagged on GitHub (`vX.Y.Z`).
 
+## [v0.4.8] – 26 Oct 2026 · Eight more real crafts
+### Added
+- **8 more real examples** from public sources, with freely licensed Wikimedia Commons photos, credits and sources (#88). Four are from present-day Türkiye:
+  - **Yörük kilim** (slit-tapestry flatweave), **Yörük black tent** (kara çadır, woven goat hair) and **Döşemealtı carpet** (Antalya)
+  - **Midyat telkari**, silver filigree of the Syriac (Süryani) community of Tur Abdin
+- The other four: **Ainu attus robe** (elm-bark cloth, Hokkaido), **Guna mola** (reverse appliqué, Panama), **Wayuu mochila** (crochet bag, La Guajira) and a **Shipibo-Conibo ceramic vessel** with kené designs (Peru).
+- 6 new communities and starter tags (e.g. "Anatolia", "nomadic", "filigree").
+- **Commons photos** check: a GitHub workflow confirms that every photo used by the real examples exists on Wikimedia Commons and is freely licensed (runs when the examples change).
+
 ## [v0.4.7] – 26 Oct 2026 · Search by tag
 ### Added
 - **Tag** search box in the catalogue filters, next to Craft type and Community. It suggests the tags in use as you type, and also finds part of a tag ("dye" finds "natural dye"). Combines with the other filters; suggestions only include tags on crafts you can see.

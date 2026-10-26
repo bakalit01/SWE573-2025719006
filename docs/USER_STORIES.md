@@ -4,7 +4,7 @@ Source of truth for GitHub issues: `scripts/seed_github.py` turns every `### US-
 
 **Epics:** E0 Setup & DevOps · E1 Accounts · E2 Craft catalogue · E3 Flexible attributes · E4 Discovery · E5 Media · E6 Cultural protocols · E7 Administration · E8 Quality
 **Milestones:** M1 Demo (✅ 13 Oct) · M2 Contribute (✅ 25 Oct) · M3 MVP (wk 4) · M4 Enrich (wk 6) · M5 Final (wk 8) · buffer wk 9–10
-**Feedback items** (FB-01–FB-07) are listed at the [end of this file](#feedback-items); their issues are created by hand with the `feedback` label.
+**Feedback items** (FB-01–FB-08) are listed at the [end of this file](#feedback-items); their issues are created by hand with the `feedback` label.
 
 ## Delivery order
 
@@ -475,6 +475,7 @@ Feedback from reviews and demos, delivered as extra items. Each has a closed iss
 | FB-04 | [#71](https://github.com/bakalit01/SWE573-2025719006/issues/71) | 3D size and units from different countries: H × W × D in mm/cm/m/in/ft, weight in g/kg/oz/lb, converted values, local measure | v0.4.0 · 25 Oct |
 | FB-05 | [#77](https://github.com/bakalit01/SWE573-2025719006/issues/77) | "Other (type your own)" for craft type, community, units and choice fields; own details; user tags | v0.4.5 · 26 Oct |
 | FB-06 | [#80](https://github.com/bakalit01/SWE573-2025719006/issues/80) | Real-life examples instead of abstract samples: 9 real crafts from public sources with credited photos | v0.4.2–v0.4.3 · 26 Oct |
+| FB-08 | [#88](https://github.com/bakalit01/SWE573-2025719006/issues/88) | Eight more real crafts, four from Türkiye: Yörük kilim, Yörük black tent, Döşemealtı carpet, Midyat telkari; plus Ainu attus, Guna mola, Wayuu mochila, Shipibo-Conibo pottery | v0.4.8 · 26 Oct |
 | FB-07 | [#81](https://github.com/bakalit01/SWE573-2025719006/issues/81) | Blue tones based on Boğaziçi University colours (navy #1e4a8b, blue #8cc8ea) | v0.4.4 · 26 Oct |
 
 Bug fixed alongside: [#79](https://github.com/bakalit01/SWE573-2025719006/issues/79) maps and place search failed on the deployed site (v0.4.1).
