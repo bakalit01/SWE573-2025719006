@@ -28,7 +28,7 @@ Next: **M3 MVP** (search, roles, visibility and consent, steward review), due 8 
 | [M5 – Final product](https://github.com/bakalit01/SWE573-2025719006/milestone/6) | 6 Dec (week 8) | Hardened, documented, tested v1.0 |
 | Buffer | 7–20 Dec (weeks 9–10) | Feedback, polish, stretch goals, final presentation |
 
-![Home page in the Boğaziçi colours](docs/design/screenshots/14-home-bogazici-palette.png)
+![Home page](docs/design/screenshots/01-home.png)
 
 ## Documentation
 | Document | Contents |

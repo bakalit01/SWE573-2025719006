@@ -1,0 +1,55 @@
+name: UI screenshots
+# Retakes docs/design/screenshots/ with the real examples, Commons photos and OpenStreetMap
+# maps (which need internet access), then commits them to the same branch.
+# Runs when a pushed commit message contains "[take screenshots]", or manually.
+on:
+  push:
+    branches-ignore: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  screenshots:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[take screenshots]')
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: crafts
+          POSTGRES_PASSWORD: crafts
+          POSTGRES_DB: crafts
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U crafts" --health-interval 5s
+          --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://crafts:crafts@localhost:5432/crafts
+      DJANGO_SECRET_KEY: screenshots-only-not-secret
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+      - run: uv sync --all-groups --frozen
+      - run: uv run playwright install --with-deps chromium
+      - name: Load the real examples and start the site
+        run: |
+          uv run python manage.py migrate --noinput
+          uv run python manage.py seed_reference_crafts
+          nohup uv run python manage.py runserver 127.0.0.1:8000 > server.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:8000/healthz && break; sleep 1; done
+      - name: Take screenshots
+        run: uv run python scripts/take_screenshots.py http://127.0.0.1:8000 docs/design/screenshots
+      - name: Commit screenshots to this branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/design/screenshots
+          git diff --cached --quiet && { echo "No changes"; exit 0; }
+          git commit -m "UI screenshots taken by the 'UI screenshots' workflow"
+          git push
+      - if: failure()
+        run: tail -50 server.log
