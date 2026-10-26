@@ -10,7 +10,14 @@ A website to document and showcase Indigenous crafts. Registered users can recor
 | **Timeline** | 12 Oct – 6 Dec 2026 (feature-complete), buffer to 20 Dec |
 
 ## Project status
-**M2 Contribute delivered on 25 Oct 2026: [release v0.4.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.4.0).** Signed-in users can add, edit and delete crafts with photos, a map location, detailed materials and techniques, and sizes in their own units. (M1 running demo: 13 Oct, v0.2.0.)
+**Latest release: [v0.4.5](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.4.5) (26 Oct 2026).** M2 Contribute was delivered on 25 Oct ([v0.4.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.4.0)): signed-in users add, edit and delete crafts with photos, a map location, detailed materials and techniques, and sizes in their own units. Feedback since then is in v0.4.1–v0.4.5:
+
+- **9 real Indigenous craft examples** from public sources, with credited Wikimedia Commons photos, replace the fictional samples (FB-06)
+- **Boğaziçi University colours**: navy #1e4a8b and blue #8cc8ea (FB-07)
+- **"Other (type your own)"** for craft type, community, units and craft details, **your own details**, and **tags** (FB-05)
+- Maps fixed on the deployed site
+
+Next: **M3 MVP** (search, roles, visibility and consent, steward review), due 8 Nov.
 
 | Milestone | Due | Deliverable |
 |---|---|---|
@@ -21,18 +28,18 @@ A website to document and showcase Indigenous crafts. Registered users can recor
 | [M5 – Final product](https://github.com/bakalit01/SWE573-2025719006/milestone/6) | 6 Dec (week 8) | Hardened, documented, tested v1.0 |
 | Buffer | 7–20 Dec (weeks 9–10) | Feedback, polish, stretch goals, final presentation |
 
-![Craft page](docs/design/screenshots/09-craft-page-m2.png)
+![Home page in the Boğaziçi colours](docs/design/screenshots/14-home-bogazici-palette.png)
 
 ## Documentation
 | Document | Contents |
 |---|---|
 | [Project plan](docs/PROJECT_PLAN.md) | Milestones, week-by-week plan, **story sequence** (§3a), tech stack, workflow, risks |
 | [Requirements](docs/REQUIREMENTS.md) | Roles, functional & non-functional requirements, data model, ethics |
-| [User stories](docs/USER_STORIES.md) | 32 user stories + 8 technical tasks with acceptance criteria and delivery order |
+| [User stories](docs/USER_STORIES.md) | 32 user stories, 8 technical tasks and 7 feedback items (FB-01–FB-07) with acceptance criteria and delivery order |
 | [ADR-001 Tech stack](docs/adr/001-tech-stack.md) | Why Python / Django, hosting on Render |
 | [UI design](docs/design/README.md) | Screenshots of every page (desktop and phone) |
 | [Changelog](CHANGELOG.md) | What changed in each release |
-| [Issues](https://github.com/bakalit01/SWE573-2025719006/issues) | One issue per story/task (#24–#63); [Roadmap #65](https://github.com/bakalit01/SWE573-2025719006/issues/65) is the weekly checklist |
+| [Issues](https://github.com/bakalit01/SWE573-2025719006/issues) | One issue per story/task (#24–#63) and per feedback item (#68–#71, #77, #80, #81); [Roadmap #65](https://github.com/bakalit01/SWE573-2025719006/issues/65) is the weekly checklist |
 
 ## Getting started
 
@@ -54,18 +61,19 @@ uv run python manage.py runserver             # → http://localhost:8000
 
 **Tests:** `uv run pytest` (unit + integration). For the browser tests, first run `uv run playwright install chromium`.
 
-**Deploy (Render, free tier):** in Render choose **New → Blueprint**, then pick this repository. `render.yaml` creates the web service and the PostgreSQL database, then runs migrations and loads the sample data on start.
+**Deploy (Render, free tier):** in Render choose **New → Blueprint**, then pick this repository. `render.yaml` creates the web service and the PostgreSQL database, then runs migrations and loads the real examples on start (crafts added by users are kept).
 
-### Demo script (M2)
+### Demo script (M2 + feedback)
 1. **Browse crafts**, then open a real example (e.g. the Pomo basket by Jenny Hughes). Show the "At a glance" card (made by / from / in, size with its converted value, weight, local measure) and the Materials and Techniques sections.
 2. **Sign up** (password ≥ 10 characters), then open **Add a craft**.
 3. Pick a **craft type**: its own fields appear under "Craft details". Search a place or click the map to drop a pin; the place name fills in. Add two materials with origins, a technique, a size in inches or cm, and a photo with alt text.
-4. **Publish**. The craft page shows everything, with the size converted. Click **Edit**, change the year, then **Save as draft**: the record is now visible only to you (**My crafts**).
-5. Open your name in the header to see your **maker profile**; **Edit profile** to add a bio and community.
-6. Log out, then use **Forgot your password?** on the login page. The reset email appears in the server console in development.
+4. Show the flexibility: choose **Other (type your own)** for the community and type a name; for a weight, pick **Other** as the unit and type "okka"; add a row under **Your own details**; add **tags** or click a suggested one.
+5. **Publish**. The craft page shows everything, with the size converted (the typed weight unit is shown as written). Click a tag to see every craft with it. Click **Edit**, change the year, then **Save as draft**: the record is now visible only to you (**My crafts**).
+6. Open your name in the header to see your **maker profile**; **Edit profile** to add a bio and community.
+7. Log out, then use **Forgot your password?** on the login page. The reset email appears in the server console in development.
 
-**Adding crafts as an admin:** `/admin/` → Crafts. Materials, techniques and photos are inline rows.
+**Adding crafts as an admin:** `/admin/` → Crafts. Materials, techniques and photos are inline rows. Craft types and communities that users typed under "Other" can be listed with the **added by** filter in the admin.
 
 ## Working on the backlog
-- Branch per issue (`us-11-dynamic-fields`), PR with `Closes #n`, CI must pass.
+- Branch per issue (`us-11-dynamic-fields`), PR with `Closes #n`, CI must pass. Feedback items get an `FB-xx` issue with the `feedback` label.
 - Edit stories in `docs/USER_STORIES.md`. Then **Actions → Seed backlog issues → Run workflow** creates any new ones.

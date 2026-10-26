@@ -3,17 +3,19 @@
 Source of truth for GitHub issues: `scripts/seed_github.py` turns every `### US-xx` and `### T-xx` section below into an issue (labels + milestone included). Edit here, then re-run the script; existing issue titles are skipped.
 
 **Epics:** E0 Setup & DevOps · E1 Accounts · E2 Craft catalogue · E3 Flexible attributes · E4 Discovery · E5 Media · E6 Cultural protocols · E7 Administration · E8 Quality
-**Milestones:** M1 Demo (✅ 13 Oct) · M2 Contribute (wk 2) · M3 MVP (wk 4) · M4 Enrich (wk 6) · M5 Final (wk 8) · buffer wk 9–10
+**Milestones:** M1 Demo (✅ 13 Oct) · M2 Contribute (✅ 25 Oct) · M3 MVP (wk 4) · M4 Enrich (wk 6) · M5 Final (wk 8) · buffer wk 9–10
+**Feedback items** (FB-01–FB-07) are listed at the [end of this file](#feedback-items); their issues are created by hand with the `feedback` label.
 
 ## Delivery order
 
-Stories are grouped by epic below. This is the order to build them in (timeline accelerated on 13 Oct; M1 delivered). Details and dependencies are in [PROJECT_PLAN §3a](PROJECT_PLAN.md#3a-story-sequence-what-to-build-in-order).
+Stories are grouped by epic below. This is the order to build them in (timeline accelerated on 13 Oct; M1 and M2 delivered). Details and dependencies are in [PROJECT_PLAN §3a](PROJECT_PLAN.md#3a-story-sequence-what-to-build-in-order).
 
 | Week | Milestone | Items |
 |---|---|---|
 | 1 (12–18 Oct) | M1 | T-01 [#24](https://github.com/bakalit01/SWE573-2025719006/issues/24) → T-02 [#25](https://github.com/bakalit01/SWE573-2025719006/issues/25) → T-03 [#26](https://github.com/bakalit01/SWE573-2025719006/issues/26) → T-04 [#27](https://github.com/bakalit01/SWE573-2025719006/issues/27) → T-08 [#29](https://github.com/bakalit01/SWE573-2025719006/issues/29) → T-06 [#30](https://github.com/bakalit01/SWE573-2025719006/issues/30) → T-07 [#31](https://github.com/bakalit01/SWE573-2025719006/issues/31) → T-05 [#28](https://github.com/bakalit01/SWE573-2025719006/issues/28) → US-01 [#32](https://github.com/bakalit01/SWE573-2025719006/issues/32) → US-02 [#33](https://github.com/bakalit01/SWE573-2025719006/issues/33) → US-06 [#37](https://github.com/bakalit01/SWE573-2025719006/issues/37) → US-07 [#38](https://github.com/bakalit01/SWE573-2025719006/issues/38) |
 | 1 (14–18 Oct) | M2 | US-08 [#39](https://github.com/bakalit01/SWE573-2025719006/issues/39) → US-11 [#42](https://github.com/bakalit01/SWE573-2025719006/issues/42) → US-12 [#43](https://github.com/bakalit01/SWE573-2025719006/issues/43) |
-| 2 (19–25 Oct) | M2 | US-20 [#51](https://github.com/bakalit01/SWE573-2025719006/issues/51) → US-09 [#40](https://github.com/bakalit01/SWE573-2025719006/issues/40) → US-03 [#34](https://github.com/bakalit01/SWE573-2025719006/issues/34) → US-04 [#35](https://github.com/bakalit01/SWE573-2025719006/issues/35) |
+| 2 (19–25 Oct) | M2 | US-20 [#51](https://github.com/bakalit01/SWE573-2025719006/issues/51) → US-09 [#40](https://github.com/bakalit01/SWE573-2025719006/issues/40) → US-03 [#34](https://github.com/bakalit01/SWE573-2025719006/issues/34) → US-04 [#35](https://github.com/bakalit01/SWE573-2025719006/issues/35) → FB-01–FB-04 [#68](https://github.com/bakalit01/SWE573-2025719006/issues/68)–[#71](https://github.com/bakalit01/SWE573-2025719006/issues/71) ✅ |
+| 3 (26 Oct) | M2 feedback | FB-06 [#80](https://github.com/bakalit01/SWE573-2025719006/issues/80) → FB-07 [#81](https://github.com/bakalit01/SWE573-2025719006/issues/81) → FB-05 [#77](https://github.com/bakalit01/SWE573-2025719006/issues/77) ✅ |
 | 3 (26 Oct–1 Nov) | M3 | US-05 [#36](https://github.com/bakalit01/SWE573-2025719006/issues/36) → US-22 [#53](https://github.com/bakalit01/SWE573-2025719006/issues/53) → US-15 [#46](https://github.com/bakalit01/SWE573-2025719006/issues/46) → US-16 [#47](https://github.com/bakalit01/SWE573-2025719006/issues/47) |
 | 4 (2–8 Nov) | M3 | US-23 [#54](https://github.com/bakalit01/SWE573-2025719006/issues/54) → US-24 [#55](https://github.com/bakalit01/SWE573-2025719006/issues/55) → US-25 [#56](https://github.com/bakalit01/SWE573-2025719006/issues/56) → US-17 [#48](https://github.com/bakalit01/SWE573-2025719006/issues/48) → US-27 [#58](https://github.com/bakalit01/SWE573-2025719006/issues/58) |
 | 5 (9–15 Nov) | M4 | US-13 [#44](https://github.com/bakalit01/SWE573-2025719006/issues/44) → US-26 [#57](https://github.com/bakalit01/SWE573-2025719006/issues/57) → US-21 [#52](https://github.com/bakalit01/SWE573-2025719006/issues/52) |
@@ -32,9 +34,9 @@ Stories are grouped by epic below. This is the order to build them in (timeline 
 Create the repo structure, protect `main` (PR + 1 review + green CI), create the GitHub Project board (Backlog → Ready → In progress → In review → Done), add issue/PR templates and CONTRIBUTING.md.
 
 **Acceptance criteria**
-- [ ] `main` is protected
+- [ ] `main` is protected (PR + CI check `test`; no approving review, as a one-person project)
 - [ ] Project board exists and all seeded issues are on it
-- [ ] Issue and PR templates are in `.github/`
+- [x] Issue and PR templates are in `.github/`
 
 ### T-02 · Record Python/Django stack and hosting (ADR-001)
 **Epic:** E0 · **Milestone:** M1 · **Priority:** Must · **Points:** 1
@@ -256,6 +258,8 @@ As a **maker**, I want to **suggest a new craft type or field when mine is missi
 - [ ] Suggestion goes to the admin queue with my explanation
 - [ ] I'm notified when it is accepted or declined
 
+_Progress (FB-05, v0.4.5): makers can already type a new craft type under "Other"; it is added straight away and marked "added by" for review in the admin. Still to do: an explanation, an approve/decline queue and notifications._
+
 ---
 
 ## E4 — Discovery
@@ -279,7 +283,9 @@ As a **visitor**, I want to **filter by craft type, community, region, material 
 
 **Acceptance criteria**
 - [ ] Filters combine (AND) and are reflected in the URL (shareable)
-- [ ] Pagination of 24 per page
+- [x] Pagination of 24 per page
+
+_Progress: craft type, community and tag filters combine and are in the URL. Still to do: region, material and technique filters, and sorting._
 
 _Implementation: `django-filter` FilterSet + Django `Paginator`; HTMX partial reload of results._
 
@@ -291,6 +297,8 @@ As a **visitor**, I want to **see a page for each community with its self-descri
 **Acceptance criteria**
 - [ ] Community's own name is displayed first
 - [ ] Description is editable by that community's stewards
+
+_Progress: community links on craft pages open the catalogue filtered to that community; a page of its own is still to do._
 
 ### US-18 · Favourites and collections
 **Epic:** E4 · **Milestone:** M4 · **Priority:** Could · **Points:** 5
@@ -344,8 +352,10 @@ As a **maker or steward**, I want to **set a craft as Public, Members only, Comm
 
 **Acceptance criteria**
 - [ ] Visibility is enforced in pages, search, API and image URLs via a single `Craft.objects.visible_to(user)` queryset method
-- [ ] Default for new records is "Members only" until reviewed
+- [x] Default for new records is "Members only" until reviewed
 - [ ] Tests cover each visibility level for each role
+
+_Progress: Public and Members only work through `Craft.objects.visible_to(user)` on every page, with tests; drafts are visible only to their author. Still to do: Community only and Restricted (need roles, US-05)._
 
 ### US-23 · Record consent
 **Epic:** E6 · **Milestone:** M3 · **Priority:** Must · **Points:** 3
@@ -375,6 +385,8 @@ As **anyone**, I want to **report inaccurate or inappropriate content or request
 - [ ] Report form available on every craft page (no login required)
 - [ ] Reports appear in the steward/admin queue
 - [ ] A steward or admin can unpublish immediately
+
+_Progress: every craft page has a "Report or request removal" link that opens a pre-filled GitHub issue. Still to do: an on-site form and queue._
 
 ### US-26 · Traditional Knowledge labels
 **Epic:** E6 · **Milestone:** M4 · **Priority:** Should · **Points:** 3
@@ -448,3 +460,21 @@ As a **future maintainer**, I want **setup, architecture, data model and content
 **Acceptance criteria**
 - [ ] README, architecture overview, ADRs, data model diagram, steward guide
 - [ ] Final demo recorded and linked from the v1.0 release
+
+---
+
+## Feedback items
+
+Feedback from reviews and demos, delivered as extra items. Each has a closed issue with the `feedback` label.
+
+| ID | Issue | Feedback | Delivered |
+|---|---|---|---|
+| FB-01 | [#68](https://github.com/bakalit01/SWE573-2025719006/issues/68) | Region should be a geolocation: map pin, place search, place name and country, location precision for sensitive places | v0.4.0 · 25 Oct |
+| FB-02 | [#69](https://github.com/bakalit01/SWE573-2025719006/issues/69) | More detail on materials and techniques: where each material comes from, how it is used, how techniques are applied, "How it is made" | v0.4.0 · 25 Oct |
+| FB-03 | [#70](https://github.com/bakalit01/SWE573-2025719006/issues/70) | "Made" details: made by, made from (materials summary), made in (year, circa, or period) | v0.4.0 · 25 Oct |
+| FB-04 | [#71](https://github.com/bakalit01/SWE573-2025719006/issues/71) | 3D size and units from different countries: H × W × D in mm/cm/m/in/ft, weight in g/kg/oz/lb, converted values, local measure | v0.4.0 · 25 Oct |
+| FB-05 | [#77](https://github.com/bakalit01/SWE573-2025719006/issues/77) | "Other (type your own)" for craft type, community, units and choice fields; own details; user tags | v0.4.5 · 26 Oct |
+| FB-06 | [#80](https://github.com/bakalit01/SWE573-2025719006/issues/80) | Real-life examples instead of abstract samples: 9 real crafts from public sources with credited photos | v0.4.2–v0.4.3 · 26 Oct |
+| FB-07 | [#81](https://github.com/bakalit01/SWE573-2025719006/issues/81) | Blue tones based on Boğaziçi University colours (navy #1e4a8b, blue #8cc8ea) | v0.4.4 · 26 Oct |
+
+Bug fixed alongside: [#79](https://github.com/bakalit01/SWE573-2025719006/issues/79) maps and place search failed on the deployed site (v0.4.1).
