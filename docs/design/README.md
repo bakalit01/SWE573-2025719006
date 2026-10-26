@@ -10,7 +10,7 @@ To retake them, push a commit whose message contains `[take screenshots]` to any
 |---|---|---|
 | Home: hero, featured real examples, what the site is for | ![Home](screenshots/01-home.png) | ![Home on phone](screenshots/07-mobile-home.png) |
 | Catalogue: filters by craft type and community | ![Catalogue](screenshots/02-catalogue.png) | |
-| Catalogue filtered by a tag (`?tag=painted`), removable as a chip | ![Tag filter](screenshots/09-catalogue-tag-filter.png) | |
+| Catalogue filtered by a tag (`?tag=painted`); the Tag box suggests tags and also matches part of a tag | ![Tag filter](screenshots/09-catalogue-tag-filter.png) | |
 | Craft page: tags, gallery with photo credits and licences, "At a glance", map, materials and techniques in detail, details, sources, report link | ![Craft page](screenshots/03-craft-detail.png) | ![Craft page on phone](screenshots/08-mobile-detail.png) |
 
 ## Accounts

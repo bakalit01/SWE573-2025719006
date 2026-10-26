@@ -2,6 +2,10 @@
 
 All notable changes per release. Releases are tagged on GitHub (`vX.Y.Z`).
 
+## [v0.4.7] – 26 Oct 2026 · Search by tag
+### Added
+- **Tag** search box in the catalogue filters, next to Craft type and Community. It suggests the tags in use as you type, and also finds part of a tag ("dye" finds "natural dye"). Combines with the other filters; suggestions only include tags on crafts you can see.
+
 ## [v0.4.6] – 26 Oct 2026 · Fewer remarks
 ### Removed
 - The footer note "Records marked Sample data are fictional examples, not real cultural content".

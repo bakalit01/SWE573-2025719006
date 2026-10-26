@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import transaction
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.db.models.functions import Lower
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
@@ -64,13 +64,24 @@ def craft_list(request):
     crafts = _listed(request)
     craft_type = request.GET.get("type", "")
     community = request.GET.get("community", "")
-    tag = Tag.objects.filter(slug=request.GET.get("tag", "")).first()
+    # Tag search: an exact tag (from a tag link or a suggestion), else any tag containing the text.
+    tag_query = " ".join(request.GET.get("tag", "").lstrip("#").split())
+    tag = (
+        Tag.objects.filter(Q(slug=tag_query) | Q(name__iexact=tag_query)).first()
+        if tag_query
+        else None
+    )
+    tag_options = (
+        Tag.objects.filter(crafts__in=crafts).distinct().order_by(Lower("name"))
+    )  # only tags on crafts this user can see
     if craft_type:
         crafts = crafts.filter(craft_type__slug=craft_type)
     if community:
         crafts = crafts.filter(community__slug=community)
     if tag:
         crafts = crafts.filter(tags=tag)
+    elif tag_query:
+        crafts = crafts.filter(tags__name__icontains=tag_query).distinct()
 
     page = Paginator(crafts, PAGE_SIZE).get_page(request.GET.get("page"))
     filters = {
@@ -78,7 +89,7 @@ def craft_list(request):
         for k, v in {
             "type": craft_type,
             "community": community,
-            "tag": tag.slug if tag else "",
+            "tag": tag.slug if tag else tag_query,
         }.items()
         if v
     }
@@ -92,7 +103,8 @@ def craft_list(request):
             "communities": Community.objects.all(),
             "selected_type": craft_type,
             "selected_community": community,
-            "selected_tag": tag,
+            "tag_value": tag.name if tag else tag_query,
+            "tag_options": tag_options,
             "filter_query": urlencode(filters),
         },
     )

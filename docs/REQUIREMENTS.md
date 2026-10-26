@@ -54,7 +54,7 @@ Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oc
 | ID | Requirement | Priority | Milestone |
 |---|---|---|---|
 | FR-D1 | Keyword search across names, descriptions, materials, techniques | Must | M3 |
-| FR-D2 | Filter by craft type, community/nation, region, material, technique, tag | Must | M3 (type, community, tag ✅) |
+| FR-D2 | Filter by craft type, community/nation, region, material, technique, tag | Must | M3 (type, community, tag search ✅) |
 | FR-D3 | Filter by craft-type-specific attributes | Could | M4 |
 | FR-D4 | Pagination and sorting | Must | M3 |
 | FR-D5 | Maker and community pages listing related crafts | Should | M3 |

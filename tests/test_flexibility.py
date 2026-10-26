@@ -184,7 +184,26 @@ class TestTags:
         CraftFactory(title="Untagged bowl")
         html = client.get(reverse("crafts:list"), {"tag": "ceremonial"}).content.decode()
         assert "Carved pipe" in html and "Untagged bowl" not in html
-        assert "#ceremonial" in html
+        assert 'name="tag" value="ceremonial"' in html  # shown in the Tag box
+
+    def test_tag_search_by_name_or_part_of_a_tag(self, member_client, client, setup):
+        post(member_client, payload(setup, tags="Natural dye"))
+        CraftFactory(title="Untagged bowl")
+        for query in ("natural dye", "#Natural dye", "dye"):
+            html = client.get(reverse("crafts:list"), {"tag": query}).content.decode()
+            assert "Carved pipe" in html and "Untagged bowl" not in html, query
+        html = client.get(reverse("crafts:list"), {"tag": "nothing-like-this"}).content.decode()
+        assert "No crafts match these filters" in html
+
+    def test_tag_suggestions_only_from_visible_crafts(self, client, setup):
+        from crafts.models import Tag
+
+        hidden = CraftFactory(title="Members bowl", visibility=Craft.Visibility.MEMBERS)
+        hidden.tags.add(Tag.objects.create(name="secret-ish", slug="secret-ish"))
+        shown = CraftFactory(title="Public bowl")
+        shown.tags.add(Tag.objects.create(name="open", slug="open"))
+        html = client.get(reverse("crafts:list")).content.decode()
+        assert '<option value="open">' in html and "secret-ish" not in html
 
     def test_tag_limits(self, member_client, setup):
         many = ", ".join(f"tag {n}" for n in range(16))
