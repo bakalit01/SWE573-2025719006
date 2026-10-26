@@ -47,7 +47,7 @@ cp .env.example .env                 # edit DATABASE_URL if needed
 uv sync --all-groups
 uv run python manage.py migrate
 uv run python manage.py seed_reference_crafts  # 9 real examples from public sources
-uv run python manage.py seed_sample_data       # optional: fictional samples used by tests
+uv run python manage.py seed_sample_data --fictional  # optional: fictional samples used by tests
 uv run python manage.py createsuperuser       # for /admin/
 uv run python manage.py runserver             # → http://localhost:8000
 ```

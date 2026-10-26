@@ -74,9 +74,9 @@ class TestAttributes:
 
 class TestSampleData:
     def test_seed_is_idempotent_and_labelled(self):
-        call_command("seed_sample_data")
+        call_command("seed_sample_data", fictional=True)
         counts = (Craft.objects.count(), Media.objects.count(), AttributeDefinition.objects.count())
-        call_command("seed_sample_data")
+        call_command("seed_sample_data", fictional=True)
         assert (
             Craft.objects.count(),
             Media.objects.count(),
@@ -87,6 +87,6 @@ class TestSampleData:
         assert Craft.objects.values("craft_type").distinct().count() >= 4
 
     def test_every_sample_credits_maker_and_has_alt_text(self):
-        call_command("seed_sample_data")
+        call_command("seed_sample_data", fictional=True)
         assert not Craft.objects.filter(maker_credit="").exists()
         assert not Media.objects.filter(alt_text="").exists()

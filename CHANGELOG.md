@@ -2,6 +2,10 @@
 
 All notable changes per release. Releases are tagged on GitHub (`vX.Y.Z`).
 
+## [v0.4.3] – 26 Oct 2026 · Real examples on every deployment
+### Fixed
+- Deployments whose start-up command still runs `seed_sample_data` (for example a Render service created by hand rather than from the Blueprint) kept reloading the abstract placeholders. `seed_sample_data` now loads the real reference crafts and removes the placeholders by default; the fictional samples need `--fictional`.
+
 ## [v0.4.2] – 26 Oct 2026 · Real examples
 ### Changed
 - The abstract sample crafts are replaced by **9 real Indigenous craft examples** from public sources: Diné (Navajo) weaving, Acoma Pueblo pottery, Inuit stone carving, Maasai beadwork, a Pomo coiled basket by Jenny Hughes, a Haida bentwood box, a Sámi guksi, a Māori kete and a Navajo squash blossom necklace.

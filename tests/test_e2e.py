@@ -11,7 +11,7 @@ os.environ.setdefault("DJANGO_ALLOW_ASYNC_UNSAFE", "true")
 
 @pytest.fixture
 def seeded(transactional_db):
-    call_command("seed_sample_data")
+    call_command("seed_sample_data", fictional=True)
 
 
 def test_demo_flow(live_server, page, seeded):

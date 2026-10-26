@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
@@ -21,10 +22,28 @@ def _dec(value):
 
 
 class Command(BaseCommand):
-    help = "Create or update the fictional sample crafts (safe to run repeatedly)."
+    help = (
+        "Load demo data. By default this loads the real reference crafts and removes the "
+        "fictional samples; pass --fictional to load the fictional samples (used by tests)."
+    )
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--fictional",
+            action="store_true",
+            help="Load the 12 fictional sample crafts instead of the real reference crafts.",
+        )
+
+    def handle(self, *args, fictional=False, **options):
+        # Older deployments still run `seed_sample_data` on start-up; make that show the
+        # real examples so the site never falls back to the abstract placeholders.
+        if not fictional:
+            call_command("seed_reference_crafts", replace_samples=True, stdout=self.stdout)
+            return
+        self._seed_fictional()
 
     @transaction.atomic
-    def handle(self, *args, **options):
+    def _seed_fictional(self):
         communities = {}
         for c in data.COMMUNITIES:
             communities[c["slug"]], _ = Community.objects.update_or_create(
