@@ -19,10 +19,12 @@
       {% for c in communities %}<option value="{{ c.slug }}"{% if c.slug == selected_community %} selected{% endif %}>{{ c.name }}</option>{% endfor %}
     </select>
   </label>
-  {% if selected_tag %}<input type="hidden" name="tag" value="{{ selected_tag.slug }}">
-  <span class="tag-chip">#{{ selected_tag.name }} <a href="?{% if selected_type %}type={{ selected_type }}&amp;{% endif %}{% if selected_community %}community={{ selected_community }}{% endif %}" aria-label="Remove tag filter">×</a></span>{% endif %}
+  <label>Tag
+    <input type="search" name="tag" value="{{ tag_value }}" list="tag-options" placeholder="e.g. cedar, wool" autocomplete="off">
+  </label>
+  <datalist id="tag-options">{% for t in tag_options %}<option value="{{ t.name }}">{% endfor %}</datalist>
   <button class="btn btn-primary" type="submit">Apply</button>
-  {% if selected_type or selected_community or selected_tag %}<a href="{% url 'crafts:list' %}">Clear filters</a>{% endif %}
+  {% if selected_type or selected_community or tag_value %}<a href="{% url 'crafts:list' %}">Clear filters</a>{% endif %}
 </form>
 
 {% if crafts %}
