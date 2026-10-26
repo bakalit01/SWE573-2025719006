@@ -25,7 +25,8 @@ FREE = re.compile(r"^(CC0|CC BY(-SA)? [0-9.]+|Public domain|PD|GFDL|FAL)", re.I)
 def api(**params):
     params |= {"format": "json", "formatversion": "2"}
     url = API + "?" + urllib.parse.urlencode(params)
-    with urllib.request.urlopen(urllib.request.Request(url, headers=HEADERS), timeout=30) as r:
+    request = urllib.request.Request(url, headers=HEADERS)  # noqa: S310 (fixed https URL)
+    with urllib.request.urlopen(request, timeout=30) as r:  # noqa: S310
         return json.load(r)
 
 
@@ -97,8 +98,8 @@ def search(out_dir, terms):
             slug = re.sub(r"[^a-z0-9]+", "-", term.lower()).strip("-")
             preview = f"previews/{slug}-{n:02d}.jpg"
             try:
-                req = urllib.request.Request(item["thumb"], headers=HEADERS)
-                with urllib.request.urlopen(req, timeout=30) as r:
+                req = urllib.request.Request(item["thumb"], headers=HEADERS)  # noqa: S310
+                with urllib.request.urlopen(req, timeout=30) as r:  # noqa: S310
                     (out / preview).write_bytes(r.read())
                 item["preview"] = preview
             except Exception as error:  # noqa: BLE001
