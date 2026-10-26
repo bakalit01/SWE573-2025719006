@@ -12,7 +12,7 @@ A website to document and showcase Indigenous crafts. Registered users can recor
 ## Project status
 **Latest release: [v0.4.5](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.4.5) (26 Oct 2026).** M2 Contribute was delivered on 25 Oct ([v0.4.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.4.0)): signed-in users add, edit and delete crafts with photos, a map location, detailed materials and techniques, and sizes in their own units. Feedback since then is in v0.4.1–v0.4.5:
 
-- **17 real Indigenous craft examples** from public sources, with credited Wikimedia Commons photos, replace the fictional samples (FB-06); 8 added on 26 Oct, 4 of them from Türkiye (FB-08)
+- **22 real Indigenous craft examples** from public sources, with credited Wikimedia Commons photos, replace the fictional samples (FB-06); 4 from Türkiye (FB-08) and 5 from East Asia (FB-09)
 - **Boğaziçi University colours**: navy #1e4a8b and blue #8cc8ea (FB-07)
 - **"Other (type your own)"** for craft type, community, units and craft details, **your own details**, and **tags** (FB-05)
 - Maps fixed on the deployed site
@@ -54,7 +54,7 @@ docker compose up --build            # → http://localhost:8000
 cp .env.example .env                 # edit DATABASE_URL if needed
 uv sync --all-groups
 uv run python manage.py migrate
-uv run python manage.py seed_reference_crafts  # 17 real examples from public sources
+uv run python manage.py seed_reference_crafts  # 22 real examples from public sources
 uv run python manage.py seed_sample_data --fictional  # optional: fictional samples used by tests
 uv run python manage.py createsuperuser       # for /admin/
 uv run python manage.py runserver             # → http://localhost:8000

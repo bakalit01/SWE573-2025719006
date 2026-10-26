@@ -2,6 +2,15 @@
 
 All notable changes per release. Releases are tagged on GitHub (`vX.Y.Z`).
 
+## [v0.4.9] – 26 Oct 2026 · Crafts from East Asia
+### Added
+- **5 real examples from East Asia**, with freely licensed Wikimedia Commons photos, credits and sources (#90):
+  - China: **Miao silver headdress** (Guizhou) and **Li brocade** (Hainan, UNESCO-listed)
+  - Taiwan: **Atayal weaving** on the kongu backstrap loom
+  - Korea: **Hahoe masks** (Hahoetal), carved alder masks from Andong
+  - Japan: **Ryukyuan bingata**, stencil-dyed cloth from Okinawa
+- 5 new communities; starter tags including "East Asia".
+
 ## [v0.4.8] – 26 Oct 2026 · Eight more real crafts
 ### Added
 - **8 more real examples** from public sources, with freely licensed Wikimedia Commons photos, credits and sources (#88). Four are from present-day Türkiye:

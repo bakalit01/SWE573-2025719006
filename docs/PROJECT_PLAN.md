@@ -74,9 +74,10 @@ Each week's items build on the previous week's. "Depends on" lists what must be 
 | | | | | ➜ Release v0.4.1 ✅ 25 Oct | | |
 | 3 | 26 Oct | FB-06 | [#80](https://github.com/bakalit01/SWE573-2025719006/issues/80) | Real-life craft examples (feedback) | — | US-06 |
 |  |  | FB-07 | [#81](https://github.com/bakalit01/SWE573-2025719006/issues/81) | Boğaziçi University colours (feedback) | — | — |
+|  |  | FB-09 | [#90](https://github.com/bakalit01/SWE573-2025719006/issues/90) | Five crafts from East Asia (feedback) | — | FB-06 |
 |  |  | FB-08 | [#88](https://github.com/bakalit01/SWE573-2025719006/issues/88) | Eight more real crafts, four from Türkiye (feedback) | — | FB-06 |
 |  |  | FB-05 | [#77](https://github.com/bakalit01/SWE573-2025719006/issues/77) | "Other" for type, community, units; tags (feedback) | — | US-11 |
-| | | | | ➜ Releases v0.4.2–v0.4.8 ✅ 26 Oct | | |
+| | | | | ➜ Releases v0.4.2–v0.4.9 ✅ 26 Oct | | |
 | 3 | 26 Oct–1 Nov | US-05 | [#36](https://github.com/bakalit01/SWE573-2025719006/issues/36) | Roles and permissions | 5 | US-02 |
 |  |  | US-22 | [#53](https://github.com/bakalit01/SWE573-2025719006/issues/53) | Set visibility of a craft | 5 | US-05 |
 |  |  | US-15 | [#46](https://github.com/bakalit01/SWE573-2025719006/issues/46) | Search crafts | 5 | US-22 |

@@ -12,9 +12,9 @@ This project was developed with the help of an AI assistant.
 - **Planning:** the 10-week project plan, requirements, user stories with acceptance criteria, and their delivery order (`docs/`)
 - **GitHub set-up:** issue and pull request templates, labels and milestones, creating the backlog issues, and the CI, release, issue-seeding and screenshot workflows (`.github/`, `scripts/`)
 - **Code:** the Django application (`accounts/`, `communities/`, `crafts/`, `config/`), templates, CSS and JavaScript, and the automated tests (`tests/`)
-- **Content:** collecting the 17 real craft examples from public sources (museums, encyclopedias, Wikimedia Commons) with their sources and photo credits (`crafts/reference_data.py`)
+- **Content:** collecting the 22 real craft examples from public sources (museums, encyclopedias, Wikimedia Commons) with their sources and photo credits (`crafts/reference_data.py`)
 - **Documentation and presentations:** README, changelog, design notes and screenshots, ADR, and the progress presentation slides
-- **Feedback rounds:** turning instructor and user feedback (FB-01 to FB-08) into issues and changes
+- **Feedback rounds:** turning instructor and user feedback (FB-01 to FB-09) into issues and changes
 
 ## How it was used
 - The author set the goals, scope and priorities, gave feedback on each version, and decided what to keep.

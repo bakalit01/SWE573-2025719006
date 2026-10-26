@@ -24,6 +24,15 @@ COMMUNITIES = [
     ("guna", "Guna (Kuna)", "Guna Yala (San Blas Islands), Panama"),
     ("wayuu", "Wayuu", "La Guajira peninsula, Colombia and Venezuela"),
     ("shipibo-conibo", "Shipibo-Conibo", "Ucayali River, Peruvian Amazon"),
+    ("miao", "Miao", "Guizhou and neighbouring provinces, southern China"),
+    ("li-hainan", "Li", "Hainan Island, China"),
+    ("atayal", "Atayal", "Northern and central mountains of Taiwan"),
+    (
+        "hahoe-andong",
+        "Hahoe village community",
+        "Hahoe and Byeongsan villages, Andong, South Korea",
+    ),
+    ("ryukyuan", "Ryukyuan (Okinawan)", "Okinawa and the Ryukyu Islands, Japan"),
 ]
 
 NARA_CREDIT = "U.S. National Archives (NARA), 1933 · Public domain"
@@ -873,6 +882,295 @@ CRAFTS = [
             ),
         ],
     },
+    # ---- East Asia ----
+    {
+        "slug": "miao-silver-headdress",
+        "title": "Miao silver headdress",
+        "type": "jewellery",
+        "community": "miao",
+        "summary": "A mid-20th-century Miao woman's headdress of silver, glass beads and wire "
+        "from Guizhou, in the Textile Museum of Canada.",
+        "description": "Miao silver includes headdresses, combs, earrings, necklaces, "
+        "breastplates, bracelets and rings; some pieces weigh up to twenty pounds. Guizhou "
+        "Province is home to the largest Miao population. The ornaments are worn mainly at "
+        "large festivals.",
+        "process": "Male silversmiths make the ornaments by casting, smelting, forging, "
+        "repoussé (hammering from the back), engraving, knitting, coiling and cutting the "
+        "silver.",
+        "cultural_context": "Silver stands for light, the moon, fertility and protection, and "
+        "shows a woman's wealth. Families add pieces for their daughters over time as they "
+        "can afford them; at marriage, silver serves as a dowry and is passed down from "
+        "mother to daughter.",
+        "maker": "Miao silversmith (unnamed)",
+        "period": "Mid 20th century",
+        "place": ("Guizhou Province", "China", 26.6, 106.7),
+        "materials": [
+            ("Silver", "Worked by Miao silversmiths", "Hammered, cast and coiled into flowers"),
+            ("Glass beads", "", "Set among the silver ornaments"),
+            ("Wire", "", "Joins the silver parts"),
+        ],
+        "techniques": [
+            ("Repoussé", "Silver hammered from the back into relief"),
+            ("Coiling and casting", "Wire coiled and small parts cast"),
+        ],
+        "attributes": {"metal": "Silver", "stones": "Glass beads", "metal_technique": "Hammered"},
+        "images": [
+            (
+                "Woman's headdress, Miao people, Guizhou province, China, mid 20th century, "
+                "silver, glass beads, wire - Textile Museum of Canada - DSC00845.JPG",
+                "A tall Miao silver headdress covered in small silver flowers and leaves",
+                "Miao woman's headdress, Guizhou, mid 20th century. Textile Museum of Canada",
+                "",
+            ),
+            (
+                "Silver headdress of the Miao ethnic group in Huangping.jpg",
+                "A Miao silver headdress with a bird on top, in a museum case",
+                "Miao silver headdress from Kaitang, Huangping",
+                "",
+            ),
+            (
+                "Bracelet - Yunnan Nationalities Museum - DSC04076.JPG",
+                "A wide Miao silver bracelet with pierced and carved flowers",
+                "Miao pierced flower-carved silver bracelet. Yunnan Nationalities Museum",
+                "",
+            ),
+        ],
+        "sources": [
+            (
+                "Miao: Masters of Silver (Bowers Museum exhibition)",
+                "https://www.bowers.org/exhibitions/current-exhibitions/miao-masters-of-silver",
+            ),
+        ],
+    },
+    {
+        "slug": "li-brocade",
+        "title": "Li brocade",
+        "type": "textile",
+        "community": "li-hainan",
+        "summary": "Li women weaving brocade on a backstrap loom, a textile tradition of "
+        "Hainan Island listed by UNESCO.",
+        "description": "Li women of Hainan spin, dye, weave and embroider cotton, hemp and "
+        "other fibres into clothing and other everyday items. The techniques include "
+        "double-face embroidery and single-face jacquard weaving. Communities still grow "
+        "and harvest the plants used for threads and dyes.",
+        "process": "Fibres are spun into thread and dyed with plant dyes. The weaver sits "
+        "on the ground with the warp stretched between her feet and a strap around her "
+        "back (a backstrap loom), and picks the pattern into the weave by hand.",
+        "cultural_context": "The Li had no written language, so the patterns record the "
+        "history, legends, beliefs and traditions of Li culture. Skills were passed from "
+        "mothers to daughters. UNESCO listed the techniques as in need of urgent "
+        "safeguarding in 2009, when only about 1,000 mostly older practitioners remained, "
+        "and moved them to the Representative List in 2024.",
+        "maker": "Li weavers of Hainan",
+        "period": "Contemporary",
+        "place": ("Hainan Island", "China", 19.2, 109.7),
+        "materials": [
+            ("Cotton and hemp", "Grown and harvested by Li communities", "Spun into thread"),
+            ("Plant dyes", "Plants grown and gathered locally", "Dye the thread"),
+        ],
+        "techniques": [
+            ("Backstrap weaving", "Warp tensioned between the weaver's feet and back"),
+            ("Single-face jacquard weaving", "Pattern picked into one face of the cloth"),
+            ("Double-face embroidery", "Embroidery that looks the same on both sides"),
+        ],
+        "attributes": {
+            "loom_type": "Backstrap",
+            "fibre": "Cotton and hemp",
+            "dye_source": "Natural",
+        },
+        "images": [
+            (
+                "Li Ethnic Group.jpg",
+                "An older Li woman seated on the floor weaving striped brocade on a backstrap loom",
+                "Traditional Li brocade weaving, Hainan",
+                "",
+            ),
+            (
+                "Li brocade weaver Yan Zhang.jpg",
+                "Li brocade weaver Yan Zhang seated at a backstrap loom with striped cloth, waving",
+                "Li brocade weaver Yan Zhang at her backstrap loom",
+                "",
+            ),
+            (
+                "Art du tissage des Li.jpg",
+                "A Li weaver using her feet to stretch the warp of her loom",
+                "Li weaving: the weaver's feet keep the warp taut",
+                "",
+            ),
+        ],
+        "sources": [
+            (
+                "UNESCO: Traditional Li textile techniques",
+                "https://ich.unesco.org/en/RL/traditional-li-textile-techniques-spinning-"
+                "dyeing-weaving-and-embroidering-02153",
+            ),
+        ],
+    },
+    {
+        "slug": "atayal-weaving",
+        "title": "Atayal weaving",
+        "type": "textile",
+        "community": "atayal",
+        "summary": "An Atayal weaver at a backstrap loom in Tbulan, Taichung, weaving "
+        "red-and-black striped cloth.",
+        "description": "Atayal women have woven on the kongu, a portable backstrap loom worn "
+        "around the waist and used sitting on the ground, for generations. Weaving marks "
+        "the stages of life, from baby blankets to funeral blankets, and for the Atayal it "
+        "is a cultural record of the weaver's life and creations.",
+        "process": "Ramie plants are grown and processed into fibre, spun into thread and "
+        "dyed. The weaver sits on the ground with the kongu's strap around her waist.",
+        "cultural_context": "Atayal textiles hold personal memories, cultural stories and "
+        "ancestral connections. Weaver Yuma Taru has worked since 1991 to revive Atayal "
+        "weaving, growing ramie on tribal land; she was named a National Living Treasure "
+        "in 2006.",
+        "maker": "Atayal weaver, Tbulan (unnamed)",
+        "year": 2023,
+        "place": ("Tbulan, Heping District, Taichung", "Taiwan", 24.2, 121.1),
+        "materials": [
+            ("Ramie", "Grown on tribal land", "Processed, spun and dyed into thread"),
+        ],
+        "techniques": [
+            ("Backstrap weaving (kongu)", "Portable loom worn around the waist"),
+        ],
+        "attributes": {"loom_type": "Backstrap", "fibre": "Ramie"},
+        "images": [
+            (
+                "Weaving in Tbulan 2023-04-14.jpg",
+                "An Atayal weaver in a red patterned jacket seated at a backstrap loom "
+                "weaving black and white cloth",
+                "Weaving in Tbulan, 2023",
+                "",
+            ),
+        ],
+        "sources": [
+            (
+                "Taichung City: An Exploration of the Atayal Horizontal Belt Loom",
+                "https://english.taichung.gov.tw/3000847/post",
+            ),
+            ("Wikipedia: Yuma Taru", "https://en.wikipedia.org/wiki/Yuma_Taru"),
+        ],
+    },
+    {
+        "slug": "hahoe-masks",
+        "title": "Hahoe masks (Hahoetal)",
+        "type": "carving",
+        "community": "hahoe-andong",
+        "summary": "Carved wooden masks of the Hahoe mask dance drama from Andong, shown in "
+        "the Hahoe World Mask Museum.",
+        "description": "Hahoetal are carved from solid alder wood, unlike most Korean masks, "
+        "which are made of gourds or papier-mâché. There were twelve original masks, of "
+        "which nine survive; together with the Byeongsan masks they are National Treasure "
+        "No. 121. Characters include the aristocrat (yangban), scholar (seonbi), monk "
+        "(jung), butcher (baekjeong), bride (gaksi) and concubine (bune).",
+        "process": "Each mask is carved from a block of alder. The faces are asymmetrical, "
+        "so their expression seems to change with the angle; some have a separate jaw "
+        "tied on with string, which widens the range of expression.",
+        "cultural_context": "The masks are worn in the Hahoe byeolsin-gut talnori, ritual "
+        "dance dramas that honour local deities and drive out evil spirits, dating to the "
+        "12th century. Legend says a young man named Heo carved them in secret after a "
+        "dream; he died before finishing the servant mask, Imae, which is why it has no "
+        "chin. The masks are considered sacred and are kept in shrines.",
+        "maker": "Hahoe mask carvers; the originals are attributed by legend to Heo",
+        "place": ("Hahoe village, Andong", "South Korea", 36.54, 128.52),
+        "materials": [("Alder wood", "Alder trees", "Carved from a solid block")],
+        "techniques": [
+            ("Wood carving", "Asymmetrical faces carved from solid alder"),
+            ("Hinged jaw", "Some jaws carved separately and tied on with string"),
+        ],
+        "attributes": {"carved_material": "Alder wood"},
+        "images": [
+            (
+                "Hahoe World Mask Museum 05.jpg",
+                "Two carved wooden masks, the smiling aristocrat and the butcher",
+                "Yangban (aristocrat) and Baekjeong (butcher) masks. Hahoe World Mask Museum",
+                "",
+            ),
+            (
+                "Hahoe World Mask Museum 06.jpg",
+                "Two carved wooden masks, the monk and the scholar",
+                "Jung (monk) and Seonbi (scholar) masks",
+                "",
+            ),
+            (
+                "Hahoe World Mask Museum 01.jpg",
+                "A dark carved wooden Byeongsan mask with long cords",
+                "Byeongsan mask",
+                "",
+            ),
+            (
+                "Hahoe Byeolsingut Tallori 03.jpg",
+                "Masked performers in white in front of an audience at Hahoe",
+                "Hahoe byeolsin-gut talnori performance, Andong",
+                "",
+            ),
+        ],
+        "sources": [
+            ("Wikipedia: Hahoetal", "https://en.wikipedia.org/wiki/Hahoetal"),
+        ],
+    },
+    {
+        "slug": "ryukyuan-bingata",
+        "title": "Ryukyuan bingata",
+        "type": "textile",
+        "community": "ryukyuan",
+        "summary": "A 19th-century dress in bingata stencil dyeing with bamboo, crane and "
+        "plum on white ramie, from the Ryukyu Kingdom, in the Tokyo National Museum.",
+        "description": "Bingata is a stencilled resist-dyeing technique from Okinawa, known "
+        "for busy, repeating patterns of flowers, birds, fish, rivers and clouds in bright "
+        "colours. It dates to the Ryukyu Kingdom; the oldest known piece, found on "
+        "Kumejima, is from the late 15th century. It is still worn at Ryukyuan festivals "
+        "and performances.",
+        "process": "Stencils are cut from layers of mulberry paper glued with persimmon "
+        "tannin. A rice-paste resist is applied through the stencil, then colours are "
+        "brushed on from light to dark, nine to eighteen in one design. The cloth is "
+        "steamed, the background resisted and painted, the colours set, and the paste "
+        "washed out.",
+        "cultural_context": "Bingata kimono were costly and worn mainly by royalty and the "
+        "wealthy; only the royal family wore yellow. The Battle of Okinawa destroyed the "
+        "workshops; after the war Eiki Shiroma recovered original stencils and helped "
+        "revive the craft, which his son Eijun continues.",
+        "maker": "Ryukyuan bingata dyers (unnamed)",
+        "period": "19th century",
+        "place": ("Shuri, Okinawa", "Japan", 26.22, 127.72),
+        "materials": [
+            ("Ramie cloth", "", "White ground of this dress"),
+            (
+                "Pigments and plant dyes",
+                "Imported pigments; indigo and local plants",
+                "Brushed on through the stencil resist",
+            ),
+            ("Rice paste", "Boiled rice and rice bran", "Resist that keeps areas undyed"),
+            ("Mulberry paper", "", "Layered and cut into stencils"),
+        ],
+        "techniques": [
+            ("Stencil resist dyeing", "Rice paste applied through paper stencils"),
+            ("Hand painting", "Colours brushed on from light to dark"),
+        ],
+        "attributes": {"loom_type": "None", "fibre": "Ramie (this dress)", "dye_source": "Mixed"},
+        "images": [
+            (
+                "Dress in Bingata Stencil Dyeing, Okinawa Main Island, Second Sho Dynasty, "
+                "Ryukyu Kingdom, 19th century, view 2, bamboo, crane, and plum design on white "
+                "ramie ground, hemp - Tokyo National Museum - DSC05389.JPG",
+                "A white robe dyed with bamboo, cranes and plum blossoms in blue, red and yellow",
+                "Bingata dress, Ryukyu Kingdom, 19th century. Tokyo National Museum",
+                "",
+            ),
+            (
+                "Fragment from Okinawa, 19th century, Honolulu Museum of Art 3044.1.JPG",
+                "A silk bingata fragment with pink, red and blue floral and cloud patterns",
+                "Bingata fragment, Okinawa, 19th century. Honolulu Museum of Art",
+                "",
+            ),
+            (
+                "Bingata Dyeing.jpg",
+                "Black-and-white photograph of dyers working on long lengths of cloth",
+                "Bingata dyeing in Okinawa (pre-war photograph)",
+                "",
+            ),
+        ],
+        "sources": [("Wikipedia: Bingata", "https://en.wikipedia.org/wiki/Bingata")],
+    },
 ]
 
 
@@ -895,4 +1193,9 @@ TAGS = {
     "guna-mola": ["cotton", "reverse appliqué", "clothing"],
     "wayuu-mochila": ["crochet", "bag", "La Guajira"],
     "shipibo-conibo-ceramic-vessel": ["hand-coiled", "painted", "kené"],
+    "miao-silver-headdress": ["silver", "jewellery", "festival", "East Asia"],
+    "li-brocade": ["backstrap loom", "cotton", "UNESCO", "East Asia"],
+    "atayal-weaving": ["backstrap loom", "ramie", "East Asia"],
+    "hahoe-masks": ["mask", "alder wood", "dance", "East Asia"],
+    "ryukyuan-bingata": ["stencil dyeing", "clothing", "East Asia"],
 }
