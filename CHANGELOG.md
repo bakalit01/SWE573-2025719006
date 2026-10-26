@@ -2,6 +2,11 @@
 
 All notable changes per release. Releases are tagged on GitHub (`vX.Y.Z`).
 
+## [v0.4.4] – 26 Oct 2026 · Boğaziçi colours
+### Changed
+- New colour scheme based on Boğaziçi University's corporate colours (Kurumsal Kimlik Kılavuzu 2020): **navy #1e4a8b** (PANTONE 7686C) for links, buttons, the header rule and the hero; **blue #8cc8ea** (PANTONE 297C) for highlights and the woven pattern; cool blue-white backgrounds. Contrast stays at WCAG AA or better.
+- Favicon and map highlight use the same colours. Status colours (red errors, amber drafts) are unchanged.
+
 ## [v0.4.3] – 26 Oct 2026 · Real examples on every deployment
 ### Fixed
 - Deployments whose start-up command still runs `seed_sample_data` (for example a Render service created by hand rather than from the Blueprint) kept reloading the abstract placeholders. `seed_sample_data` now loads the real reference crafts and removes the placeholders by default; the fictional samples need `--fictional`.
