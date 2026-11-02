@@ -84,6 +84,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
+    "accounts.backends.EnvAdminBackend",  # admin from DJANGO_SUPERUSER_* variables
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
@@ -132,3 +133,5 @@ SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
 REPO_URL = env("REPO_URL", default="https://github.com/bakalit01/SWE573-2025719006")
 APP_VERSION = env("APP_VERSION", default="v0.6.1")
+# Render sets RENDER_GIT_COMMIT; shown in the footer so you can see which code is live.
+APP_COMMIT = env("RENDER_GIT_COMMIT", default="")[:7]
