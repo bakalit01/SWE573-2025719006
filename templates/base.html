@@ -61,7 +61,7 @@
 
   <footer class="site-footer">
     <div class="container footer-row">
-      <p>Built for SWE 573 · <a href="{{ REPO_URL }}">Source on GitHub</a> · {{ APP_VERSION }}</p>
+      <p>Built for SWE 573 · <a href="{{ REPO_URL }}">Source on GitHub</a> · {{ APP_VERSION }}{% if APP_COMMIT %} ({{ APP_COMMIT }}){% endif %}</p>
     </div>
   </footer>
   {% block extra_body %}{% endblock extra_body %}

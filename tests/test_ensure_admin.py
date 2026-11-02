@@ -50,3 +50,33 @@ def test_site_login_ignores_capitals():
     User.objects.create_user("Maker@Example.com", PASSWORD)
     r = Client().post("/accounts/login/", {"login": "MAKER@example.com", "password": PASSWORD})
     assert r.status_code == 302
+
+
+@pytest.mark.django_db
+def test_login_with_the_variables_creates_admin_even_if_start_step_never_ran(monkeypatch):
+    monkeypatch.setenv("DJANGO_SUPERUSER_EMAIL", "Ege@Example.com ")
+    monkeypatch.setenv("DJANGO_SUPERUSER_PASSWORD", PASSWORD + "\n")  # pasted with a newline
+    assert not User.objects.exists()
+    r = _login("ege@example.com")
+    assert r.status_code == 302
+    assert Client().get("/admin/").status_code == 302  # fresh client is not logged in
+    user = User.objects.get()
+    assert user.role == "admin" and user.is_superuser and user.check_password(PASSWORD)
+
+
+@pytest.mark.django_db
+def test_wrong_password_does_not_create_or_change_the_admin(monkeypatch):
+    monkeypatch.setenv("DJANGO_SUPERUSER_EMAIL", "ege@example.com")
+    monkeypatch.setenv("DJANGO_SUPERUSER_PASSWORD", PASSWORD)
+    assert _login("ege@example.com", "wrong-password-1").status_code == 200
+    assert _login("someone@example.com").status_code == 200
+    assert not User.objects.exists()
+
+
+@pytest.mark.django_db
+def test_admin_login_from_variables_reaches_admin_index(monkeypatch):
+    monkeypatch.setenv("DJANGO_SUPERUSER_EMAIL", "ege@example.com")
+    monkeypatch.setenv("DJANGO_SUPERUSER_PASSWORD", PASSWORD)
+    c = Client()
+    c.post("/admin/login/?next=/admin/", {"username": "Ege@example.com", "password": PASSWORD})
+    assert c.get("/admin/").status_code == 200
