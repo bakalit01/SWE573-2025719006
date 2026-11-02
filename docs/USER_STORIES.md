@@ -3,7 +3,7 @@
 Source of truth for GitHub issues: `scripts/seed_github.py` turns every `### US-xx` and `### T-xx` section below into an issue (labels + milestone included). Edit here, then re-run the script; existing issue titles are skipped.
 
 **Epics:** E0 Setup & DevOps · E1 Accounts · E2 Craft catalogue · E3 Flexible attributes · E4 Discovery · E5 Media · E6 Cultural protocols · E7 Administration · E8 Quality
-**Milestones:** M1 Demo (✅ 13 Oct) · M2 Contribute (✅ 25 Oct) · M3 MVP (wk 4) · M4 Enrich (wk 6) · M5 Final (wk 8) · buffer wk 9–10
+**Milestones:** M1 Demo (✅ 13 Oct) · M2 Contribute (✅ 25 Oct) · M3 MVP (✅ 2 Nov) · M4 Enrich (wk 6) · M5 Final (wk 8) · buffer wk 9–10
 **Feedback items** (FB-01–FB-09) are listed at the [end of this file](#feedback-items); their issues are created by hand with the `feedback` label.
 
 ## Delivery order
@@ -153,9 +153,9 @@ As a **maker**, I want to **edit my display name, bio, photo and community affil
 As an **admin**, I want **users to have roles (member, maker, steward, admin)**, so that **people only do what they are allowed to**.
 
 **Acceptance criteria**
-- [ ] Permissions are enforced on the server, not only hidden in the UI
-- [ ] Admin can change a user's role
-- [ ] Automated tests cover each role's allowed/denied actions
+- [x] Permissions are enforced on the server, not only hidden in the UI
+- [x] Admin can change a user's role
+- [x] Automated tests cover each role's allowed/denied actions
 
 ---
 
@@ -270,9 +270,9 @@ _Progress (FB-05, v0.4.5): makers can already type a new craft type under "Other
 As a **visitor**, I want to **search by keyword**, so that **I can find crafts by name, material, technique or community**.
 
 **Acceptance criteria**
-- [ ] Searches titles, all names, description, materials, techniques
-- [ ] Restricted records never appear for unauthorized users
-- [ ] Empty state suggests clearing filters
+- [x] Searches titles, all names, description, materials, techniques
+- [x] Restricted records never appear for unauthorized users
+- [x] Empty state suggests clearing filters
 
 _Implementation: PostgreSQL full-text (`SearchVector` + `SearchRank`) with `TrigramSimilarity` for spelling variants; GIN indexes._
 
@@ -282,10 +282,9 @@ _Implementation: PostgreSQL full-text (`SearchVector` + `SearchRank`) with `Trig
 As a **visitor**, I want to **filter by craft type, community, region, material and technique, and sort results**, so that **I can narrow what I see**.
 
 **Acceptance criteria**
-- [ ] Filters combine (AND) and are reflected in the URL (shareable)
+- [x] Filters combine (AND) and are reflected in the URL (shareable)
 - [x] Pagination of 24 per page
 
-_Progress: craft type, community and tag filters combine and are in the URL. Still to do: region, material and technique filters, and sorting._
 
 _Implementation: `django-filter` FilterSet + Django `Paginator`; HTMX partial reload of results._
 
@@ -295,10 +294,9 @@ _Implementation: `django-filter` FilterSet + Django `Paginator`; HTMX partial re
 As a **visitor**, I want to **see a page for each community with its self-description and crafts**, so that **I understand crafts in their cultural context**.
 
 **Acceptance criteria**
-- [ ] Community's own name is displayed first
-- [ ] Description is editable by that community's stewards
+- [x] Community's own name is displayed first
+- [x] Description is editable by that community's stewards
 
-_Progress: community links on craft pages open the catalogue filtered to that community; a page of its own is still to do._
 
 ### US-18 · Favourites and collections
 **Epic:** E4 · **Milestone:** M4 · **Priority:** Could · **Points:** 5
@@ -351,11 +349,10 @@ As a **community steward**, I want to **mark images as culturally sensitive so t
 As a **maker or steward**, I want to **set a craft as Public, Members only, Community only or Restricted**, so that **knowledge is shared only as the community allows**.
 
 **Acceptance criteria**
-- [ ] Visibility is enforced in pages, search, API and image URLs via a single `Craft.objects.visible_to(user)` queryset method
+- [x] Visibility is enforced in pages, search, API and image URLs via a single `Craft.objects.visible_to(user)` queryset method
 - [x] Default for new records is "Members only" until reviewed
-- [ ] Tests cover each visibility level for each role
+- [x] Tests cover each visibility level for each role
 
-_Progress: Public and Members only work through `Craft.objects.visible_to(user)` on every page, with tests; drafts are visible only to their author. Still to do: Community only and Restricted (need roles, US-05)._
 
 ### US-23 · Record consent
 **Epic:** E6 · **Milestone:** M3 · **Priority:** Must · **Points:** 3
@@ -363,8 +360,8 @@ _Progress: Public and Members only work through `Craft.objects.visible_to(user)`
 As a **contributor**, I want to **record who gave permission to document the craft, when and for what use**, so that **publishing is accountable**.
 
 **Acceptance criteria**
-- [ ] Cannot submit for publishing without a consent record
-- [ ] Consent details visible to stewards and admins only
+- [x] Cannot submit for publishing without a consent record
+- [x] Consent details visible to stewards and admins only
 
 ### US-24 · Steward review queue
 **Epic:** E6 · **Milestone:** M3 · **Priority:** Must · **Points:** 5
@@ -372,9 +369,9 @@ As a **contributor**, I want to **record who gave permission to document the cra
 As a **community steward**, I want to **review crafts attributed to my community before they go public**, so that **my community controls how it is represented**.
 
 **Acceptance criteria**
-- [ ] Queue lists pending records for my communities only
-- [ ] Approve, request changes (with comment), or reject
-- [ ] Contributor is notified of the decision
+- [x] Queue lists pending records for my communities only
+- [x] Approve, request changes (with comment), or reject
+- [x] Contributor is notified of the decision
 
 ### US-25 · Report a record / request removal
 **Epic:** E6 · **Milestone:** M3 · **Priority:** Must · **Points:** 3
@@ -382,11 +379,10 @@ As a **community steward**, I want to **review crafts attributed to my community
 As **anyone**, I want to **report inaccurate or inappropriate content or request removal**, so that **mistakes and harms can be corrected quickly**.
 
 **Acceptance criteria**
-- [ ] Report form available on every craft page (no login required)
-- [ ] Reports appear in the steward/admin queue
-- [ ] A steward or admin can unpublish immediately
+- [x] Report form available on every craft page (no login required)
+- [x] Reports appear in the steward/admin queue
+- [x] A steward or admin can unpublish immediately
 
-_Progress: every craft page has a "Report or request removal" link that opens a pre-filled GitHub issue. Still to do: an on-site form and queue._
 
 ### US-26 · Traditional Knowledge labels
 **Epic:** E6 · **Milestone:** M4 · **Priority:** Should · **Points:** 3
@@ -407,8 +403,8 @@ As a **community steward**, I want to **attach TK/BC labels (e.g. Local Contexts
 As an **admin**, I want to **search users, change roles, assign stewards to communities and suspend accounts**, so that **the platform stays safe**.
 
 **Acceptance criteria**
-- [ ] Suspended users cannot log in
-- [ ] Role changes are logged
+- [x] Suspended users cannot log in
+- [x] Role changes are logged
 
 ### US-28 · Manage taxonomies
 **Epic:** E7 · **Milestone:** M4 · **Priority:** Should · **Points:** 3

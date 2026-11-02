@@ -1,6 +1,6 @@
 # UI design
 
-The low-fidelity wireframes (T-06) were replaced by the working pages. These screenshots are the current UI reference for **v0.4.7** (26 Oct 2026), with the real examples, their Wikimedia Commons photos and OpenStreetMap maps.
+The low-fidelity wireframes (T-06) were replaced by the working pages. These screenshots are the current UI reference for **v0.6.0** (2 Nov 2026, M3 MVP), with the real examples, their Wikimedia Commons photos and OpenStreetMap maps.
 
 To retake them, push a commit whose message contains `[take screenshots]` to any branch other than `main`, or run the **UI screenshots** workflow by hand. The workflow runs [`scripts/take_screenshots.py`](../../scripts/take_screenshots.py) on GitHub, which can reach Commons and OpenStreetMap, and commits the images to that branch.
 
@@ -9,7 +9,10 @@ To retake them, push a commit whose message contains `[take screenshots]` to any
 | Page | Desktop | Phone (390 px) |
 |---|---|---|
 | Home: hero, featured real examples, what the site is for | ![Home](screenshots/01-home.png) | ![Home on phone](screenshots/07-mobile-home.png) |
-| Catalogue: filters by craft type, community and tag | ![Catalogue](screenshots/02-catalogue.png) | |
+| Catalogue: search box, filters by craft type, community, country, material, technique and tag, and sorting | ![Catalogue](screenshots/02-catalogue.png) | |
+| Search results for “wool” | ![Search](screenshots/17-search.png) | |
+| Community page: the community's own name first, description, stewards and crafts | ![Community](screenshots/18-community-page.png) | |
+| Report or request removal: no login needed | ![Report](screenshots/19-report-form.png) | |
 | Catalogue filtered by a tag (`?tag=painted`); the Tag box suggests tags and also matches part of a tag | ![Tag filter](screenshots/09-catalogue-tag-filter.png) | |
 | Craft page: tags, gallery with photo credits and licences, "At a glance", map, materials and techniques in detail, details, sources, report link | ![Craft page](screenshots/03-craft-detail.png) | ![Craft page on phone](screenshots/08-mobile-detail.png) |
 
@@ -28,8 +31,15 @@ To retake them, push a commit whose message contains `[take screenshots]` to any
 |---|---|
 | Add a craft: nine sections, map pin, materials with origin and use, size with units, your own details, photos, sharing | ![Add a craft](screenshots/10-add-craft-form.png) |
 | "Other (type your own)" for craft type and community, and tags with suggestions | ![Other and tags](screenshots/13-form-other-and-tags.png) |
-| The resulting craft page: new type and community, tags, a typed weight unit ("3 okka", no conversion), own details, map. No photo was added, so the gallery is empty | ![Own entries](screenshots/14-craft-page-own-entries.png) |
-| My crafts: drafts and published records, edit and delete | ![My crafts](screenshots/11-my-crafts.png) |
+| The resulting craft page, pending review: new craft type, tags, a typed weight unit ("3 okka", no conversion), own details, map. No photo was added, so the gallery is empty | ![Own entries](screenshots/14-craft-page-own-entries.png) |
+| My crafts: drafts and submitted records with their status, edit and delete | ![My crafts](screenshots/11-my-crafts.png) |
+
+## Community stewards (M3)
+
+| Page | Screenshot |
+|---|---|
+| Review queue: records waiting for review (with their consent status) and open reports with “Unpublish now” | ![Review queue](screenshots/15-review-queue.png) |
+| Review panel on a submitted craft: consent record, decision (approve, request changes, reject) with a note, history | ![Review panel](screenshots/16-review-panel.png) |
 
 ## Colours
 Based on Boğaziçi University's corporate identity guide (2020): navy **#1e4a8b** (PANTONE 7686C) as the primary colour, blue **#8cc8ea** (PANTONE 297C) as the secondary. Text is dark navy #0f2340 on blue-white #f4f8fc. Red (errors) and amber (drafts) are kept for status.

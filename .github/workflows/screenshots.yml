@@ -39,6 +39,7 @@ jobs:
         run: |
           uv run python manage.py migrate --noinput
           uv run python manage.py seed_reference_crafts
+          uv run python manage.py shell -c "from accounts.models import User; from communities.models import Community; u = User.objects.create_user('steward@example.com', 'Woven-Basket-2026', display_name='Demo steward', role='steward'); Community.objects.get(slug='yoruk').stewards.add(u)"
           nohup uv run python manage.py runserver 127.0.0.1:8000 > server.log 2>&1 &
           for i in $(seq 1 30); do curl -sf http://127.0.0.1:8000/healthz && break; sleep 1; done
       - name: Take screenshots
