@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block head_title %}Edit {{ community.name }}{% endblock %}
+{% block main_class %}container form-narrow{% endblock %}
+{% block content %}
+<div class="page-head">
+  <p class="eyebrow"><a href="{{ community.get_absolute_url }}">{{ community.name }}</a></p>
+  <h1>Edit the community page</h1>
+  <p class="muted">The community's own name is set by the site admins; ask them if it should change.</p>
+</div>
+<form method="post" class="form-card" novalidate>
+  {% csrf_token %}
+  {% include "crafts/_field.html" with field=form.other_names %}
+  {% include "crafts/_field.html" with field=form.region %}
+  {% include "crafts/_field.html" with field=form.description %}
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="{{ community.get_absolute_url }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

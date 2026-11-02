@@ -4,7 +4,7 @@
 <div class="page-head page-head-row">
   <div>
     <h1>My crafts</h1>
-    <p class="muted">Drafts are visible only to you. Published crafts follow their visibility setting.</p>
+    <p class="muted">Drafts are visible only to you. Submitted crafts wait for the community's stewards; published crafts follow their visibility setting.</p>
   </div>
   <a class="btn btn-primary" href="{% url 'crafts:create' %}">+ Add a craft</a>
 </div>
@@ -16,7 +16,8 @@
     <tr>
       <td><a href="{{ craft.get_absolute_url }}">{{ craft.title }}</a></td>
       <td>{{ craft.craft_type.name }}</td>
-      <td><span class="badge {% if craft.status == 'published' %}badge-members{% else %}badge-draft{% endif %}">{{ craft.get_status_display }}</span></td>
+      <td><span class="badge {% if craft.status == 'published' %}badge-members{% else %}badge-draft{% endif %}">{{ craft.get_status_display }}</span>
+        {% with last=craft.decisions.all.0 %}{% if last and last.comment and craft.status != "published" %}<p class="help">{{ last.get_decision_display }}: {{ last.comment|truncatechars:120 }}</p>{% endif %}{% endwith %}</td>
       <td>{{ craft.get_visibility_display }}</td>
       <td>{{ craft.updated_at|date:"j M Y" }}</td>
       <td class="actions"><a href="{% url 'crafts:edit' craft.slug %}">Edit</a> · <a href="{% url 'crafts:delete' craft.slug %}">Delete</a></td>

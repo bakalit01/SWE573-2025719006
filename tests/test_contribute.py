@@ -75,6 +75,11 @@ def payload(setup, **overrides):
         "img-MAX_NUM_FORMS": "12",
         "attr-tools": "Knives",
         "attr-finish": "Waxed",
+        "consent-granted_by": "The carving family",
+        "consent-granted_by_role": "Makers",
+        "consent-date": "2026-10-01",
+        "consent-scope": "Publishing text and photos on this website",
+        "consent-notes": "",
         "action": "publish",
     }
     data.update(overrides)

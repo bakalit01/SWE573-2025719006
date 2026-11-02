@@ -11,7 +11,7 @@ from PIL import Image, ImageOps
 from communities.models import Community
 
 from . import units
-from .models import AttributeDefinition, Craft, CraftType, Tag
+from .models import AttributeDefinition, Consent, Craft, CraftType, Report, ReviewDecision, Tag
 
 OTHER = "__other__"  # "Other (type your own)" in craft type, community and choice fields
 MAX_TAGS = 15
@@ -256,7 +256,7 @@ class CraftForm(forms.ModelForm):
         craft.tags.set(tags)
 
 
-RESERVED_SLUGS = {"add", "mine", "fields"}
+RESERVED_SLUGS = {"add", "mine", "fields", "review"}
 
 
 def unique_slug(title):
@@ -566,3 +566,85 @@ def craft_type_from(data, instance=None):
         return CraftType.objects.get(pk=int(raw)) if raw else None
     except (ValueError, CraftType.DoesNotExist):
         return None
+
+
+# ---------- Consent, review decisions and reports (US-23, US-24, US-25) ----------
+
+
+class ConsentForm(forms.ModelForm):
+    """Optional for drafts; required (who, when, what for) to submit or publish."""
+
+    prefix = "consent"
+    require = False
+
+    class Meta:
+        model = Consent
+        fields = ["granted_by", "granted_by_role", "date", "scope", "notes"]
+        widgets = {
+            "date": forms.DateInput(attrs={"type": "date"}),
+            "notes": forms.Textarea(attrs={"rows": 2}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.required = False
+
+    @property
+    def has_data(self):
+        return any(self.cleaned_data.get(f) for f in self.Meta.fields)
+
+    def clean(self):
+        data = super().clean()
+        if self.require or self.has_data:
+            for name in ("granted_by", "date", "scope"):
+                if not data.get(name):
+                    self.add_error(name, "Needed before the craft can be submitted or published.")
+        return data
+
+
+class DecisionForm(forms.Form):
+    decision = forms.ChoiceField(
+        label="Outcome",
+        choices=[
+            (ReviewDecision.Decision.APPROVED, "Approve and publish"),
+            (ReviewDecision.Decision.CHANGES, "Request changes"),
+            (ReviewDecision.Decision.REJECTED, "Reject"),
+        ],
+        widget=forms.RadioSelect,
+    )
+    comment = forms.CharField(
+        label="Note to the contributor",
+        required=False,
+        widget=forms.Textarea(attrs={"rows": 3}),
+        help_text="Required when requesting changes or rejecting.",
+    )
+
+    def clean(self):
+        data = super().clean()
+        if (
+            data.get("decision") != ReviewDecision.Decision.APPROVED
+            and not (data.get("comment") or "").strip()
+        ):
+            self.add_error("comment", "Explain what should change, or why it is rejected.")
+        return data
+
+
+class ReportForm(forms.ModelForm):
+    website = forms.CharField(required=False, widget=forms.HiddenInput)  # spam trap
+
+    class Meta:
+        model = Report
+        fields = ["reason", "details", "contact_email"]
+        widgets = {
+            "reason": forms.RadioSelect,
+            "details": forms.Textarea(attrs={"rows": 5, "maxlength": 3000}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["reason"].choices = Report.Reason.choices  # no empty "---------" option
+
+    @property
+    def is_spam(self):
+        return bool(self.cleaned_data.get("website"))

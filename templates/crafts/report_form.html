@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block head_title %}Report “{{ craft.title }}”{% endblock %}
+{% block main_class %}container form-narrow{% endblock %}
+{% block content %}
+<div class="page-head">
+  <p class="eyebrow"><a href="{{ craft.get_absolute_url }}">{{ craft.title }}</a></p>
+  <h1>Report or request removal</h1>
+  <p class="muted">Tell us what is wrong. The {{ craft.community.name }} stewards and the site admins see every report and can unpublish the record straight away. You don't need an account.</p>
+</div>
+<form method="post" class="form-card" novalidate>
+  {% csrf_token %}
+  {{ form.website }}
+  {% include "crafts/_field.html" with field=form.reason %}
+  {% include "crafts/_field.html" with field=form.details %}
+  {% include "crafts/_field.html" with field=form.contact_email %}
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Send report</button>
+    <a href="{{ craft.get_absolute_url }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

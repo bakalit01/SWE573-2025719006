@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block head_title %}Review queue{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Review queue</h1>
+  <p class="muted">Records and reports for {{ communities }}.</p>
+</div>
+
+<section class="queue-section" aria-labelledby="pending-heading">
+  <h2 id="pending-heading">Waiting for review ({{ pending|length }})</h2>
+  {% if pending %}
+  <table class="table">
+    <thead><tr><th scope="col">Craft</th><th scope="col">Community</th><th scope="col">Submitted by</th><th scope="col">Consent</th><th scope="col">Since</th></tr></thead>
+    <tbody>
+    {% for craft in pending %}
+      <tr>
+        <td><a href="{{ craft.get_absolute_url }}#review-heading">{{ craft.title }}</a></td>
+        <td>{{ craft.community.name }}</td>
+        <td>{{ craft.created_by.public_name|default:"—" }}</td>
+        <td>{% if craft.consent %}✓ {{ craft.consent.granted_by }}{% else %}<span class="error">missing</span>{% endif %}</td>
+        <td>{{ craft.updated_at|date:"j M Y" }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}<p class="empty">Nothing waiting for review.</p>{% endif %}
+</section>
+
+<section class="queue-section" id="reports" aria-labelledby="reports-heading">
+  <h2 id="reports-heading">Open reports ({{ reports|length }})</h2>
+  {% if reports %}
+  <ul class="report-list">
+    {% for r in reports %}
+    <li class="side-card">
+      <p><a href="{{ r.craft.get_absolute_url }}"><strong>{{ r.craft.title }}</strong></a> · {{ r.craft.community.name }} · {{ r.created_at|date:"j M Y" }}</p>
+      <p><span class="badge badge-draft">{{ r.get_reason_display }}</span></p>
+      <p>{{ r.details|linebreaksbr }}</p>
+      {% if r.contact_email %}<p class="help">Reply to: <a href="mailto:{{ r.contact_email }}">{{ r.contact_email }}</a></p>{% endif %}
+      <form method="post" action="{% url 'crafts:handle_report' r.pk %}" class="report-actions">
+        {% csrf_token %}
+        <label for="note-{{ r.pk }}" class="sr-only">Note</label>
+        <input type="text" id="note-{{ r.pk }}" name="note" placeholder="Note (optional)">
+        {% if r.craft.status == "published" %}<button type="submit" name="action" value="unpublish" class="btn btn-primary">Unpublish now</button>{% endif %}
+        <button type="submit" name="action" value="resolve" class="btn btn-ghost">Mark resolved</button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}<p class="empty">No open reports.</p>{% endif %}
+</section>
+
+{% if recent %}
+<section class="queue-section" aria-labelledby="recent-heading">
+  <h2 id="recent-heading">Recent decisions</h2>
+  <ul class="plain-list">{% for d in recent %}<li>{{ d.created_at|date:"j M Y" }} · <a href="{{ d.craft.get_absolute_url }}">{{ d.craft.title }}</a>: {{ d.get_decision_display }}{% if d.reviewer %} by {{ d.reviewer.public_name }}{% endif %}</li>{% endfor %}</ul>
+</section>
+{% endif %}
+{% endblock %}

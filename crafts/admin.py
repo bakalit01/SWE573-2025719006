@@ -2,12 +2,15 @@ from django.contrib import admin
 
 from .models import (
     AttributeDefinition,
+    Consent,
     Craft,
     CraftMaterial,
     CraftTechnique,
     CraftType,
     Material,
     Media,
+    Report,
+    ReviewDecision,
     Tag,
     Technique,
 )
@@ -104,6 +107,31 @@ class TagAdmin(admin.ModelAdmin):
     list_display = ["name", "slug"]
     search_fields = ["name"]
     prepopulated_fields = {"slug": ("name",)}
+
+
+@admin.register(Consent)
+class ConsentAdmin(admin.ModelAdmin):
+    list_display = ["craft", "granted_by", "date", "scope", "recorded_by"]
+    search_fields = ["craft__title", "granted_by"]
+    autocomplete_fields = ["craft"]
+
+
+@admin.register(ReviewDecision)
+class ReviewDecisionAdmin(admin.ModelAdmin):
+    list_display = ["created_at", "craft", "decision", "reviewer"]
+    list_filter = ["decision"]
+    search_fields = ["craft__title", "comment"]
+
+    def has_change_permission(self, request, obj=None):
+        return False  # decisions are a history; make a new one instead
+
+
+@admin.register(Report)
+class ReportAdmin(admin.ModelAdmin):
+    list_display = ["created_at", "craft", "reason", "status", "resolved_by"]
+    list_filter = ["status", "reason"]
+    search_fields = ["craft__title", "details", "contact_email"]
+    readonly_fields = ["created_at", "reporter"]
 
 
 admin.site.site_header = "Indigenous Crafts Platform – admin"

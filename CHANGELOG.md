@@ -2,6 +2,18 @@
 
 All notable changes per release. Releases are tagged on GitHub (`vX.Y.Z`).
 
+## [v0.6.0] – 2 Nov 2026 · M3 MVP: consent, steward review, reports, community pages
+### Added
+- **Consent records** (#54): who agreed to the craft being documented, their role, when, and for what use. Required to submit or publish (optional for drafts); visible only to the community's stewards and admins.
+- **Steward review** (#55): makers' submissions wait as "Pending review", visible to the author and the community's stewards. Stewards of that community, and admins, approve, request changes or reject with a note; the author is e-mailed and sees the note on the craft page and in My crafts. Stewards and admins publish their own records directly; edits by makers to published records go back to review. New submissions are e-mailed to the reviewers, and a **Review** link with a count appears in the header for them.
+- **Report or request removal** (#56): a form on every craft page, no login needed, replaces the GitHub link. Reports are e-mailed to the community's stewards and admins and listed in the review queue, where they can **unpublish the craft at once** or mark the report resolved. A hidden spam trap discards bot submissions.
+- **Community pages** (#48): `/communities/<name>/` shows the community's own name first, other names, region, description, stewards and its crafts; stewards of that community (and admins) can edit the description.
+- Admin: consent records, review history and reports.
+- Tests: 164 (26 new); coverage 94 %.
+
+### Fixed
+- Pages of communities whose names contain non-ASCII letters (e.g. "Yörük") failed to open.
+
 ## [v0.5.0] – 2 Nov 2026 · Roles, visibility levels and search
 ### Added
 - **Roles** (#36): member (browse), maker (add and edit own crafts), community steward (also edit and review their communities' records), admin. New sign-ups are makers; existing staff accounts became admins. Permissions are checked on the server, and pages hide actions the user can't take.

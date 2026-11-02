@@ -268,11 +268,23 @@
     <section class="form-card" id="sec-sharing">
       <h2><span class="step">9</span> Sharing</h2>
       {% include "crafts/_field.html" with field=form.visibility %}
-      <p class="help">Before publishing real cultural knowledge, make sure the makers and community agree to it being shared. Consent records arrive in the next release.</p>
+
+      <h3 id="consent">Consent <span class="req" aria-hidden="true">*</span></h3>
+      <p class="help">Who agreed to this craft being documented and shared, when, and for what use. Needed to submit or publish; optional for drafts. Only the community's stewards and site admins can see it.</p>
+      <div class="field-row">
+        {% include "crafts/_field.html" with field=consent_form.granted_by %}
+        {% include "crafts/_field.html" with field=consent_form.granted_by_role %}
+      </div>
+      <div class="field-row">
+        {% include "crafts/_field.html" with field=consent_form.date %}
+        {% include "crafts/_field.html" with field=consent_form.scope %}
+      </div>
+      {% include "crafts/_field.html" with field=consent_form.notes %}
+      {% if not publishes_directly %}<p class="notice">When you submit, the community's stewards review the craft before others can see it. You'll get an e-mail with their decision.</p>{% endif %}
     </section>
 
     <div class="form-actions">
-      <button type="submit" name="action" value="publish" class="btn btn-primary btn-lg">{% if editing and craft.status == "published" %}Save changes{% else %}Publish{% endif %}</button>
+      <button type="submit" name="action" value="publish" class="btn btn-primary btn-lg">{% if publishes_directly %}{% if editing and craft.status == "published" %}Save changes{% else %}Publish{% endif %}{% else %}Submit for review{% endif %}</button>
       <button type="submit" name="action" value="draft" class="btn btn-ghost btn-lg">Save as draft</button>
       {% if editing %}<a href="{{ craft.get_absolute_url }}">Cancel</a>{% else %}<a href="{% url 'crafts:list' %}">Cancel</a>{% endif %}
     </div>
