@@ -13,7 +13,10 @@
       {% if craft.made_in %}Made {% if craft.year_made %}in {% endif %}{{ craft.made_in }}{% endif %}{% if craft.made_in and craft.place_label %} · {% endif %}{% if craft.place_label %}{{ craft.place_label }}{% endif %}
       {% if craft.created_by %} · Added by <a href="{{ craft.created_by.get_absolute_url }}">{{ craft.created_by.public_name }}</a>{% endif %}
     </p>
-    {% if craft.status != "published" %}<div class="badges"><span class="badge badge-draft">{{ craft.get_status_display }}: only you can see this</span></div>{% endif %}
+    {% if craft.status != "published" %}<div class="badges"><span class="badge badge-draft">{% if craft.status == "pending" %}Pending review: visible to you and the community's stewards{% elif craft.status == "unpublished" %}Unpublished: hidden from the public{% else %}Draft: only you can see this{% endif %}</span></div>{% endif %}
+    {% with last=decisions.0 %}{% if last and craft.status != "published" and last.comment %}
+      <div class="notice review-note"><strong>{{ last.get_decision_display }}</strong>{% if last.reviewer %} by {{ last.reviewer.public_name }}{% endif %}, {{ last.created_at|date:"j M Y" }}: {{ last.comment|linebreaksbr }}</div>
+    {% endif %}{% endwith %}
     {% if craft.tags.all %}
       <ul class="tag-list" aria-label="Tags">
         {% for t in craft.tags.all %}<li><a class="tag-chip" href="{{ t.get_absolute_url }}">#{{ t.name }}</a></li>{% endfor %}
@@ -22,7 +25,7 @@
   </div>
   <div class="head-actions">
     {% if can_edit %}<a class="btn btn-primary" href="{% url 'crafts:edit' craft.slug %}">Edit</a>{% endif %}
-    <a class="btn btn-ghost" href="{{ report_url }}" rel="noopener">Report</a>
+    <a class="btn btn-ghost" href="{{ report_url }}">Report</a>
   </div>
 </header>
 
@@ -124,11 +127,12 @@
     {% endif %}{% endwith %}
 
     <aside class="report" aria-label="Report this record">
-      <p>Something wrong or shared without permission? <a href="{{ report_url }}" rel="noopener">Report or request removal</a></p>
+      <p>Something wrong or shared without permission? <a href="{{ report_url }}">Report or request removal</a></p>
     </aside>
   </div>
 
   <aside class="craft-side" aria-label="Craft facts">
+    {% if is_reviewer %}{% include "crafts/_review_panel.html" %}{% endif %}
     <section class="side-card">
       <h2>At a glance</h2>
       <dl class="facts">

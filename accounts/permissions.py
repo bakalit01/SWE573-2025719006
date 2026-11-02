@@ -38,12 +38,25 @@ def can_review(user, craft):
     return is_steward_of(user, craft.community_id)
 
 
+def is_author(user, craft):
+    return bool(user and user.is_authenticated and craft.created_by_id == user.pk)
+
+
 def can_edit(user, craft):
+    """Authors (makers and up), admins, and the community's stewards for submitted records
+    (other people's drafts stay private to their author)."""
     if not (user and user.is_authenticated and user.is_active):
         return False
-    if is_steward_of(user, craft.community_id):
+    if is_author(user, craft):
+        return can_contribute(user)
+    if is_site_admin(user):
         return True
-    return craft.created_by_id == user.pk and can_contribute(user)
+    return craft.status != "draft" and is_steward_of(user, craft.community_id)
+
+
+def can_delete(user, craft):
+    """Only the author or an admin deletes; stewards unpublish instead (it is recorded)."""
+    return (is_author(user, craft) and can_contribute(user)) or is_site_admin(user)
 
 
 def can_edit_community(user, community):

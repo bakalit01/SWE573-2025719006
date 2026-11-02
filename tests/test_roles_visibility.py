@@ -53,7 +53,7 @@ EXPECTED = {
     "member": {"public", "members"},
     "member of A": {"public", "members", "community"},
     "member of B": {"public", "members"},
-    "steward of A": EVERYTHING,
+    "steward of A": EVERYTHING - {"draft"},  # not other people's unsubmitted drafts
     "steward of B": {"public", "members"},
     "admin": EVERYTHING,
     "author": EVERYTHING,  # authors always see their own records

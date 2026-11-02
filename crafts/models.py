@@ -125,9 +125,10 @@ class CraftQuerySet(models.QuerySet):
         """The single place that decides which crafts a user may see (US-22).
 
         Visitors: published + public. Signed-in users: also published members-only, and
-        community-only records of their own community. Stewards: every record of the
-        communities they steward, in any status (they review them), including restricted
-        ones. Everyone sees their own records (drafts included). Admins see everything.
+        community-only records of their own community. Stewards: every submitted record of
+        the communities they steward (pending, published, unpublished, any visibility), but
+        not other people's unsubmitted drafts. Everyone sees their own records (drafts
+        included). Admins see everything.
         """
         from accounts.permissions import is_site_admin, stewarded_community_ids
 
@@ -143,7 +144,7 @@ class CraftQuerySet(models.QuerySet):
                 )
             stewarded = stewarded_community_ids(user)
             if stewarded:
-                rule |= Q(community_id__in=stewarded)
+                rule |= Q(community_id__in=stewarded) & ~Q(status=Craft.Status.DRAFT)
             rule |= Q(created_by=user)
         return self.filter(rule)
 
@@ -453,3 +454,108 @@ def commons_image_url(file_name, width=1280):
     """A Commons file at a given width (Special:FilePath redirects to the thumbnail)."""
     name = quote(file_name.replace(" ", "_"))
     return f"https://commons.wikimedia.org/wiki/Special:FilePath/{name}?width={width}"
+
+
+# ---------- Cultural protocols: consent, review, reports (US-23, US-24, US-25) ----------
+
+
+class Consent(models.Model):
+    """Who agreed to the craft being documented, when, and for what use (US-23).
+
+    Shown only to the community's stewards and to admins (and to the author in the form).
+    """
+
+    craft = models.OneToOneField(Craft, on_delete=models.CASCADE, related_name="consent")
+    granted_by = models.CharField(
+        "Who gave permission", max_length=200, help_text="Name of the person or group"
+    )
+    granted_by_role = models.CharField(
+        "Their role",
+        max_length=200,
+        blank=True,
+        help_text="e.g. the maker, a family elder, the community council",
+    )
+    date = models.DateField("When")
+    scope = models.CharField(
+        "What it may be used for",
+        max_length=300,
+        help_text="e.g. 'Publishing the text and photos on this website'",
+    )
+    notes = models.TextField("Notes", blank=True, help_text="Conditions or limits, if any")
+    recorded_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="+"
+    )
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Consent for {self.craft}: {self.granted_by}, {self.date}"
+
+
+class ReviewDecision(models.Model):
+    """A steward's or admin's decision on a record (US-24), kept as a history."""
+
+    class Decision(models.TextChoices):
+        APPROVED = "approved", "Approved and published"
+        CHANGES = "changes", "Changes requested"
+        REJECTED = "rejected", "Rejected"
+        UNPUBLISHED = "unpublished", "Unpublished"
+
+    NEW_STATUS = {
+        Decision.APPROVED: Craft.Status.PUBLISHED,
+        Decision.CHANGES: Craft.Status.DRAFT,
+        Decision.REJECTED: Craft.Status.UNPUBLISHED,
+        Decision.UNPUBLISHED: Craft.Status.UNPUBLISHED,
+    }
+
+    craft = models.ForeignKey(Craft, on_delete=models.CASCADE, related_name="decisions")
+    reviewer = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL, related_name="+"
+    )
+    decision = models.CharField(max_length=12, choices=Decision.choices)
+    comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at", "-id"]
+
+    def __str__(self):
+        return f"{self.craft}: {self.get_decision_display()}"
+
+
+class Report(models.Model):
+    """Anyone can report a record or ask for its removal (US-25)."""
+
+    class Reason(models.TextChoices):
+        PERMISSION = "permission", "Shared without permission, or should not be public"
+        SENSITIVE = "sensitive", "Sacred or culturally sensitive content"
+        INACCURATE = "inaccurate", "Information is wrong or incomplete"
+        CREDIT = "credit", "Wrong maker or photo credit"
+        OFFENSIVE = "offensive", "Offensive or inappropriate"
+        OTHER = "other", "Something else"
+
+    class Status(models.TextChoices):
+        OPEN = "open", "Open"
+        RESOLVED = "resolved", "Resolved"
+
+    craft = models.ForeignKey(Craft, on_delete=models.CASCADE, related_name="reports")
+    reason = models.CharField("What is wrong?", max_length=12, choices=Reason.choices)
+    details = models.TextField("Tell us more", max_length=3000)
+    contact_email = models.EmailField(
+        "Your email (optional)", blank=True, help_text="Only if you'd like a reply."
+    )
+    reporter = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="+"
+    )
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.OPEN)
+    resolved_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="+"
+    )
+    resolved_at = models.DateTimeField(null=True, blank=True)
+    resolution_note = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Report on {self.craft}: {self.get_reason_display()}"

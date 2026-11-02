@@ -71,6 +71,9 @@ def test_add_craft_in_browser(live_server, page, seeded):
     page.fill("#id_mat-1-name", "Bark")
     page.fill("#id_height", "30")
     page.select_option("#id_size_unit", "cm")
+    page.fill("#id_consent-granted_by", "The maker")
+    page.fill("#id_consent-date", "2026-10-01")
+    page.fill("#id_consent-scope", "Publishing on this website")
     page.locator("button[value=publish]").click()
 
     facts = page.locator(".facts").inner_text()
@@ -107,6 +110,9 @@ def test_other_choices_and_tags_in_browser(live_server, page, seeded):
     page.fill("#id_size_unit_other", "karış")
     page.fill("#id_det-0-label", "Dye source")
     page.fill("#id_det-0-value", "Madder root")
+    page.fill("#id_consent-granted_by", "The maker")
+    page.fill("#id_consent-date", "2026-10-01")
+    page.fill("#id_consent-scope", "Publishing on this website")
     page.locator("button[value=publish]").click()
 
     assert page.get_by_role("heading", name="Felt rug").is_visible()

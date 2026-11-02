@@ -103,6 +103,7 @@ ACCOUNT_SIGNUP_REDIRECT_URL = "home"
 ACCOUNT_LOGOUT_REDIRECT_URL = "home"
 
 EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="Indigenous Crafts <no-reply@localhost>")
 
 LANGUAGE_CODE = "en"
 TIME_ZONE = "Europe/Istanbul"
@@ -130,4 +131,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
 REPO_URL = env("REPO_URL", default="https://github.com/bakalit01/SWE573-2025719006")
-APP_VERSION = env("APP_VERSION", default="v0.5.0")
+APP_VERSION = env("APP_VERSION", default="v0.6.0")

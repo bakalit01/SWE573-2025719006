@@ -1,0 +1,37 @@
+<section class="side-card review-panel" aria-labelledby="review-heading">
+  <h2 id="review-heading">Steward review</h2>
+  <p class="help">Visible only to {{ craft.community.name }} stewards and admins.</p>
+  <h3>Consent</h3>
+  {% if consent %}
+    <dl class="facts">
+      <div><dt>Given by</dt><dd>{{ consent.granted_by }}{% if consent.granted_by_role %} ({{ consent.granted_by_role }}){% endif %}</dd></div>
+      <div><dt>Date</dt><dd>{{ consent.date|date:"j M Y" }}</dd></div>
+      <div><dt>For</dt><dd>{{ consent.scope }}</dd></div>
+      {% if consent.notes %}<div><dt>Notes</dt><dd>{{ consent.notes|linebreaksbr }}</dd></div>{% endif %}
+    </dl>
+  {% elif craft.is_reference %}
+    <p class="help">Real example compiled from the public sources listed on this page; no consent record.</p>
+  {% else %}
+    <p class="error">No consent record.</p>
+  {% endif %}
+
+  {% if open_reports %}
+    <h3>Open reports ({{ open_reports|length }})</h3>
+    <ul class="plain-list">{% for r in open_reports %}<li><strong>{{ r.get_reason_display }}</strong>: {{ r.details|truncatechars:140 }}</li>{% endfor %}</ul>
+    <p><a href="{% url 'crafts:review_queue' %}#reports">Handle in the review queue</a></p>
+  {% endif %}
+
+  <h3>Your decision</h3>
+  <p class="help">Status now: <strong>{{ craft.get_status_display }}</strong>. “Reject” also takes a published record down.</p>
+  <form method="post" action="{% url 'crafts:review' craft.slug %}" class="decision-form">
+    {% csrf_token %}
+    {% include "crafts/_field.html" with field=decision_form.decision %}
+    {% include "crafts/_field.html" with field=decision_form.comment %}
+    <button type="submit" class="btn btn-primary">Save decision</button>
+  </form>
+
+  {% if decisions %}
+    <h3>History</h3>
+    <ul class="plain-list">{% for d in decisions %}<li>{{ d.created_at|date:"j M Y" }}: {{ d.get_decision_display }}{% if d.reviewer %} by {{ d.reviewer.public_name }}{% endif %}{% if d.comment %}: “{{ d.comment|truncatechars:100 }}”{% endif %}</li>{% endfor %}</ul>
+  {% endif %}
+</section>

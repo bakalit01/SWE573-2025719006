@@ -31,7 +31,7 @@ def member_client(client, user):
 
 
 @pytest.fixture
-def setup(db):
+def setup(db, user):
     """A craft type with a text and a choice field, and a community (add-form tests)."""
     craft_type = CraftTypeFactory(name="Carving", slug="carving")
     AttributeDefinitionFactory(craft_type=craft_type, key="tools", label="Tools")
@@ -42,7 +42,13 @@ def setup(db):
         data_type=AttributeDefinition.DataType.CHOICE,
         options=["Oiled", "Waxed"],
     )
-    return {"type": craft_type, "community": CommunityFactory()}
+    community = CommunityFactory()
+    # The test user stewards this community, so their submissions publish directly;
+    # tests/test_review.py covers makers submitting for review.
+    user.role = user.Role.STEWARD
+    user.save()
+    community.stewards.add(user)
+    return {"type": craft_type, "community": community}
 
 
 @pytest.fixture(scope="session")

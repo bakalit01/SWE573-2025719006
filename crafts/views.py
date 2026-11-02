@@ -1,6 +1,5 @@
 from urllib.parse import urlencode
 
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
@@ -11,15 +10,26 @@ from django.db.models import Count, F, Q
 from django.db.models.functions import Lower
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views.decorators.http import require_GET
 
-from accounts.permissions import can_contribute, can_edit
+from accounts.permissions import (
+    can_contribute,
+    can_delete,
+    can_edit,
+    can_review,
+    is_site_admin,
+    stewarded_community_ids,
+)
 from communities.models import Community
 
+from . import review
 from .forms import (
     OTHER,
     AttributesForm,
+    ConsentForm,
     CraftForm,
+    DecisionForm,
     DetailRows,
     ImageRows,
     MaterialRows,
@@ -213,22 +223,24 @@ def craft_detail(request, slug):
         ),
         slug=slug,
     )
-    report_url = f"{settings.REPO_URL}/issues/new?" + urlencode(
-        {
-            "title": f"Report: {craft.title}",
-            "body": f"Craft page: {request.build_absolute_uri()}\n\nWhat is wrong?\n",
-            "labels": "type: bug",
-        }
-    )
+    reviewer = can_review(request.user, craft)
+    is_author = request.user.is_authenticated and craft.created_by_id == request.user.pk
     return render(
         request,
         "crafts/detail.html",
         {
             "craft": craft,
             "attribute_rows": craft.attribute_rows(),
-            "report_url": report_url,
+            "report_url": reverse("crafts:report", args=[craft.slug]),
             "can_edit": can_edit(request.user, craft),
             "map_point": craft.map_point,
+            "is_reviewer": reviewer,
+            "consent": getattr(craft, "consent", None) if reviewer else None,
+            "decisions": craft.decisions.select_related("reviewer")[:5]
+            if (reviewer or is_author)
+            else [],
+            "decision_form": DecisionForm() if reviewer else None,
+            "open_reports": craft.reports.filter(status="open") if reviewer else [],
         },
     )
 
@@ -267,26 +279,53 @@ def _craft_form_page(request, craft=None):
         data, prefix="det", initial=None if data else (craft.extra_details if craft else None)
     )
     images = ImageRows(data, files, prefix="img")
+    existing_consent = getattr(craft, "consent", None) if editing else None
+    consent_form = ConsentForm(data, instance=existing_consent)
 
     if request.method == "POST":
-        publish = request.POST.get("action") != "draft"
-        materials.require_one = publish
-        parts = (form, attr_form, materials, techniques, details, images)
+        submit = request.POST.get("action") != "draft"
+        materials.require_one = submit
+        consent_form.require = submit
+        parts = (form, attr_form, materials, techniques, details, images, consent_form)
         valid = all([f.is_valid() for f in parts])
         if valid:
+            was_published = editing and craft.status == Craft.Status.PUBLISHED
             with transaction.atomic():
                 craft = form.save(commit=False)
                 if not editing:
                     craft.created_by = request.user
                 craft.attributes = attr_form.json_values()
                 craft.extra_details = details.json_values()
-                craft.status = Craft.Status.PUBLISHED if publish else Craft.Status.DRAFT
+                craft.status = (
+                    review.status_after_submit(request.user, craft)
+                    if submit
+                    else Craft.Status.DRAFT
+                )
                 craft.save()
                 form.save_tags(craft)
                 _save_rows(craft, materials.filled_rows(), techniques.filled_rows())
                 _save_images(request, craft, images)
-            if publish:
+                if consent_form.has_data:
+                    consent = consent_form.save(commit=False)
+                    consent.craft = craft
+                    consent.recorded_by = consent.recorded_by or request.user
+                    consent.save()
+            if craft.status == Craft.Status.PUBLISHED:
                 messages.success(request, f"“{craft.title}” is published.")
+            elif craft.status == Craft.Status.PENDING:
+                review.notify_reviewers(
+                    request,
+                    craft,
+                    f"Review needed: “{craft.title}”",
+                    f"{request.user.public_name} submitted “{craft.title}” "
+                    f"({craft.community.name}) for review.",
+                )
+                messages.success(
+                    request,
+                    f"“{craft.title}” is sent to the {craft.community.name} stewards for review."
+                    + (" It is hidden from others until approved." if was_published else "")
+                    + " You'll get an e-mail when they decide.",
+                )
             else:
                 messages.success(
                     request, f"“{craft.title}” is saved as a draft. Only you can see it."
@@ -306,6 +345,9 @@ def _craft_form_page(request, craft=None):
             "images": images,
             "craft": craft,
             "editing": editing,
+            "consent_form": consent_form,
+            "publishes_directly": is_site_admin(request.user)
+            or bool(stewarded_community_ids(request.user)),
             "new_type": form.new_type_chosen,
             "popular_tags": Tag.objects.annotate(n=Count("crafts")).order_by("-n", Lower("name"))[
                 :12
@@ -381,7 +423,7 @@ def craft_edit(request, slug):
 @login_required
 def craft_delete(request, slug):
     craft = get_object_or_404(Craft, slug=slug)
-    if not can_edit(request.user, craft):
+    if not can_delete(request.user, craft):
         raise Http404
     if request.method == "POST":
         title = craft.title
@@ -396,7 +438,7 @@ def my_crafts(request):
     crafts = (
         Craft.objects.filter(created_by=request.user)
         .select_related("craft_type", "community")
-        .prefetch_related("media")
+        .prefetch_related("media", "decisions")
         .order_by("-updated_at")
     )
     return render(request, "crafts/mine.html", {"crafts": crafts})

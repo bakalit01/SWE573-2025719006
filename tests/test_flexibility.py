@@ -3,12 +3,13 @@
 import pytest
 from django.urls import reverse
 
+from accounts.models import User
 from communities.models import Community
 from crafts import units
 from crafts.forms import OTHER, parse_tags
 from crafts.models import AttributeDefinition, Craft, CraftType, Tag
 
-from .factories import AttributeDefinitionFactory, CraftFactory
+from .factories import AttributeDefinitionFactory, CraftFactory, UserFactory
 from .test_contribute import payload
 
 pytestmark = pytest.mark.django_db
@@ -60,6 +61,14 @@ class TestOtherTypeAndCommunity:
         post(member_client, payload(setup, community=OTHER, community_other="Sámi of Inari"))
         form_page = member_client.get(reverse("crafts:create")).content.decode()
         assert "Sámi of Inari" in form_page and "Other (type your own)" in form_page
+        # A new community has no stewards yet, so the craft waits for an admin's review.
+        craft = Craft.objects.get()
+        assert craft.status == Craft.Status.PENDING
+        assert "Sámi of Inari" not in client.get(reverse("crafts:list")).content.decode()
+        admin = UserFactory(role=User.Role.ADMIN)
+        client.force_login(admin)
+        client.post(reverse("crafts:review", args=[craft.slug]), {"decision": "approved"})
+        client.logout()
         assert "Sámi of Inari" in client.get(reverse("crafts:list")).content.decode()
 
     def test_type_fields_endpoint_explains_new_type(self, member_client):

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block head_title %}{{ community.name }}{% endblock %}
+{% block content %}
+<header class="page-head page-head-row">
+  <div>
+    <p class="eyebrow">Community</p>
+    <h1>{{ community.name }}</h1>
+    {% if other_names %}<p class="muted">Also known as {{ other_names|join:", " }}</p>{% endif %}
+    {% if community.region %}<p class="craft-meta">{{ community.region }}</p>{% endif %}
+  </div>
+  {% if can_edit %}<a class="btn btn-primary" href="{% url 'communities:edit' community.slug %}">Edit page</a>{% endif %}
+</header>
+
+<div class="community-layout">
+  <section class="story">
+    <h2>About</h2>
+    {% if community.description %}<p>{{ community.description|linebreaksbr }}</p>{% else %}<p class="muted">No description yet. The community's stewards can add one.</p>{% endif %}
+  </section>
+  <aside class="side-card" aria-label="Stewards">
+    <h2>Stewards</h2>
+    {% if stewards %}
+      <ul class="plain-list">{% for s in stewards %}<li><a href="{{ s.get_absolute_url }}">{{ s.public_name }}</a></li>{% endfor %}</ul>
+      <p class="help">Stewards review records about this community before they are published.</p>
+    {% else %}
+      <p class="help">No stewards yet; site admins review records about this community. Community members can ask an admin to become a steward.</p>
+    {% endif %}
+  </aside>
+</div>
+
+<section aria-labelledby="crafts-heading">
+  <div class="page-head-row">
+    <h2 id="crafts-heading">Crafts ({{ crafts|length }})</h2>
+    {% if crafts %}<a href="{% url 'crafts:list' %}?community={{ community.slug }}">Search and filter these crafts</a>{% endif %}
+  </div>
+  {% if crafts %}
+    <ul class="grid">{% for craft in crafts %}{% include "crafts/_card.html" %}{% endfor %}</ul>
+  {% else %}
+    <p class="empty">No crafts you can see yet.</p>
+  {% endif %}
+</section>
+{% endblock %}
