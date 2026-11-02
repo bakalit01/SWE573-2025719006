@@ -198,3 +198,12 @@ def test_uploaded_photos_follow_craft_visibility(world, client, settings, tmp_pa
     response = client.get(url)
     assert response.status_code == 200 and response["Cache-Control"].startswith("private")
     assert client.get("/media/crafts/not-a-photo.jpg").status_code == 404
+
+
+@pytest.mark.django_db
+def test_createsuperuser_gets_admin_role():
+    from django.contrib.auth import get_user_model
+
+    admin = get_user_model().objects.create_superuser("root@example.com", "Long-Password-2026")
+    assert admin.role == "admin"
+    assert admin.is_staff and admin.is_superuser
