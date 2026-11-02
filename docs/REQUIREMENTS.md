@@ -1,6 +1,6 @@
 # Requirements — Indigenous Crafts Platform
 
-Version 0.2 · 26 Oct 2026 · Status: updated after M2 and feedback FB-01–FB-07 (✅ = delivered)
+Version 0.3 · 2 Nov 2026 · Status: updated after M3 and feedback FB-01–FB-09 (✅ = delivered)
 
 ## 1. Purpose & scope
 
@@ -21,7 +21,7 @@ The platform documents, preserves and showcases Indigenous crafts. It lets regis
 
 ## 3. Functional requirements
 
-Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oct), M3 MVP (wk 4), M4 (wk 6), M5 Final (wk 8); weeks 9–10 buffer. ✅ marks delivered requirements.
+Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oct), M3 MVP (delivered 2 Nov), M4 (wk 6), M5 Final (wk 8); weeks 9–10 buffer. ✅ marks delivered requirements.
 
 ### 3.1 Accounts & authentication
 | ID | Requirement | Priority | Milestone |
@@ -29,7 +29,7 @@ Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oc
 | FR-A1 | Users can register with email + password | Must | M1 ✅ |
 | FR-A2 | Users can log in and log out; sessions persist securely | Must | M1 ✅ |
 | FR-A3 | Users can reset a forgotten password via email | Should | M2 ✅ |
-| FR-A4 | Role-based access control (member, maker, steward, admin) | Must | M3 |
+| FR-A4 | Role-based access control (member, maker, steward, admin) | Must | M3 ✅ |
 | FR-A5 | Users can edit their profile (display name, bio, community affiliation, photo) | Should | M2 ✅ (photo later) |
 | FR-A6 | Optional social login (Google) | Could | M4 |
 | FR-A7 | Users can delete their account and personal data | Should | M5 |
@@ -53,22 +53,22 @@ Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oc
 ### 3.3 Discovery
 | ID | Requirement | Priority | Milestone |
 |---|---|---|---|
-| FR-D1 | Keyword search across names, descriptions, materials, techniques | Must | M3 |
-| FR-D2 | Filter by craft type, community/nation, region, material, technique, tag | Must | M3 (type, community, tag search ✅) |
+| FR-D1 | Keyword search across names, descriptions, materials, techniques | Must | M3 ✅ |
+| FR-D2 | Filter by craft type, community/nation, region, material, technique, tag | Must | M3 ✅ (type, community, country, material, technique, tag) |
 | FR-D3 | Filter by craft-type-specific attributes | Could | M4 |
-| FR-D4 | Pagination and sorting | Must | M3 |
-| FR-D5 | Maker and community pages listing related crafts | Should | M3 |
+| FR-D4 | Pagination and sorting | Must | M3 ✅ |
+| FR-D5 | Maker and community pages listing related crafts | Should | M3 ✅ |
 | FR-D6 | Members can favourite crafts and build named collections | Could | M4 |
 | FR-D7 | Map view by region (each craft page already shows its own map) | Won't (v1) / stretch | M5 |
 
 ### 3.4 Cultural protocols & governance
 | ID | Requirement | Priority | Milestone |
 |---|---|---|---|
-| FR-P1 | Each record has a visibility level: Public, Members only, Community only, Restricted (steward/admin only) | Must | M3 |
-| FR-P2 | Contributors record consent (who gave permission, date, scope) before publishing | Must | M3 |
-| FR-P3 | Records attributed to a community enter a moderation queue for steward review before going public | Must | M3 |
+| FR-P1 | Each record has a visibility level: Public, Members only, Community only, Restricted (steward/admin only) | Must | M3 ✅ |
+| FR-P2 | Contributors record consent (who gave permission, date, scope) before publishing | Must | M3 ✅ |
+| FR-P3 | Records attributed to a community enter a moderation queue for steward review before going public | Must | M3 ✅ |
 | FR-P4 | Records can carry Traditional Knowledge / Biocultural labels (e.g. Local Contexts TK labels) shown on the detail page | Should | M4 |
-| FR-P5 | Anyone can report a record; stewards/admins can unpublish within the workflow | Must | M3 |
+| FR-P5 | Anyone can report a record; stewards/admins can unpublish within the workflow | Must | M3 ✅ |
 | FR-P6 | Makers and communities are always credited; credit fields cannot be blank on published records | Must | M2 ✅ |
 | FR-P7 | Sacred/sensitive images can be hidden behind a content notice | Should | M4 |
 
@@ -77,7 +77,7 @@ Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oc
 |---|---|---|---|
 | FR-M1 | Admins manage craft types and their attribute definitions without code changes | Should | M4 |
 | FR-M2 | Admins manage taxonomies: communities/nations, regions, materials, techniques | Should | M4 |
-| FR-M3 | Admins manage users and roles | Must | M3 |
+| FR-M3 | Admins manage users and roles | Must | M3 ✅ |
 | FR-M4 | Audit log of moderation actions | Could | M5 |
 
 ## 4. Data model (draft)

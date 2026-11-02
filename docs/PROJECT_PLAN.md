@@ -17,7 +17,7 @@ A website that documents and showcases Indigenous crafts, where registered users
 |---|---|---|---|---|
 | **M1 — Running Demo** | ✅ **Tue 13 Oct** (wk 1) | 25 Oct | v0.2.0, CI green, deployable | Browse sample crafts, open a craft page, sign up / log in / log out |
 | **M2 — Contribute** | ✅ **Sun 25 Oct** (end wk 2) | 8 Nov | v0.4.0 (+ feedback releases v0.4.1–v0.4.5) | Logged-in users add/edit crafts with photos; attributes change by craft type; password reset and profiles |
-| **M3 — MVP** | Sun 8 Nov (end wk 4) | 22 Nov | v0.6, user test #1 | Search & filter, roles (maker / steward / admin), visibility & consent, steward review, reporting, community pages |
+| **M3 — MVP** | ✅ **Mon 2 Nov** (start wk 4) | 22 Nov | v0.5.0 + v0.6.0, user test #1 | Search & filter, roles (maker / steward / admin), visibility & consent, steward review, reporting, community pages |
 | **M4 — Enrich** | Sun 22 Nov (end wk 6) | 6 Dec | v0.8 | Admin-managed craft types & attributes, Traditional Knowledge labels, multilingual names, favourites/collections, accessibility pass |
 | **M5 — Final** | Sun 6 Dec (end wk 8) | 20 Dec | v1.0, user test #2 | Hardened, documented, tested, performant production release |
 | Buffer | 7–20 Dec (wk 9–10) | — | Final presentation | Feedback fixes, stretch goals, course hand-in |
@@ -28,8 +28,8 @@ A website that documents and showcases Indigenous crafts, where registered users
 |---|---|---|---|
 | 1 | 12–18 Oct | ✅ Planning, Django project, models, sample data, sign-up/login, catalogue, detail, CI, tests (done 13 Oct). Then add-craft form with craft-type fields | ✅ v0.1.0 + **v0.2.0 Demo (M1)**; v0.3 merged into v0.4 |
 | 2 | 19–25 Oct | ✅ Image upload, edit/delete, password reset, profiles, feedback FB-01–FB-04 | ✅ **v0.4.0 (M2)**, v0.4.1 map fix |
-| 3 | 26 Oct–1 Nov | ✅ Feedback FB-05–FB-07 (real examples, Boğaziçi colours, "Other" + tags; 26 Oct). Search & filters, roles & permissions, visibility levels | ✅ v0.4.2–v0.4.5, v0.5 |
-| 4 | 2–8 Nov | Consent records, steward review queue, reporting, community pages, user test #1 | **v0.6 — MVP (M3)** |
+| 3 | 26 Oct–1 Nov | ✅ Feedback FB-05–FB-09 (real examples, Boğaziçi colours, "Other" + tags, crafts from Türkiye and East Asia; 26 Oct) | ✅ v0.4.2–v0.4.9 |
+| 4 | 2–8 Nov | ✅ Roles, visibility levels, search & filters (from week 3), consent records, steward review queue, reporting, community pages (2 Nov); user test #1 | ✅ v0.5.0, **v0.6.0 — MVP (M3)** |
 | 5 | 9–15 Nov | Admin UI for craft types/attributes, TK labels, sensitive images | v0.7 |
 | 6 | 16–22 Nov | Multilingual names, favourites/collections, taxonomies, accessibility audit | **v0.8 (M4)** |
 | 7 | 23–29 Nov | Security review, performance, user test #2 | v0.9 (RC) |
@@ -82,13 +82,13 @@ Each week's items build on the previous week's. "Depends on" lists what must be 
 |  |  | US-22 | [#53](https://github.com/bakalit01/SWE573-2025719006/issues/53) | Set visibility of a craft | 5 | US-05 |
 |  |  | US-15 | [#46](https://github.com/bakalit01/SWE573-2025719006/issues/46) | Search crafts | 5 | US-22 |
 |  |  | US-16 | [#47](https://github.com/bakalit01/SWE573-2025719006/issues/47) | Filter and sort the catalogue | 5 | US-15 |
-| | | | | ➜ Release v0.5 · 20 pts | | |
+| | | | | ➜ Release **v0.5.0** ✅ 2 Nov (built in week 4, after the week-3 feedback rounds) · 20 pts | | |
 | 4 | 2–8 Nov | US-23 | [#54](https://github.com/bakalit01/SWE573-2025719006/issues/54) | Record consent | 3 | US-22 |
 |  |  | US-24 | [#55](https://github.com/bakalit01/SWE573-2025719006/issues/55) | Steward review queue | 5 | US-05, US-23 |
 |  |  | US-25 | [#56](https://github.com/bakalit01/SWE573-2025719006/issues/56) | Report a record / request removal | 3 | US-24 |
 |  |  | US-17 | [#48](https://github.com/bakalit01/SWE573-2025719006/issues/48) | Community pages | 3 | US-06 |
 |  |  | US-27 | [#58](https://github.com/bakalit01/SWE573-2025719006/issues/58) | Manage users (largely Django admin) | 3 | US-05 |
-| | | | | ➜ Release **v0.6: MVP (M3)** + user test #1 · 17 pts | | |
+| | | | | ➜ Release **v0.6.0: MVP (M3)** ✅ 2 Nov + user test #1 · 17 pts | | |
 | 5 | 9–15 Nov | US-13 | [#44](https://github.com/bakalit01/SWE573-2025719006/issues/44) | Manage craft types and attributes | 8 | US-11 |
 |  |  | US-26 | [#57](https://github.com/bakalit01/SWE573-2025719006/issues/57) | Traditional Knowledge labels | 3 | US-24 |
 |  |  | US-21 | [#52](https://github.com/bakalit01/SWE573-2025719006/issues/52) | Sensitive image notice | 2 | US-20 |
@@ -117,12 +117,12 @@ Each week's items build on the previous week's. "Depends on" lists what must be 
 | Framework | Django 5.2 LTS | Batteries included: auth, sessions, CSRF, forms, ORM, migrations, admin; LTS covers the project and beyond |
 | Database | PostgreSQL 16 (managed: Render, Railway, Neon or Supabase) | Relational core + `JSONField` (stored as `jsonb`) for craft-specific attributes; GIN indexes; full-text search via `django.contrib.postgres` |
 | Auth | Django auth with a custom `User` model + `django-allauth` | Email login, sign-up, password reset, optional Google login (FR-A6) with little code |
-| Roles & permissions | Django groups/permissions + `rules` (django-rules) for object-level checks *(M3; so far: author-or-staff checks in views)* | "Steward of *this* community", "creator of *this* craft" |
+| Roles & permissions | A `role` field (member, maker, steward, admin), stewards assigned per community, and plain functions in `accounts/permissions.py` for object-level checks *(django-rules not needed)* | "Steward of *this* community", "creator of *this* craft" |
 | Dynamic attributes | `AttributeDefinition` model → Django form fields built at runtime; values validated in `clean()` (optionally via `pydantic`) | Forms and validation generated from data, no deploy to add a field |
 | Admin back-office | Django admin (customised) | Users, roles, taxonomies and craft types for free in M1–M3; polished admin UI in M4 |
 | Front end | Server-rendered Django templates, hand-written CSS (Boğaziçi colours) and small plain-JavaScript enhancements; HTMX only if pages need partial reloads *(Tailwind dropped: no build step needed)* | No separate JS app; fast pages on low bandwidth; easier accessibility |
 | Images | Pillow resizes uploads to 1600 px; stored on the server disk for the demo (reset on Render redeploys). `django-storages` (S3-compatible) planned before v1.0. Real examples show Wikimedia Commons photos | Images outside the DB, resized variants |
-| Search | PostgreSQL full-text (`SearchVector`, `TrigramSimilarity`) + `django-filter` *(M3; type, community and tag filters exist)* | No extra search service needed for v1 |
+| Search | Every word matched across fields (incl. materials, techniques, community, tags), ranked with PostgreSQL full-text (`SearchVector`, `SearchRank`); filters in the view *(django-filter not needed)* | No extra search service needed for v1 |
 | Testing | `pytest`, `pytest-django`, `factory_boy`, `coverage`; Playwright for Python + `axe-playwright-python` for e2e/a11y | All Python, all in CI |
 | Code quality | `ruff` (lint + format), `mypy` + `django-stubs` (optional), `pre-commit` | Consistent style, fast |
 | Dependencies | `uv` with `pyproject.toml` (or pip + `requirements.txt`) | Reproducible installs |

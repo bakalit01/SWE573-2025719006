@@ -159,9 +159,38 @@ def main():
         page.wait_for_load_state()
         page.goto(BASE + "/crafts/mine/")
         shot(page, "11-my-crafts.png")
+        desk.close()
+
+        # ---- Community steward (created by the workflow for the Yörük community) ----
+        steward = browser.new_context(viewport={"width": 1280, "height": 800}, locale="en-GB")
+        page = steward.new_page()
+        page.goto(f"{BASE}/accounts/login/")
+        page.fill("input[name=login]", "steward@example.com")
+        page.fill("input[name=password]", PASSWORD)
+        page.locator("main button[type=submit]").click()
+        page.wait_for_load_state()
+        page.goto(BASE + "/crafts/review/")
+        shot(page, "15-review-queue.png")
+        page.get_by_role("link", name="Felt rug").click()
+        page.wait_for_load_state()
+        shot(page, "16-review-panel.png", maps=True)
+        page.check("input[name=decision][value=approved]")
+        page.get_by_role("button", name="Save decision").click()
+        page.wait_for_load_state()
         page.goto(BASE + profile_url)
         shot(page, "12-maker-profile.png")
-        desk.close()
+        steward.close()
+
+        # ---- Visitor: search, community page, report form ----
+        visitor = browser.new_context(viewport={"width": 1280, "height": 800}, locale="en-GB")
+        page = visitor.new_page()
+        page.goto(BASE + "/crafts/?q=wool")
+        shot(page, "17-search.png")
+        page.goto(BASE + "/communities/yoruk/")
+        shot(page, "18-community-page.png")
+        page.goto(BASE + EXAMPLE + "report/")
+        shot(page, "19-report-form.png", full=False)
+        visitor.close()
 
         # ---- Visitor, phone ----
         phone = browser.new_context(
