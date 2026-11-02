@@ -65,7 +65,7 @@
       return;
     }
     var centre = [parseFloat(mapEl.dataset.lat), parseFloat(mapEl.dataset.lng)];
-    var map = L.map(mapEl, { scrollWheelZoom: false });
+    var map = L.map(mapEl, { scrollWheelZoom: false }).setView(centre, 7);
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
