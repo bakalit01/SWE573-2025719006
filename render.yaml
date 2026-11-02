@@ -5,7 +5,7 @@ services:
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
-    startCommand: python manage.py migrate --noinput && python manage.py seed_reference_crafts --replace-samples && (python manage.py createsuperuser --noinput || true) && gunicorn config.wsgi --workers 2
+    startCommand: python manage.py migrate --noinput && python manage.py seed_reference_crafts --replace-samples && python manage.py ensure_admin && gunicorn config.wsgi --workers 2
     healthCheckPath: /healthz
     envVars:
       - key: PYTHON_VERSION
@@ -17,7 +17,8 @@ services:
       - key: SERVE_MEDIA  # demo: Django serves uploaded photos (they reset on redeploy)
         value: "True"
       # First admin account: set both in the Render dashboard (Environment).
-      # It is created on start-up; if it already exists, start-up carries on.
+      # On every start-up the account is created, or its password and admin rights
+      # are reset to these values. The deploy log says what happened.
       - key: DJANGO_SUPERUSER_EMAIL
         sync: false
       - key: DJANGO_SUPERUSER_PASSWORD

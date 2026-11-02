@@ -8,10 +8,15 @@ class UserManager(BaseUserManager):
 
     use_in_migrations = True
 
+    def get_by_natural_key(self, email):
+        # Email addresses are matched without regard to capital letters, so
+        # "Ege@…" and "ege@…" are the same account (the admin login uses this).
+        return self.get(email__iexact=email)
+
     def _create_user(self, email, password, **extra):
         if not email:
             raise ValueError("An email address is required")
-        email = self.normalize_email(email)
+        email = self.normalize_email(email).lower()
         user = self.model(email=email, **extra)
         user.set_password(password)
         user.save(using=self._db)
