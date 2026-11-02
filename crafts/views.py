@@ -15,6 +15,7 @@ from django.views.decorators.http import require_GET
 
 from accounts.permissions import (
     can_contribute,
+    can_delete,
     can_edit,
     can_review,
     is_site_admin,
@@ -422,7 +423,7 @@ def craft_edit(request, slug):
 @login_required
 def craft_delete(request, slug):
     craft = get_object_or_404(Craft, slug=slug)
-    if not can_edit(request.user, craft):
+    if not can_delete(request.user, craft):
         raise Http404
     if request.method == "POST":
         title = craft.title

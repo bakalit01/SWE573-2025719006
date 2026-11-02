@@ -243,3 +243,37 @@ class TestReports:
         craft.refresh_from_db()
         assert report.status == Report.Status.RESOLVED and report.resolution_note == "Fixed"
         assert craft.status == Craft.Status.PUBLISHED
+
+
+class TestStewardLimits:
+    def test_stewards_cannot_see_edit_or_decide_on_others_drafts(self, client, setup, people):
+        craft = CraftFactory(
+            community=setup["community"], created_by=people["maker"], status=Craft.Status.DRAFT
+        )
+        as_user(client, people["steward"])
+        assert client.get(craft.get_absolute_url()).status_code == 404
+        assert client.get(reverse("crafts:edit", args=[craft.slug])).status_code == 404
+        response = client.post(
+            reverse("crafts:review", args=[craft.slug]), {"decision": "approved"}
+        )
+        assert response.status_code == 404
+        craft.refresh_from_db()
+        assert craft.status == Craft.Status.DRAFT
+
+    def test_stewards_unpublish_but_do_not_delete(self, client, setup, people):
+        craft = CraftFactory(community=setup["community"], created_by=people["maker"])
+        as_user(client, people["steward"])
+        assert client.post(reverse("crafts:delete", args=[craft.slug])).status_code == 404
+        assert Craft.objects.filter(pk=craft.pk).exists()
+        as_user(client, people["admin"]).post(reverse("crafts:delete", args=[craft.slug]))
+        assert not Craft.objects.filter(pk=craft.pk).exists()
+
+    def test_no_approval_without_consent(self, client, setup, people):
+        craft = CraftFactory(
+            community=setup["community"], created_by=people["maker"], status=Craft.Status.PENDING
+        )
+        as_user(client, people["steward"]).post(
+            reverse("crafts:review", args=[craft.slug]), {"decision": "approved"}
+        )
+        craft.refresh_from_db()
+        assert craft.status == Craft.Status.PENDING and not ReviewDecision.objects.exists()

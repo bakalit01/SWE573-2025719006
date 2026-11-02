@@ -125,9 +125,10 @@ class CraftQuerySet(models.QuerySet):
         """The single place that decides which crafts a user may see (US-22).
 
         Visitors: published + public. Signed-in users: also published members-only, and
-        community-only records of their own community. Stewards: every record of the
-        communities they steward, in any status (they review them), including restricted
-        ones. Everyone sees their own records (drafts included). Admins see everything.
+        community-only records of their own community. Stewards: every submitted record of
+        the communities they steward (pending, published, unpublished, any visibility), but
+        not other people's unsubmitted drafts. Everyone sees their own records (drafts
+        included). Admins see everything.
         """
         from accounts.permissions import is_site_admin, stewarded_community_ids
 
@@ -143,7 +144,7 @@ class CraftQuerySet(models.QuerySet):
                 )
             stewarded = stewarded_community_ids(user)
             if stewarded:
-                rule |= Q(community_id__in=stewarded)
+                rule |= Q(community_id__in=stewarded) & ~Q(status=Craft.Status.DRAFT)
             rule |= Q(created_by=user)
         return self.filter(rule)
 

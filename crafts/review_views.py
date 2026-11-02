@@ -11,7 +11,7 @@ from accounts.permissions import can_review, is_site_admin, stewarded_community_
 
 from . import review
 from .forms import DecisionForm, ReportForm
-from .models import Craft, Report, ReviewDecision
+from .models import Consent, Craft, Report, ReviewDecision
 
 
 def _require_reviewer(user):
@@ -47,14 +47,22 @@ def review_queue(request):
 @login_required
 def review_craft(request, slug):
     craft = get_object_or_404(Craft, slug=slug)
-    if not can_review(request.user, craft):
-        raise Http404
+    if not can_review(request.user, craft) or craft.status == Craft.Status.DRAFT:
+        raise Http404  # drafts are not submitted yet; they stay with their author
     form = DecisionForm(request.POST)
     if not form.is_valid():
         errors = "; ".join(e for errs in form.errors.values() for e in errs)
         messages.error(request, f"Decision not saved: {errors}")
         return redirect(craft)
     decision = form.cleaned_data["decision"]
+    has_consent = craft.is_reference or Consent.objects.filter(craft=craft).exists()
+    if decision == ReviewDecision.Decision.APPROVED and not has_consent:
+        messages.error(
+            request,
+            "This craft has no consent record, so it can't be published. "
+            "Request changes and ask the contributor to add one.",
+        )
+        return redirect(craft)
     review.decide(request, craft, decision, form.cleaned_data["comment"].strip())
     messages.success(
         request, f"“{craft.title}”: {ReviewDecision.Decision(decision).label.lower()}."

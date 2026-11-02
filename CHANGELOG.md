@@ -9,7 +9,8 @@ All notable changes per release. Releases are tagged on GitHub (`vX.Y.Z`).
 - **Report or request removal** (#56): a form on every craft page, no login needed, replaces the GitHub link. Reports are e-mailed to the community's stewards and admins and listed in the review queue, where they can **unpublish the craft at once** or mark the report resolved. A hidden spam trap discards bot submissions.
 - **Community pages** (#48): `/communities/<name>/` shows the community's own name first, other names, region, description, stewards and its crafts; stewards of that community (and admins) can edit the description.
 - Admin: consent records, review history and reports.
-- Tests: 164 (26 new); coverage 94 %.
+- Stewards see, edit and decide on submitted records of their communities, never on other people's unsubmitted drafts; they unpublish rather than delete (only authors and admins delete); a record without consent can't be approved.
+- Tests: 167 (29 new); coverage 94 %.
 
 ### Fixed
 - Pages of communities whose names contain non-ASCII letters (e.g. "Yörük") failed to open.
