@@ -18,6 +18,7 @@ A website to document and showcase Indigenous crafts. Registered users can recor
 - **Consent records** and **steward review**: makers submit, the community's stewards approve, request changes or reject; everyone involved is e-mailed
 - **Report or request removal** on every craft page, without logging in; stewards can unpublish at once
 - **Community pages**, in the community's own words, edited by its stewards
+- **Members' stories** on every craft, and **search by location** (near a place or your location, nearest first, on a map) ([v0.6.1](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.6.1))
 
 Earlier: M2 Contribute (25 Oct, [v0.4.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.4.0)) and feedback rounds FB-01–FB-09 (22 real examples, Boğaziçi colours, "Other" choices and tags). Next: user test #1, then **M4 Enrich**.
 
@@ -76,7 +77,8 @@ uv run python manage.py runserver             # → http://localhost:8000
 7. Log out, then use **Forgot your password?** on the login page. The reset email appears in the server console in development.
 8. **Review as a steward.** In `/admin/`, give a second account the *Community steward* role and add it as a steward of the craft's community (Communities → stewards). Log in as that steward: the header shows **Review** with a count. Open the submitted craft, read the consent record in the review panel, and **approve** or **request changes** with a note. The maker gets an e-mail (shown in the server console in development) and sees the note.
 9. **Report** any craft without logging in ("Report" on the craft page). The steward sees it in the review queue and can **Unpublish now**.
-10. Open a **community page** from any craft; as its steward, **Edit page** to change the description. Try **Search** on Browse crafts, e.g. "wool", with a country filter.
+10. Open a **community page** from any craft; as its steward, **Edit page** to change the description. Try **Search** on Browse crafts, e.g. "wool", with a country filter, and **Near a place**, e.g. "Antalya" within 250 km.
+11. As any signed-in member, open a craft and **Share your story** at the bottom of the page.
 
 **Adding crafts as an admin:** `/admin/` → Crafts. Materials, techniques and photos are inline rows. Craft types and communities that users typed under "Other" can be listed with the **added by** filter in the admin.
 

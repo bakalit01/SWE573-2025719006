@@ -159,6 +159,20 @@ def main():
         page.wait_for_load_state()
         page.goto(BASE + "/crafts/mine/")
         shot(page, "11-my-crafts.png")
+
+        # A member's story on a real example.
+        page.goto(BASE + "/crafts/yoruk-kilim/")
+        page.select_option("#id_connection", "family")
+        page.fill(
+            "#id_text",
+            "My grandmother wove kilims like this every winter. She said the hexagons kept "
+            "the family safe.",
+        )
+        page.get_by_role("button", name="Share story").click()
+        page.wait_for_load_state()
+        settle(page)
+        page.locator("#stories").screenshot(path=OUT / "20-stories.png")
+        print("saved 20-stories.png")
         desk.close()
 
         # ---- Community steward (created by the workflow for the Yörük community) ----
@@ -186,6 +200,8 @@ def main():
         page = visitor.new_page()
         page.goto(BASE + "/crafts/?q=wool")
         shot(page, "17-search.png")
+        page.goto(BASE + "/crafts/?place=Antalya&lat=36.8969&lng=30.7133&km=250")
+        shot(page, "21-location-search.png", maps=True)
         page.goto(BASE + "/communities/yoruk/")
         shot(page, "18-community-page.png")
         page.goto(BASE + EXAMPLE + "report/")

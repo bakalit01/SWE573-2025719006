@@ -1,5 +1,11 @@
 {% extends "base.html" %}
+{% load static %}
 {% block head_title %}Browse crafts{% endblock %}
+{% block extra_body %}
+<script src="{% static 'js/catalogue.js' %}" defer></script>
+{% if point %}<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="" async onload="window.dispatchEvent(new Event('leaflet:ready'))" onerror="window.dispatchEvent(new Event('leaflet:failed'))"></script>{% endif %}
+{% endblock %}
+{% block extra_head %}{% if map_points or point %}<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">{% endif %}{% endblock %}
 {% block content %}
 <div class="page-head">
   <h1>Browse crafts</h1>
@@ -14,6 +20,22 @@
       <button class="btn btn-primary" type="submit">Search</button>
     </div>
   </div>
+  <fieldset class="near" data-near{% if point and not selected.place %} data-my-location{% endif %}>
+    <legend>Near a place</legend>
+    <div class="near-row">
+      <label class="sr-only" for="near-place">Place</label>
+      <input type="search" id="near-place" name="place" value="{% if point and not selected.place %}{% else %}{{ selected.place }}{% endif %}" placeholder="{% if point and not selected.place %}Your location{% else %}Town, region or country, e.g. Antalya{% endif %}" autocomplete="off" data-near-place data-geocoded-for="{{ selected.place }}">
+      <label class="sr-only" for="near-km">Distance</label>
+      <select id="near-km" name="km">
+        {% for d in distances_km %}<option value="{{ d }}"{% if d == km %} selected{% endif %}>within {{ d }} km</option>{% endfor %}
+      </select>
+      <button type="button" class="btn btn-ghost" data-near-me>Use my location</button>
+      {% if point or selected.place %}<button type="button" class="btn btn-ghost" data-near-clear>Remove location</button>{% endif %}
+    </div>
+    <input type="hidden" name="lat" value="{% if point %}{{ point.0|stringformat:'.5f' }}{% endif %}" data-near-lat>
+    <input type="hidden" name="lng" value="{% if point %}{{ point.1|stringformat:'.5f' }}{% endif %}" data-near-lng>
+    <p class="help" data-near-status aria-live="polite">{% if point %}Showing crafts within {{ km }} km of {{ selected.place|default:"your location" }}, nearest first. Places that are kept private are never included.{% else %}Finds crafts within a distance of a place. Places that are kept private are never included.{% endif %}</p>
+  </fieldset>
   <div class="filter-grid">
     <label>Craft type
       <select name="type">
@@ -60,6 +82,11 @@
     {% if any_filter %}<a href="{% url 'crafts:list' %}">Clear all</a>{% endif %}
   </div>
 </form>
+
+{% if point %}
+  <div class="map map-results" data-results-map data-lat="{{ point.0 }}" data-lng="{{ point.1 }}" data-km="{{ km }}" role="img" aria-label="Map of the crafts found near {{ selected.place|default:'your location' }}"></div>
+  {{ map_points|json_script:"map-points" }}
+{% endif %}
 
 {% if crafts %}
   <ul class="grid">{% for craft in crafts %}{% include "crafts/_card.html" %}{% endfor %}</ul>

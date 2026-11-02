@@ -1,17 +1,20 @@
 """Steward review queue, decisions and reports (US-24, US-25)."""
 
+from datetime import timedelta
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from accounts.permissions import can_review, is_site_admin, stewarded_community_ids
 
 from . import review
 from .forms import DecisionForm, ReportForm
-from .models import Consent, Craft, Report, ReviewDecision
+from .models import Consent, Craft, CraftStory, Report, ReviewDecision
 
 
 def _require_reviewer(user):
@@ -36,10 +39,24 @@ def review_queue(request):
         if is_site_admin(request.user)
         else ", ".join(request.user.stewarded_communities.values_list("name", flat=True))
     )
+    stories = (
+        CraftStory.objects.filter(
+            craft__in=Craft.objects.filter(review.queue_filter(request.user)).values("pk"),
+            created_at__gte=timezone.now() - timedelta(days=14),
+        )
+        .select_related("craft", "author")
+        .order_by("-created_at")[:20]
+    )
     return render(
         request,
         "crafts/review_queue.html",
-        {"pending": pending, "reports": reports, "recent": recent, "communities": communities},
+        {
+            "pending": pending,
+            "reports": reports,
+            "recent": recent,
+            "stories": stories,
+            "communities": communities,
+        },
     )
 
 

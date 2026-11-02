@@ -11,7 +11,16 @@ from PIL import Image, ImageOps
 from communities.models import Community
 
 from . import units
-from .models import AttributeDefinition, Consent, Craft, CraftType, Report, ReviewDecision, Tag
+from .models import (
+    AttributeDefinition,
+    Consent,
+    Craft,
+    CraftStory,
+    CraftType,
+    Report,
+    ReviewDecision,
+    Tag,
+)
 
 OTHER = "__other__"  # "Other (type your own)" in craft type, community and choice fields
 MAX_TAGS = 15
@@ -256,7 +265,7 @@ class CraftForm(forms.ModelForm):
         craft.tags.set(tags)
 
 
-RESERVED_SLUGS = {"add", "mine", "fields", "review"}
+RESERVED_SLUGS = {"add", "mine", "fields", "review", "stories"}
 
 
 def unique_slug(title):
@@ -648,3 +657,20 @@ class ReportForm(forms.ModelForm):
     @property
     def is_spam(self):
         return bool(self.cleaned_data.get("website"))
+
+
+class StoryForm(forms.ModelForm):
+    """A member's story about a craft."""
+
+    class Meta:
+        model = CraftStory
+        fields = ["connection", "text"]
+        widgets = {"text": forms.Textarea(attrs={"rows": 4, "maxlength": 2000})}
+        help_texts = {
+            "text": "Up to 2,000 characters. Don't share anything your family or community "
+            "would not want public.",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["connection"].choices = [("", "Choose…")] + list(CraftStory.Connection.choices)

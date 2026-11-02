@@ -1,6 +1,6 @@
 # UI design
 
-The low-fidelity wireframes (T-06) were replaced by the working pages. These screenshots are the current UI reference for **v0.6.0** (2 Nov 2026, M3 MVP), with the real examples, their Wikimedia Commons photos and OpenStreetMap maps.
+The low-fidelity wireframes (T-06) were replaced by the working pages. These screenshots are the current UI reference for **v0.6.1** (2 Nov 2026), with the real examples, their Wikimedia Commons photos and OpenStreetMap maps.
 
 To retake them, push a commit whose message contains `[take screenshots]` to any branch other than `main`, or run the **UI screenshots** workflow by hand. The workflow runs [`scripts/take_screenshots.py`](../../scripts/take_screenshots.py) on GitHub, which can reach Commons and OpenStreetMap, and commits the images to that branch.
 
@@ -12,6 +12,8 @@ To retake them, push a commit whose message contains `[take screenshots]` to any
 | Catalogue: search box, filters by craft type, community, country, material, technique and tag, and sorting | ![Catalogue](screenshots/02-catalogue.png) | |
 | Search results for “wool” | ![Search](screenshots/17-search.png) | |
 | Community page: the community's own name first, description, stewards and crafts | ![Community](screenshots/18-community-page.png) | |
+| Search by location: near Antalya within 250 km, nearest first, with a map of the search area and distances | ![Location](screenshots/21-location-search.png) | |
+| Members' stories on a craft page, with the form to share one | ![Stories](screenshots/20-stories.png) | |
 | Report or request removal: no login needed | ![Report](screenshots/19-report-form.png) | |
 | Catalogue filtered by a tag (`?tag=painted`); the Tag box suggests tags and also matches part of a tag | ![Tag filter](screenshots/09-catalogue-tag-filter.png) | |
 | Craft page: tags, gallery with photo credits and licences, "At a glance", map, materials and techniques in detail, details, sources, report link | ![Craft page](screenshots/03-craft-detail.png) | ![Craft page on phone](screenshots/08-mobile-detail.png) |

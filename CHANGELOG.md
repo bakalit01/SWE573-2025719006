@@ -2,6 +2,15 @@
 
 All notable changes per release. Releases are tagged on GitHub (`vX.Y.Z`).
 
+## [v0.6.1] – 2 Nov 2026 · Members' stories and search by location
+### Added
+- **Stories** (#95): any signed-in member can share a story on a craft they can see (their connection to it, up to 2,000 characters). Authors edit or delete their own; the craft's author is e-mailed; the community's stewards and admins can hide a story with a reason, and new stories appear in the review queue.
+- **Search by location** (#96): "Near a place" on Browse crafts, typed (looked up on OpenStreetMap in the browser) or "Use my location", within 25–2,500 km. Results come nearest first, with the distance on each card and a map of the search area. Only published coordinates are used: approximate places by their rounded point, hidden places never. If the lookup fails, the place is matched against place names.
+- Tests: 183 (16 new); coverage 95 %.
+
+### Fixed
+- Screen-reader-only labels made the catalogue scroll sideways on phones.
+
 ## [v0.6.0] – 2 Nov 2026 · M3 MVP: consent, steward review, reports, community pages
 ### Added
 - **Consent records** (#54): who agreed to the craft being documented, their role, when, and for what use. Required to submit or publish (optional for drafts); visible only to the community's stewards and admins.

@@ -559,3 +559,38 @@ class Report(models.Model):
 
     def __str__(self):
         return f"Report on {self.craft}: {self.get_reason_display()}"
+
+
+class CraftStory(models.Model):
+    """A member's own story about a craft: making one, a family piece, a memory."""
+
+    class Connection(models.TextChoices):
+        MADE = "made", "I make crafts like this"
+        FAMILY = "family", "It is part of my family's history"
+        COMMUNITY = "community", "I belong to this community"
+        OWN = "own", "I own or use one"
+        SAW = "saw", "I saw or learned about it"
+        OTHER = "other", "Other"
+
+    craft = models.ForeignKey(Craft, on_delete=models.CASCADE, related_name="stories")
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="craft_stories"
+    )
+    connection = models.CharField(
+        "Your connection to it", max_length=10, choices=Connection.choices
+    )
+    text = models.TextField("Your story", max_length=2000)
+    is_hidden = models.BooleanField(default=False)
+    hidden_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="+"
+    )
+    hidden_reason = models.CharField(max_length=300, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["created_at", "id"]
+        verbose_name_plural = "craft stories"
+
+    def __str__(self):
+        return f"{self.author} on {self.craft}"

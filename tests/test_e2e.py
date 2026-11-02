@@ -42,7 +42,14 @@ def test_demo_flow(live_server, page, seeded):
 def test_no_horizontal_scroll_on_phone(live_server, browser, seeded):
     context = browser.new_context(viewport={"width": 360, "height": 780})
     phone = context.new_page()
-    for path in ["/", "/crafts/", "/crafts/sample-coiled-sedge-basket/", "/accounts/login/"]:
+    paths = [
+        "/",
+        "/crafts/",
+        "/crafts/?place=Riverbend&lat=45.5&lng=-73.6&km=250",
+        "/crafts/sample-coiled-sedge-basket/",
+        "/accounts/login/",
+    ]
+    for path in paths:
         phone.goto(live_server.url + path)
         assert not phone.evaluate("document.documentElement.scrollWidth > innerWidth"), path
     context.close()

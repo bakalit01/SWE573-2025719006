@@ -49,6 +49,31 @@
   {% else %}<p class="empty">No open reports.</p>{% endif %}
 </section>
 
+<section class="queue-section" aria-labelledby="stories-heading">
+  <h2 id="stories-heading">New stories (last 14 days)</h2>
+  {% if stories %}
+  <ul class="report-list">
+    {% for s in stories %}
+    <li class="side-card{% if s.is_hidden %} story-hidden{% endif %}">
+      <p><a href="{{ s.craft.get_absolute_url }}#story-{{ s.pk }}"><strong>{{ s.craft.title }}</strong></a> · {{ s.author.public_name }} · {{ s.created_at|date:"j M Y" }}{% if s.is_hidden %} · <span class="badge badge-draft">Hidden</span>{% endif %}</p>
+      <p>{{ s.text|truncatechars:300 }}</p>
+      <form method="post" action="{% url 'crafts:moderate_story' s.pk %}" class="report-actions">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{% url 'crafts:review_queue' %}">
+        {% if s.is_hidden %}
+          <button type="submit" name="action" value="show" class="btn btn-ghost">Show again</button>
+        {% else %}
+          <label for="sreason-{{ s.pk }}" class="sr-only">Reason</label>
+          <input type="text" id="sreason-{{ s.pk }}" name="reason" placeholder="Reason (optional)">
+          <button type="submit" name="action" value="hide" class="btn btn-ghost">Hide</button>
+        {% endif %}
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}<p class="empty">No new stories.</p>{% endif %}
+</section>
+
 {% if recent %}
 <section class="queue-section" aria-labelledby="recent-heading">
   <h2 id="recent-heading">Recent decisions</h2>

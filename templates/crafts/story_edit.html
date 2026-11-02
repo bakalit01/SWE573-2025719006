@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block head_title %}Edit your story{% endblock %}
+{% block main_class %}container form-narrow{% endblock %}
+{% block content %}
+<div class="page-head">
+  <p class="eyebrow"><a href="{{ story.craft.get_absolute_url }}">{{ story.craft.title }}</a></p>
+  <h1>Edit your story</h1>
+</div>
+<form method="post" class="form-card" novalidate>
+  {% csrf_token %}
+  {% include "crafts/_field.html" with field=form.connection %}
+  {% include "crafts/_field.html" with field=form.text %}
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="{{ story.craft.get_absolute_url }}#story-{{ story.pk }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}
