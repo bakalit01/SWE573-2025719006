@@ -6,7 +6,7 @@ from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db import transaction
-from django.db.models import Count, F, Q
+from django.db.models import Case, Count, F, Q, When
 from django.db.models.functions import Lower
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
@@ -14,6 +14,7 @@ from django.urls import reverse
 from django.views.decorators.http import require_GET
 
 from accounts.permissions import (
+    can_add_story,
     can_contribute,
     can_delete,
     can_edit,
@@ -23,7 +24,7 @@ from accounts.permissions import (
 )
 from communities.models import Community
 
-from . import review
+from . import geo, review
 from .forms import (
     OTHER,
     AttributesForm,
@@ -33,6 +34,7 @@ from .forms import (
     DetailRows,
     ImageRows,
     MaterialRows,
+    StoryForm,
     TechniqueRows,
     craft_type_from,
     resized_image,
@@ -47,6 +49,7 @@ from .models import (
     Tag,
     Technique,
 )
+from .story_views import visible_stories
 
 PAGE_SIZE = 24
 
@@ -91,6 +94,7 @@ SEARCH_FIELDS = [
 ]
 SORTS = {
     "relevance": "Best match",
+    "nearest": "Nearest first",
     "title": "Name (A–Z)",
     "recent": "Recently added",
     "oldest": "Oldest made first",
@@ -123,6 +127,12 @@ def craft_list(request):
     material = get.get("material", "")
     technique = get.get("technique", "")
     country = get.get("country", "")
+    # Search by location: a point (from the place box, geocoded in the browser, or "use my
+    # location") and a distance; without a point, the place text matches place names.
+    place = " ".join(get.get("place", "").split())[:120]
+    point = geo.parse_point(get.get("lat"), get.get("lng"))
+    km = geo.parse_km(get.get("km"))
+    distances = {}
     # Tag search: an exact tag (from a tag link or a suggestion), else any tag containing the text.
     tag_query = " ".join(get.get("tag", "").lstrip("#").split())
     tag = (
@@ -146,6 +156,16 @@ def craft_list(request):
         )
     if country:
         crafts = crafts.filter(country__iexact=country)
+    if point:
+        distances = geo.distances_within(crafts, point, km)
+        crafts = crafts.filter(pk__in=distances)
+    elif place:
+        for word in place.replace(",", " ").split():
+            crafts = crafts.filter(
+                Q(place_name__icontains=word)
+                | Q(country__icontains=word)
+                | Q(community__region__icontains=word)
+            )
     if tag:
         crafts = crafts.filter(tags=tag)
     elif tag_query:
@@ -153,11 +173,23 @@ def craft_list(request):
             pk__in=Craft.objects.filter(tags__name__icontains=tag_query).values("pk")
         )
 
-    sort = get.get("sort") or ("relevance" if query else "title")
-    if sort not in SORTS or (sort == "relevance" and not query):
-        sort = "title"
+    default_sort = "nearest" if point else ("relevance" if query else "title")
+    sort = get.get("sort") or default_sort
+    if (
+        sort not in SORTS
+        or (sort == "relevance" and not query)
+        or (sort == "nearest" and not point)
+    ):
+        sort = default_sort
+    nearest = sorted(distances, key=distances.get)
     crafts = crafts.order_by(
         *{
+            "nearest": [
+                Case(*[When(pk=pk, then=i) for i, pk in enumerate(nearest)], default=len(nearest)),
+                "title",
+            ]
+            if nearest
+            else ["title"],
             "relevance": [F("rank").desc(), "title"] if query else ["title"],
             "title": [Lower("title")],
             "recent": ["-created_at"],
@@ -167,6 +199,8 @@ def craft_list(request):
     )
 
     page = Paginator(crafts, PAGE_SIZE).get_page(get.get("page"))
+    for craft in page.object_list:
+        craft.distance_km = distances.get(craft.pk)
     selected = {
         "q": query,
         "type": craft_type,
@@ -175,9 +209,12 @@ def craft_list(request):
         "technique": technique,
         "country": country,
         "tag": tag.slug if tag else tag_query,
+        "place": place,
     }
     filters = {k: v for k, v in selected.items() if v}
-    if sort != ("relevance" if query else "title"):
+    if point:
+        filters.update(lat=f"{point[0]:.5f}", lng=f"{point[1]:.5f}", km=km)
+    if sort != default_sort:
         filters["sort"] = sort
     visible_ids = visible.values("pk")
     return render(
@@ -204,10 +241,30 @@ def craft_list(request):
             "tag_options": Tag.objects.filter(crafts__in=visible_ids)
             .distinct()
             .order_by(Lower("name")),  # only tags on crafts this user can see
-            "sorts": [(k, v) for k, v in SORTS.items() if k != "relevance" or query],
+            "sorts": [
+                (k, v)
+                for k, v in SORTS.items()
+                if (k != "relevance" or query) and (k != "nearest" or point)
+            ],
+            "point": point,
+            "km": km,
+            "distances_km": geo.DISTANCES_KM,
+            "map_points": [
+                {
+                    "title": c.title,
+                    "url": c.get_absolute_url(),
+                    **c.map_point,
+                }
+                for c in page.object_list
+                if c.map_point
+            ]
+            if point
+            else [],
             "sort": sort,
             "any_filter": bool(filters),
-            "other_filters": any(v for k, v in filters.items() if k not in ("q", "sort")),
+            "other_filters": any(
+                v for k, v in filters.items() if k not in ("q", "sort", "lat", "lng", "km")
+            ),
             "filter_query": urlencode(filters),
         },
     )
@@ -241,6 +298,8 @@ def craft_detail(request, slug):
             else [],
             "decision_form": DecisionForm() if reviewer else None,
             "open_reports": craft.reports.filter(status="open") if reviewer else [],
+            "stories": visible_stories(craft, request.user),
+            "story_form": StoryForm() if can_add_story(request.user) else None,
         },
     )
 

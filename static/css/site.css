@@ -339,3 +339,25 @@ a.tag-chip:hover { background: var(--bu-blue); color: var(--ink); }
 /* Community pages (US-17) */
 .community-layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 28px; margin-bottom: 32px; align-items: start; }
 @media (max-width: 800px) { .community-layout { grid-template-columns: 1fr; } }
+
+/* Member stories */
+.story-list { list-style: none; padding: 0; margin: 12px 0 20px; display: grid; gap: 12px; }
+.story-card { background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--bu-blue); border-radius: var(--radius); padding: 14px 18px; }
+.story-card p { margin: 0 0 8px; }
+.story-meta { font-size: .92rem; color: var(--muted); }
+.story-hidden { opacity: .75; border-left-color: #c8a64a; }
+.story-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: .92rem; }
+.story-actions input { min-width: 0; width: 12rem; padding: 4px 8px; border: 1px solid #a9bfd6; border-radius: 8px; font: inherit; }
+.story-form h3 { margin-top: 0; }
+
+/* Search by location */
+.near { border: 0; padding: 0; margin: 0; min-width: 0; }
+.near legend { font-weight: 800; margin-bottom: 6px; }
+.near-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.near-row input { flex: 1 1 260px; min-width: 0; }
+.near-row select { flex: 0 1 180px; min-width: 0; }
+.near .help { margin: 6px 0 0; }
+.map-results { height: 320px; margin-bottom: 24px; }
+.card-distance { font-size: .9rem; font-weight: 700; color: var(--accent); margin: -4px 0 6px; }
+.sr-only { width: 1px !important; height: 1px !important; }
+.story-actions .link-button { font-weight: inherit; }

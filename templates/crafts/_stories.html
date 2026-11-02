@@ -1,0 +1,47 @@
+<section class="story stories" id="stories" aria-labelledby="stories-heading">
+  <h2 id="stories-heading">Stories{% if stories %} ({{ stories|length }}){% endif %}</h2>
+  <p class="help">Memories and knowledge from members: making one, a family piece, what it means to you.</p>
+  {% if stories %}
+    <ol class="story-list">
+      {% for s in stories %}
+      <li id="story-{{ s.pk }}" class="story-card{% if s.is_hidden %} story-hidden{% endif %}">
+        <p class="story-meta"><a href="{{ s.author.get_absolute_url }}"><strong>{{ s.author.public_name }}</strong></a> · {{ s.get_connection_display }} · <time datetime="{{ s.created_at|date:'c' }}">{{ s.created_at|date:"j M Y" }}</time></p>
+        {% if s.is_hidden %}<p class="badge badge-draft">Hidden by a steward{% if s.hidden_reason %}: {{ s.hidden_reason }}{% endif %}. Only you and reviewers see it.</p>{% endif %}
+        <p>{{ s.text|linebreaksbr }}</p>
+        <div class="story-actions">
+          {% if s.author_id == user.pk %}
+            <a href="{% url 'crafts:edit_story' s.pk %}">Edit</a>
+            <form method="post" action="{% url 'crafts:delete_story' s.pk %}" class="inline-form">{% csrf_token %}<button type="submit" class="link-button">Delete</button></form>
+          {% endif %}
+          {% if is_reviewer %}
+            <form method="post" action="{% url 'crafts:moderate_story' s.pk %}" class="inline-form">
+              {% csrf_token %}
+              {% if s.is_hidden %}
+                <button type="submit" name="action" value="show" class="link-button">Show again</button>
+              {% else %}
+                <label class="sr-only" for="reason-{{ s.pk }}">Reason for hiding</label>
+                <input type="text" id="reason-{{ s.pk }}" name="reason" placeholder="Reason (optional)">
+                <button type="submit" name="action" value="hide" class="link-button">Hide</button>
+              {% endif %}
+            </form>
+          {% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+  {% else %}
+    <p class="muted">No stories yet.</p>
+  {% endif %}
+
+  {% if story_form %}
+    <form method="post" action="{% url 'crafts:add_story' craft.slug %}" class="form-card story-form" novalidate>
+      {% csrf_token %}
+      <h3>Share your story</h3>
+      {% include "crafts/_field.html" with field=story_form.connection %}
+      {% include "crafts/_field.html" with field=story_form.text %}
+      <button type="submit" class="btn btn-primary">Share story</button>
+    </form>
+  {% elif not user.is_authenticated %}
+    <p><a href="{% url 'account_login' %}?next={{ request.path|urlencode }}%23stories">Log in</a> or <a href="{% url 'account_signup' %}">sign up</a> to share your story.</p>
+  {% endif %}
+</section>

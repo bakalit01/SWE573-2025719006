@@ -1,6 +1,6 @@
 # Requirements — Indigenous Crafts Platform
 
-Version 0.3 · 2 Nov 2026 · Status: updated after M3 and feedback FB-01–FB-09 (✅ = delivered)
+Version 0.3 · 2 Nov 2026 · Status: updated after M3 and feedback FB-01–FB-11 (✅ = delivered)
 
 ## 1. Purpose & scope
 
@@ -48,6 +48,7 @@ Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oc
 | FR-C9 | Crafts can have multiple names in different languages (incl. Indigenous language name) | Should | M4 |
 | FR-C10 | Where a list doesn't fit, users choose "Other (type your own)": craft type, community, size and weight units, and choice fields; typed craft types and communities are added and marked for review (FB-05) | Should | M2 ✅ |
 | FR-C11 | Users add their own details (any label + value) and their own tags; tags link to the crafts that share them (FB-05) | Should | M2 ✅ |
+| FR-C13 | Signed-in members add their own stories to crafts; stewards can hide them (FB-10) | Should | M3 ✅ |
 | FR-C12 | Place recorded as a geolocation (map pin, place, country) with exact / approximate / hidden precision (FB-01) | Must | M2 ✅ |
 
 ### 3.3 Discovery
@@ -59,7 +60,8 @@ Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oc
 | FR-D4 | Pagination and sorting | Must | M3 ✅ |
 | FR-D5 | Maker and community pages listing related crafts | Should | M3 ✅ |
 | FR-D6 | Members can favourite crafts and build named collections | Could | M4 |
-| FR-D7 | Map view by region (each craft page already shows its own map) | Won't (v1) / stretch | M5 |
+| FR-D8 | Search by location: within a distance of a place or the user's location, using only published coordinates (FB-11) | Should | M3 ✅ |
+| FR-D7 | Map view by region (each craft page and location search already show maps) | Won't (v1) / stretch | M5 |
 
 ### 3.4 Cultural protocols & governance
 | ID | Requirement | Priority | Milestone |

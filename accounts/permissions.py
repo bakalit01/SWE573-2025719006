@@ -61,3 +61,12 @@ def can_delete(user, craft):
 
 def can_edit_community(user, community):
     return is_steward_of(user, community.pk)
+
+
+def can_add_story(user):
+    """Any signed-in, active member can share a story (members included)."""
+    return bool(user and user.is_authenticated and user.is_active)
+
+
+def can_moderate_story(user, story):
+    return can_review(user, story.craft)
