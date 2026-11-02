@@ -124,16 +124,26 @@ class CraftQuerySet(models.QuerySet):
     def visible_to(self, user):
         """The single place that decides which crafts a user may see (US-22).
 
-        Visitors: published + public. Members: also published + members-only.
-        Everyone also sees their own records (drafts included). Staff see everything.
+        Visitors: published + public. Signed-in users: also published members-only, and
+        community-only records of their own community. Stewards: every record of the
+        communities they steward, in any status (they review them), including restricted
+        ones. Everyone sees their own records (drafts included). Admins see everything.
         """
-        if user is not None and user.is_authenticated and user.is_staff:
+        from accounts.permissions import is_site_admin, stewarded_community_ids
+
+        if is_site_admin(user):
             return self.all()
-        levels = [Craft.Visibility.PUBLIC]
-        if user is not None and user.is_authenticated:
-            levels.append(Craft.Visibility.MEMBERS)
-        rule = Q(status=Craft.Status.PUBLISHED, visibility__in=levels)
-        if user is not None and user.is_authenticated:
+        published = Q(status=Craft.Status.PUBLISHED)
+        rule = published & Q(visibility=Craft.Visibility.PUBLIC)
+        if user is not None and user.is_authenticated and user.is_active:
+            rule |= published & Q(visibility=Craft.Visibility.MEMBERS)
+            if user.community_id:
+                rule |= published & Q(
+                    visibility=Craft.Visibility.COMMUNITY, community_id=user.community_id
+                )
+            stewarded = stewarded_community_ids(user)
+            if stewarded:
+                rule |= Q(community_id__in=stewarded)
             rule |= Q(created_by=user)
         return self.filter(rule)
 
@@ -152,7 +162,7 @@ class Craft(models.Model):
         PUBLIC = "public", "Public"
         MEMBERS = "members", "Members only"
         COMMUNITY = "community", "Community only"
-        RESTRICTED = "restricted", "Restricted"
+        RESTRICTED = "restricted", "Restricted: community stewards only"
 
     class Status(models.TextChoices):
         DRAFT = "draft", "Draft"

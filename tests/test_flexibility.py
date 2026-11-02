@@ -193,7 +193,7 @@ class TestTags:
             html = client.get(reverse("crafts:list"), {"tag": query}).content.decode()
             assert "Carved pipe" in html and "Untagged bowl" not in html, query
         html = client.get(reverse("crafts:list"), {"tag": "nothing-like-this"}).content.decode()
-        assert "No crafts match these filters" in html
+        assert "No crafts match" in html
 
     def test_tag_suggestions_only_from_visible_crafts(self, client, setup):
         from crafts.models import Tag

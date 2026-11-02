@@ -3,34 +3,75 @@
 {% block content %}
 <div class="page-head">
   <h1>Browse crafts</h1>
-  <p class="muted">{{ page.paginator.count }} craft{{ page.paginator.count|pluralize }}{% if not user.is_authenticated %} · <a href="{% url 'account_login' %}">Log in</a> to see members-only records{% endif %}</p>
+  <p class="muted">{{ page.paginator.count }} craft{{ page.paginator.count|pluralize }}{% if query %} for “{{ query }}”{% endif %}{% if not user.is_authenticated %} · <a href="{% url 'account_login' %}">Log in</a> to see members-only records{% endif %}</p>
 </div>
 
-<form class="filters" method="get" action="{% url 'crafts:list' %}" aria-label="Filter crafts">
-  <label>Craft type
-    <select name="type">
-      <option value="">All types</option>
-      {% for t in craft_types %}<option value="{{ t.slug }}"{% if t.slug == selected_type %} selected{% endif %}>{{ t.name }}</option>{% endfor %}
-    </select>
-  </label>
-  <label>Community
-    <select name="community">
-      <option value="">All communities</option>
-      {% for c in communities %}<option value="{{ c.slug }}"{% if c.slug == selected_community %} selected{% endif %}>{{ c.name }}</option>{% endfor %}
-    </select>
-  </label>
-  <label>Tag
-    <input type="search" name="tag" value="{{ tag_value }}" list="tag-options" placeholder="e.g. cedar, wool" autocomplete="off">
-  </label>
-  <datalist id="tag-options">{% for t in tag_options %}<option value="{{ t.name }}">{% endfor %}</datalist>
-  <button class="btn btn-primary" type="submit">Apply</button>
-  {% if selected_type or selected_community or tag_value %}<a href="{% url 'crafts:list' %}">Clear filters</a>{% endif %}
+<form class="filters" method="get" action="{% url 'crafts:list' %}" role="search" aria-label="Search and filter crafts">
+  <div class="search-main">
+    <label for="q">Search</label>
+    <div class="search-row">
+      <input type="search" id="q" name="q" value="{{ query }}" placeholder="Name, material, technique, community, place…" autocomplete="off">
+      <button class="btn btn-primary" type="submit">Search</button>
+    </div>
+  </div>
+  <div class="filter-grid">
+    <label>Craft type
+      <select name="type">
+        <option value="">All types</option>
+        {% for t in craft_types %}<option value="{{ t.slug }}"{% if t.slug == selected.type %} selected{% endif %}>{{ t.name }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Community
+      <select name="community">
+        <option value="">All communities</option>
+        {% for c in communities %}<option value="{{ c.slug }}"{% if c.slug == selected.community %} selected{% endif %}>{{ c.name }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Country
+      <select name="country">
+        <option value="">All countries</option>
+        {% for c in countries %}<option value="{{ c }}"{% if c == selected.country %} selected{% endif %}>{{ c }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Material
+      <select name="material">
+        <option value="">All materials</option>
+        {% for m in materials %}<option value="{{ m.name }}"{% if m.name|lower == selected.material|lower %} selected{% endif %}>{{ m.name }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Technique
+      <select name="technique">
+        <option value="">All techniques</option>
+        {% for t in techniques %}<option value="{{ t.name }}"{% if t.name|lower == selected.technique|lower %} selected{% endif %}>{{ t.name }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Tag
+      <input type="search" name="tag" value="{{ tag_value }}" list="tag-options" placeholder="e.g. cedar, wool" autocomplete="off">
+    </label>
+    <datalist id="tag-options">{% for t in tag_options %}<option value="{{ t.name }}">{% endfor %}</datalist>
+    <label>Sort by
+      <select name="sort">
+        {% for key, label in sorts %}<option value="{{ key }}"{% if key == sort %} selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+    </label>
+  </div>
+  <div class="filter-actions">
+    <button class="btn btn-primary" type="submit">Apply filters</button>
+    {% if any_filter %}<a href="{% url 'crafts:list' %}">Clear all</a>{% endif %}
+  </div>
 </form>
 
 {% if crafts %}
   <ul class="grid">{% for craft in crafts %}{% include "crafts/_card.html" %}{% endfor %}</ul>
 {% else %}
-  <p class="empty">No crafts match these filters. <a href="{% url 'crafts:list' %}">Clear filters</a></p>
+  <div class="empty">
+    <p><strong>No crafts match{% if query %} “{{ query }}”{% endif %}{% if other_filters %} with these filters{% endif %}.</strong></p>
+    <ul>
+      {% if query %}<li>Check the spelling, or try fewer or more general words (e.g. “basket” instead of “coiled sedge basket”).</li>{% endif %}
+      <li>Remove a filter, or <a href="{% url 'crafts:list' %}">clear all filters</a>.</li>
+      {% if not user.is_authenticated %}<li><a href="{% url 'account_login' %}">Log in</a>: some records are visible to members only.</li>{% endif %}
+    </ul>
+  </div>
 {% endif %}
 
 {% if page.has_other_pages %}

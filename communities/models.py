@@ -16,6 +16,12 @@ class Community(models.Model):
     is_sample = models.BooleanField(
         default=False, help_text="Fictional sample record used for demos and tests"
     )
+    stewards = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        blank=True,
+        related_name="stewarded_communities",
+        help_text="Users with the steward role who review this community's records",
+    )
     added_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         null=True,

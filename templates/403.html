@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block head_title %}Not allowed{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>You can't do this</h1>
+  <p>{{ exception|default:"Your account doesn't have permission for this page." }}</p>
+  <p>If you think you should have access, ask a site admin to change your role.</p>
+  <p><a class="btn btn-primary" href="{% url 'crafts:list' %}">Browse crafts</a></p>
+</div>
+{% endblock %}
