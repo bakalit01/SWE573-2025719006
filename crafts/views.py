@@ -3,14 +3,17 @@ from urllib.parse import urlencode
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db import transaction
-from django.db.models import Count, Q
+from django.db.models import Count, F, Q
 from django.db.models.functions import Lower
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET
 
+from accounts.permissions import can_contribute, can_edit
 from communities.models import Community
 
 from .forms import (
@@ -60,58 +63,144 @@ def home(request):
     )
 
 
+SEARCH_FIELDS = [
+    "title",
+    "summary",
+    "description",
+    "process",
+    "cultural_context",
+    "maker_credit",
+    "place_name",
+    "country",
+    "community__name",
+    "community__other_names",
+    "craft_type__name",
+    "craft_materials__material__name",
+    "craft_techniques__technique__name",
+    "tags__name",
+]
+SORTS = {
+    "relevance": "Best match",
+    "title": "Name (A–Z)",
+    "recent": "Recently added",
+    "oldest": "Oldest made first",
+    "newest": "Newest made first",
+}
+
+
+def search(crafts, query):
+    """US-15: every word must appear somewhere (names, text, materials, techniques, community,
+    tags); results are ranked by full-text relevance of the craft's own text."""
+    words = query.split()[:8]
+    for word in words:
+        match = Q()
+        for field in SEARCH_FIELDS:
+            match |= Q(**{f"{field}__icontains": word})
+        crafts = crafts.filter(pk__in=Craft.objects.filter(match).values("pk"))
+    vector = SearchVector("title", weight="A", config="simple") + SearchVector(
+        "summary", "description", "process", "cultural_context", weight="B", config="simple"
+    )
+    return crafts.annotate(rank=SearchRank(vector, SearchQuery(" ".join(words), config="simple")))
+
+
 def craft_list(request):
-    crafts = _listed(request)
-    craft_type = request.GET.get("type", "")
-    community = request.GET.get("community", "")
+    visible = _listed(request)
+    crafts = visible
+    get = request.GET
+    query = " ".join(get.get("q", "").split())[:100]
+    craft_type = get.get("type", "")
+    community = get.get("community", "")
+    material = get.get("material", "")
+    technique = get.get("technique", "")
+    country = get.get("country", "")
     # Tag search: an exact tag (from a tag link or a suggestion), else any tag containing the text.
-    tag_query = " ".join(request.GET.get("tag", "").lstrip("#").split())
+    tag_query = " ".join(get.get("tag", "").lstrip("#").split())
     tag = (
         Tag.objects.filter(Q(slug=tag_query) | Q(name__iexact=tag_query)).first()
         if tag_query
         else None
     )
-    tag_options = (
-        Tag.objects.filter(crafts__in=crafts).distinct().order_by(Lower("name"))
-    )  # only tags on crafts this user can see
+    if query:
+        crafts = search(crafts, query)
     if craft_type:
         crafts = crafts.filter(craft_type__slug=craft_type)
     if community:
         crafts = crafts.filter(community__slug=community)
+    if material:
+        crafts = crafts.filter(
+            pk__in=CraftMaterial.objects.filter(material__name__iexact=material).values("craft")
+        )
+    if technique:
+        crafts = crafts.filter(
+            pk__in=CraftTechnique.objects.filter(technique__name__iexact=technique).values("craft")
+        )
+    if country:
+        crafts = crafts.filter(country__iexact=country)
     if tag:
         crafts = crafts.filter(tags=tag)
     elif tag_query:
-        crafts = crafts.filter(tags__name__icontains=tag_query).distinct()
+        crafts = crafts.filter(
+            pk__in=Craft.objects.filter(tags__name__icontains=tag_query).values("pk")
+        )
 
-    page = Paginator(crafts, PAGE_SIZE).get_page(request.GET.get("page"))
-    filters = {
-        k: v
-        for k, v in {
-            "type": craft_type,
-            "community": community,
-            "tag": tag.slug if tag else tag_query,
-        }.items()
-        if v
+    sort = get.get("sort") or ("relevance" if query else "title")
+    if sort not in SORTS or (sort == "relevance" and not query):
+        sort = "title"
+    crafts = crafts.order_by(
+        *{
+            "relevance": [F("rank").desc(), "title"] if query else ["title"],
+            "title": [Lower("title")],
+            "recent": ["-created_at"],
+            "oldest": [F("year_made").asc(nulls_last=True), "title"],
+            "newest": [F("year_made").desc(nulls_last=True), "title"],
+        }[sort]
+    )
+
+    page = Paginator(crafts, PAGE_SIZE).get_page(get.get("page"))
+    selected = {
+        "q": query,
+        "type": craft_type,
+        "community": community,
+        "material": material,
+        "technique": technique,
+        "country": country,
+        "tag": tag.slug if tag else tag_query,
     }
+    filters = {k: v for k, v in selected.items() if v}
+    if sort != ("relevance" if query else "title"):
+        filters["sort"] = sort
+    visible_ids = visible.values("pk")
     return render(
         request,
         "crafts/list.html",
         {
             "page": page,
             "crafts": page.object_list,
-            "craft_types": CraftType.objects.all(),
-            "communities": Community.objects.all(),
-            "selected_type": craft_type,
-            "selected_community": community,
+            "query": query,
+            "craft_types": CraftType.objects.filter(crafts__in=visible_ids).distinct(),
+            "communities": Community.objects.filter(crafts__in=visible_ids).distinct(),
+            "materials": Material.objects.filter(crafts__in=visible_ids)
+            .distinct()
+            .order_by(Lower("name")),
+            "techniques": Technique.objects.filter(crafts__in=visible_ids)
+            .distinct()
+            .order_by(Lower("name")),
+            "countries": visible.exclude(country="")
+            .order_by("country")
+            .values_list("country", flat=True)
+            .distinct(),
+            "selected": selected,
             "tag_value": tag.name if tag else tag_query,
-            "tag_options": tag_options,
+            "tag_options": Tag.objects.filter(crafts__in=visible_ids)
+            .distinct()
+            .order_by(Lower("name")),  # only tags on crafts this user can see
+            "sorts": [(k, v) for k, v in SORTS.items() if k != "relevance" or query],
+            "sort": sort,
+            "any_filter": bool(filters),
+            "other_filters": any(v for k, v in filters.items() if k not in ("q", "sort")),
             "filter_query": urlencode(filters),
         },
     )
-
-
-def can_edit(user, craft):
-    return user.is_authenticated and (user.is_staff or craft.created_by_id == user.pk)
 
 
 def craft_detail(request, slug):
@@ -276,6 +365,8 @@ def _save_images(request, craft, images):
 
 @login_required
 def craft_create(request):
+    if not can_contribute(request.user):
+        raise PermissionDenied("Your account can browse crafts but not add them.")
     return _craft_form_page(request)
 
 

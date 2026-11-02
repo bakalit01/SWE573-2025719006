@@ -11,3 +11,4 @@ STORAGES = {
 
 # WhiteNoise is only needed when serving collected static files (production).
 MIDDLEWARE = [m for m in MIDDLEWARE if not m.startswith("whitenoise")]  # noqa: F405
+SERVE_MEDIA = True  # exercise the protected media view in tests

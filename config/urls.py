@@ -1,11 +1,10 @@
 from django.conf import settings
-from django.conf.urls.static import static
 from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import include, path, re_path
-from django.views.static import serve
 
 from crafts import views as craft_views
+from crafts.media_views import protected_media
 
 
 def healthz(_request):
@@ -21,10 +20,7 @@ urlpatterns = [
     path("healthz", healthz, name="healthz"),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-elif settings.SERVE_MEDIA:
-    # Demo hosting without object storage: Django serves uploaded photos itself.
-    urlpatterns += [
-        re_path(r"^media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
-    ]
+if settings.DEBUG or settings.SERVE_MEDIA:
+    # Without object storage, Django serves uploaded photos itself, checking that the
+    # viewer may see the craft each photo belongs to.
+    urlpatterns += [re_path(r"^media/(?P<path>.+)$", protected_media, name="media")]

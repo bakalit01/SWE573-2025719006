@@ -175,10 +175,14 @@ class CraftForm(forms.ModelForm):
             self.initial.setdefault("craft_type", str(self.instance.craft_type_id))
             self.initial.setdefault("community", str(self.instance.community_id))
             self.initial.setdefault("tags", ", ".join(t.name for t in self.instance.tags.all()))
-        # Community-only and restricted visibility arrive with steward review (M3).
         self.fields["visibility"].choices = [
             (Craft.Visibility.PUBLIC, "Public: anyone can see it"),
             (Craft.Visibility.MEMBERS, "Members only: signed-in users"),
+            (
+                Craft.Visibility.COMMUNITY,
+                "Community only: members of this craft's community, and its stewards",
+            ),
+            (Craft.Visibility.RESTRICTED, "Restricted: only this community's stewards"),
         ]
         self.fields["visibility"].widget = forms.RadioSelect(
             choices=self.fields["visibility"].choices

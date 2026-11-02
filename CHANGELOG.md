@@ -2,6 +2,15 @@
 
 All notable changes per release. Releases are tagged on GitHub (`vX.Y.Z`).
 
+## [v0.5.0] – 2 Nov 2026 · Roles, visibility levels and search
+### Added
+- **Roles** (#36): member (browse), maker (add and edit own crafts), community steward (also edit and review their communities' records), admin. New sign-ups are makers; existing staff accounts became admins. Permissions are checked on the server, and pages hide actions the user can't take.
+- **Managing users** (#58): in the admin, search users, filter by role, change roles, assign stewards to communities, and suspend or reactivate accounts. Suspended users can't log in. Every role change and suspension is logged with who made it.
+- **Four visibility levels** (#53): Public, Members only, **Community only** (members of the craft's community and its stewards) and **Restricted** (only the community's stewards). One rule, `Craft.objects.visible_to`, decides what every page, the search and uploaded photo URLs show; hidden records return "not found".
+- **Search** (#46): one box searches names, descriptions, how it is made, cultural context, makers, places, communities (including other names), craft types, materials, techniques and tags. Every word must match; title matches rank first.
+- **More filters and sorting** (#47): country, material and technique filters next to craft type, community and tag, all combinable and kept in the page address; sort by best match, name, recently added, or oldest/newest made. A helpful empty state when nothing matches.
+- Tests: 138 (39 new), including a visibility matrix of every level against every role.
+
 ## [v0.4.9] – 26 Oct 2026 · Crafts from East Asia
 ### Added
 - **5 real examples from East Asia**, with freely licensed Wikimedia Commons photos, credits and sources (#90):
