@@ -65,7 +65,7 @@ uv run python manage.py runserver             # → http://localhost:8000
 
 **Tests:** `uv run pytest` (unit + integration). For the browser tests, first run `uv run playwright install chromium`.
 
-**Deploy (Render, free tier):** in Render choose **New → Blueprint**, then pick this repository. `render.yaml` creates the web service and the PostgreSQL database, then runs migrations and loads the real examples on start (crafts added by users are kept).
+**Deploy (Render, free tier):** in Render choose **New → Blueprint**, then pick this repository. `render.yaml` creates the web service and the PostgreSQL database, then runs migrations and loads the real examples on start (crafts added by users are kept). To get into `/admin/` on the live site, set `DJANGO_SUPERUSER_EMAIL` and `DJANGO_SUPERUSER_PASSWORD` under the service's **Environment**; the admin account is created on the next start (if it already exists, nothing changes).
 
 ### Demo script (M3 MVP)
 1. **Browse crafts**, then open a real example (e.g. the Pomo basket by Jenny Hughes). Show the "At a glance" card (made by / from / in, size with its converted value, weight, local measure) and the Materials and Techniques sections.

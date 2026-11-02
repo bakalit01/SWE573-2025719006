@@ -5,7 +5,7 @@ services:
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
-    startCommand: python manage.py migrate --noinput && python manage.py seed_reference_crafts --replace-samples && gunicorn config.wsgi --workers 2
+    startCommand: python manage.py migrate --noinput && python manage.py seed_reference_crafts --replace-samples && (python manage.py createsuperuser --noinput || true) && gunicorn config.wsgi --workers 2
     healthCheckPath: /healthz
     envVars:
       - key: PYTHON_VERSION
@@ -16,6 +16,12 @@ services:
         generateValue: true
       - key: SERVE_MEDIA  # demo: Django serves uploaded photos (they reset on redeploy)
         value: "True"
+      # First admin account: set both in the Render dashboard (Environment).
+      # It is created on start-up; if it already exists, start-up carries on.
+      - key: DJANGO_SUPERUSER_EMAIL
+        sync: false
+      - key: DJANGO_SUPERUSER_PASSWORD
+        sync: false
       - key: DATABASE_URL
         fromDatabase:
           name: indigenous-crafts-db
