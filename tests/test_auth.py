@@ -68,3 +68,8 @@ class TestLogin:
         assert "_auth_user_id" in member_client.session
         member_client.post(reverse("account_logout"))
         assert "_auth_user_id" not in member_client.session
+
+
+def test_password_reset_link_expires_after_one_hour(settings):
+    # US-03: "Reset link expires after 1 hour"
+    assert settings.PASSWORD_RESET_TIMEOUT == 3600

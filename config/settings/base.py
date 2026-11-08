@@ -98,6 +98,7 @@ ACCOUNT_PREVENT_ENUMERATION = False  # US-01: duplicate email shows a clear erro
 ACCOUNT_FORMS = {"reset_password": "accounts.forms.SameResponseResetPasswordForm"}  # US-03
 ACCOUNT_SESSION_REMEMBER = None
 ACCOUNT_LOGOUT_ON_GET = False  # US-02: logout is a CSRF-protected POST
+PASSWORD_RESET_TIMEOUT = 60 * 60  # US-03: reset links expire after 1 hour
 LOGIN_URL = "account_login"
 LOGIN_REDIRECT_URL = "home"
 ACCOUNT_SIGNUP_REDIRECT_URL = "home"
@@ -132,6 +133,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
 REPO_URL = env("REPO_URL", default="https://github.com/bakalit01/SWE573-2025719006")
-APP_VERSION = env("APP_VERSION", default="v0.6.1")
+APP_VERSION = env("APP_VERSION", default="v0.6.2")
 # Render sets RENDER_GIT_COMMIT; shown in the footer so you can see which code is live.
 APP_COMMIT = env("RENDER_GIT_COMMIT", default="")[:7]
