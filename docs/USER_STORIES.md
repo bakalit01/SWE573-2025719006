@@ -8,16 +8,16 @@ Source of truth for GitHub issues: `scripts/seed_github.py` turns every `### US-
 
 ## Delivery order
 
-Stories are grouped by epic below. This is the order to build them in (timeline accelerated on 13 Oct; M1 and M2 delivered). Details and dependencies are in [PROJECT_PLAN §3a](PROJECT_PLAN.md#3a-story-sequence-what-to-build-in-order).
+Stories are grouped by epic below. This is the order to build them in (timeline accelerated on 13 Oct; M1, M2 and M3 delivered). Details and dependencies are in [PROJECT_PLAN §3a](PROJECT_PLAN.md#3a-story-sequence-what-to-build-in-order).
 
 | Week | Milestone | Items |
 |---|---|---|
-| 1 (12–18 Oct) | M1 | T-01 [#24](https://github.com/bakalit01/SWE573-2025719006/issues/24) → T-02 [#25](https://github.com/bakalit01/SWE573-2025719006/issues/25) → T-03 [#26](https://github.com/bakalit01/SWE573-2025719006/issues/26) → T-04 [#27](https://github.com/bakalit01/SWE573-2025719006/issues/27) → T-08 [#29](https://github.com/bakalit01/SWE573-2025719006/issues/29) → T-06 [#30](https://github.com/bakalit01/SWE573-2025719006/issues/30) → T-07 [#31](https://github.com/bakalit01/SWE573-2025719006/issues/31) → T-05 [#28](https://github.com/bakalit01/SWE573-2025719006/issues/28) → US-01 [#32](https://github.com/bakalit01/SWE573-2025719006/issues/32) → US-02 [#33](https://github.com/bakalit01/SWE573-2025719006/issues/33) → US-06 [#37](https://github.com/bakalit01/SWE573-2025719006/issues/37) → US-07 [#38](https://github.com/bakalit01/SWE573-2025719006/issues/38) |
-| 1 (14–18 Oct) | M2 | US-08 [#39](https://github.com/bakalit01/SWE573-2025719006/issues/39) → US-11 [#42](https://github.com/bakalit01/SWE573-2025719006/issues/42) → US-12 [#43](https://github.com/bakalit01/SWE573-2025719006/issues/43) |
+| 1 (12–18 Oct) | M1 | T-01 [#24](https://github.com/bakalit01/SWE573-2025719006/issues/24) → T-02 [#25](https://github.com/bakalit01/SWE573-2025719006/issues/25) → T-03 [#26](https://github.com/bakalit01/SWE573-2025719006/issues/26) → T-04 [#27](https://github.com/bakalit01/SWE573-2025719006/issues/27) → T-08 [#29](https://github.com/bakalit01/SWE573-2025719006/issues/29) → T-06 [#30](https://github.com/bakalit01/SWE573-2025719006/issues/30) → T-07 [#31](https://github.com/bakalit01/SWE573-2025719006/issues/31) → T-05 [#28](https://github.com/bakalit01/SWE573-2025719006/issues/28) → US-01 [#32](https://github.com/bakalit01/SWE573-2025719006/issues/32) → US-02 [#33](https://github.com/bakalit01/SWE573-2025719006/issues/33) → US-06 [#37](https://github.com/bakalit01/SWE573-2025719006/issues/37) → US-07 [#38](https://github.com/bakalit01/SWE573-2025719006/issues/38) ✅ (T-01 partly: branch protection and board need the repo owner) |
+| 1 (14–18 Oct) | M2 | US-08 [#39](https://github.com/bakalit01/SWE573-2025719006/issues/39) → US-11 [#42](https://github.com/bakalit01/SWE573-2025719006/issues/42) → US-12 [#43](https://github.com/bakalit01/SWE573-2025719006/issues/43) ✅ |
 | 2 (19–25 Oct) | M2 | US-20 [#51](https://github.com/bakalit01/SWE573-2025719006/issues/51) → US-09 [#40](https://github.com/bakalit01/SWE573-2025719006/issues/40) → US-03 [#34](https://github.com/bakalit01/SWE573-2025719006/issues/34) → US-04 [#35](https://github.com/bakalit01/SWE573-2025719006/issues/35) → FB-01–FB-04 [#68](https://github.com/bakalit01/SWE573-2025719006/issues/68)–[#71](https://github.com/bakalit01/SWE573-2025719006/issues/71) ✅ |
-| 3 (26 Oct) | M2 feedback | FB-06 [#80](https://github.com/bakalit01/SWE573-2025719006/issues/80) → FB-07 [#81](https://github.com/bakalit01/SWE573-2025719006/issues/81) → FB-05 [#77](https://github.com/bakalit01/SWE573-2025719006/issues/77) ✅ |
-| 3 (26 Oct–1 Nov) | M3 | US-05 [#36](https://github.com/bakalit01/SWE573-2025719006/issues/36) → US-22 [#53](https://github.com/bakalit01/SWE573-2025719006/issues/53) → US-15 [#46](https://github.com/bakalit01/SWE573-2025719006/issues/46) → US-16 [#47](https://github.com/bakalit01/SWE573-2025719006/issues/47) |
-| 4 (2–8 Nov) | M3 | US-23 [#54](https://github.com/bakalit01/SWE573-2025719006/issues/54) → US-24 [#55](https://github.com/bakalit01/SWE573-2025719006/issues/55) → US-25 [#56](https://github.com/bakalit01/SWE573-2025719006/issues/56) → US-17 [#48](https://github.com/bakalit01/SWE573-2025719006/issues/48) → US-27 [#58](https://github.com/bakalit01/SWE573-2025719006/issues/58) |
+| 3 (26 Oct) | M2 feedback | FB-06 [#80](https://github.com/bakalit01/SWE573-2025719006/issues/80) → FB-07 [#81](https://github.com/bakalit01/SWE573-2025719006/issues/81) → FB-05 [#77](https://github.com/bakalit01/SWE573-2025719006/issues/77) → FB-08 [#88](https://github.com/bakalit01/SWE573-2025719006/issues/88) → FB-09 [#90](https://github.com/bakalit01/SWE573-2025719006/issues/90) ✅ |
+| 3 (26 Oct–1 Nov) | M3 | US-05 [#36](https://github.com/bakalit01/SWE573-2025719006/issues/36) → US-22 [#53](https://github.com/bakalit01/SWE573-2025719006/issues/53) → US-15 [#46](https://github.com/bakalit01/SWE573-2025719006/issues/46) → US-16 [#47](https://github.com/bakalit01/SWE573-2025719006/issues/47) ✅ (built 2 Nov) |
+| 4 (2–8 Nov) | M3 | US-23 [#54](https://github.com/bakalit01/SWE573-2025719006/issues/54) → US-24 [#55](https://github.com/bakalit01/SWE573-2025719006/issues/55) → US-25 [#56](https://github.com/bakalit01/SWE573-2025719006/issues/56) → US-17 [#48](https://github.com/bakalit01/SWE573-2025719006/issues/48) → US-27 [#58](https://github.com/bakalit01/SWE573-2025719006/issues/58) → FB-10 [#95](https://github.com/bakalit01/SWE573-2025719006/issues/95) → FB-11 [#96](https://github.com/bakalit01/SWE573-2025719006/issues/96) ✅ |
 | 5 (9–15 Nov) | M4 | US-13 [#44](https://github.com/bakalit01/SWE573-2025719006/issues/44) → US-26 [#57](https://github.com/bakalit01/SWE573-2025719006/issues/57) → US-21 [#52](https://github.com/bakalit01/SWE573-2025719006/issues/52) |
 | 6 (16–22 Nov) | M4 | US-10 [#41](https://github.com/bakalit01/SWE573-2025719006/issues/41) → US-18 [#49](https://github.com/bakalit01/SWE573-2025719006/issues/49) → US-28 [#59](https://github.com/bakalit01/SWE573-2025719006/issues/59) → US-29 [#60](https://github.com/bakalit01/SWE573-2025719006/issues/60) → US-19 [#50](https://github.com/bakalit01/SWE573-2025719006/issues/50) |
 | 7 (23–29 Nov) | M5 | US-30 [#61](https://github.com/bakalit01/SWE573-2025719006/issues/61) → US-31 [#62](https://github.com/bakalit01/SWE573-2025719006/issues/62) → US-14 [#45](https://github.com/bakalit01/SWE573-2025719006/issues/45) |
@@ -112,10 +112,10 @@ Low-fi wireframes for home, catalogue, craft detail, craft form, login, profile.
 As a **visitor**, I want to **create an account with my email and a password**, so that **I can contribute and save crafts**.
 
 **Acceptance criteria**
-- [ ] Form validates email format and password strength (≥ 10 chars)
-- [ ] Duplicate email shows a clear error
-- [ ] Password is stored hashed, never in plain text
-- [ ] After registering I am signed in and redirected to the home page
+- [x] Form validates email format and password strength (≥ 10 chars)
+- [x] Duplicate email shows a clear error
+- [x] Password is stored hashed, never in plain text
+- [x] After registering I am signed in and redirected to the home page
 
 _Implementation: `django-allauth` with email as login; Argon2 hasher._
 
@@ -125,9 +125,9 @@ _Implementation: `django-allauth` with email as login; Argon2 hasher._
 As a **registered user**, I want to **log in and log out**, so that **my account is secure on shared devices**.
 
 **Acceptance criteria**
-- [ ] Wrong credentials show a generic error (no hint which field was wrong)
-- [ ] Header shows my name and a logout button when signed in
-- [ ] Logging out ends the session server-side (POST logout, CSRF-protected)
+- [x] Wrong credentials show a generic error (no hint which field was wrong)
+- [x] Header shows my name and a logout button when signed in
+- [x] Logging out ends the session server-side (POST logout, CSRF-protected)
 
 ### US-03 · Reset a forgotten password
 **Epic:** E1 · **Milestone:** M2 · **Priority:** Should · **Points:** 3
@@ -135,8 +135,8 @@ As a **registered user**, I want to **log in and log out**, so that **my account
 As a **registered user**, I want to **reset my password by email**, so that **I can recover my account**.
 
 **Acceptance criteria**
-- [ ] Reset link expires after 1 hour and works once
-- [ ] Response is the same whether or not the email exists
+- [x] Reset link expires after 1 hour and works once
+- [x] Response is the same whether or not the email exists
 
 ### US-04 · Manage my profile
 **Epic:** E1 · **Milestone:** M2 · **Priority:** Should · **Points:** 3
@@ -144,8 +144,8 @@ As a **registered user**, I want to **reset my password by email**, so that **I 
 As a **maker**, I want to **edit my display name, bio, photo and community affiliation**, so that **visitors know who made the work**.
 
 **Acceptance criteria**
-- [ ] Profile page is public and lists my published crafts
-- [ ] Community affiliation is chosen from the community list (or "request new")
+- [x] Profile page is public and lists my published crafts
+- [x] Community affiliation is chosen from the community list (or "request new")
 
 ### US-05 · Roles and permissions
 **Epic:** E1 · **Milestone:** M3 · **Priority:** Must · **Points:** 5
@@ -167,9 +167,9 @@ As an **admin**, I want **users to have roles (member, maker, steward, admin)**,
 As a **visitor**, I want to **see a grid of crafts with image, name, craft type and community**, so that **I can explore what is on the site**.
 
 **Acceptance criteria**
-- [ ] Only records I'm allowed to see are listed
-- [ ] Cards link to the detail page
-- [ ] Layout works on phone and desktop
+- [x] Only records I'm allowed to see are listed
+- [x] Cards link to the detail page
+- [x] Layout works on phone and desktop
 
 ### US-07 · View craft details
 **Epic:** E2 · **Milestone:** M1 · **Priority:** Must · **Points:** 3
@@ -177,9 +177,9 @@ As a **visitor**, I want to **see a grid of crafts with image, name, craft type 
 As a **visitor**, I want to **open a craft page showing its story, makers, community, materials, techniques and images**, so that **I can learn about it**.
 
 **Acceptance criteria**
-- [ ] Makers and community are credited prominently
-- [ ] Page has a "Report / request removal" link
-- [ ] Unauthorized access to a restricted craft returns "not found"
+- [x] Makers and community are credited prominently
+- [x] Page has a "Report / request removal" link
+- [x] Unauthorized access to a restricted craft returns "not found"
 
 ### US-08 · Add a craft
 **Epic:** E2 · **Milestone:** M2 · **Priority:** Must · **Points:** 5
@@ -187,9 +187,9 @@ As a **visitor**, I want to **open a craft page showing its story, makers, commu
 As a **maker**, I want to **create a craft record with its core details**, so that **it is documented on the platform**.
 
 **Acceptance criteria**
-- [ ] Required: title, craft type, community, maker credit, at least one material
-- [ ] I can save as draft before publishing
-- [ ] Validation errors are shown next to the field
+- [x] Required: title, craft type, community, maker credit, at least one material
+- [x] I can save as draft before publishing
+- [x] Validation errors are shown next to the field
 
 ### US-09 · Edit or delete my craft
 **Epic:** E2 · **Milestone:** M2 · **Priority:** Must · **Points:** 3
@@ -197,9 +197,9 @@ As a **maker**, I want to **create a craft record with its core details**, so th
 As a **maker**, I want to **edit or delete crafts I created**, so that **information stays accurate**.
 
 **Acceptance criteria**
-- [ ] Only the creator, a steward of that community, or an admin can edit
-- [ ] Delete asks for confirmation
-- [ ] "My crafts" page lists my drafts and published records
+- [x] Only the creator, a steward of that community, or an admin can edit
+- [x] Delete asks for confirmation
+- [x] "My crafts" page lists my drafts and published records
 
 ### US-10 · Names in multiple languages
 **Epic:** E2 · **Milestone:** M4 · **Priority:** Should · **Points:** 3
@@ -221,10 +221,10 @@ As a **maker**, I want to **add the craft's name in my own language alongside ot
 As a **maker**, I want **the form to show fields that fit the craft type I choose** (e.g. firing method for pottery, loom type for weaving), so that **I can describe very different crafts properly**.
 
 **Acceptance criteria**
-- [ ] Changing the craft type updates the extra fields without losing core data
-- [ ] Supports text, long text, number+unit, single/multi select, boolean, date/period, URL
-- [ ] Values are validated against the craft type's definitions on the server
-- [ ] At least 4 craft types have attribute definitions seeded
+- [x] Changing the craft type updates the extra fields without losing core data
+- [x] Supports text, long text, number+unit, single/multi select, boolean, date/period, URL
+- [x] Values are validated against the craft type's definitions on the server
+- [x] At least 4 craft types have attribute definitions seeded
 
 _Implementation: a `build_attribute_fields(craft_type)` helper maps each `AttributeDefinition` to a Django form field; HTMX swaps the fields when the type changes; values saved to `Craft.attributes` (JSONField)._
 
@@ -234,8 +234,8 @@ _Implementation: a `build_attribute_fields(craft_type)` helper maps each `Attrib
 As a **visitor**, I want to **see the craft-specific details in a readable "Details" section**, so that **I understand what makes this piece distinctive**.
 
 **Acceptance criteria**
-- [ ] Labels and units come from the attribute definitions
-- [ ] Empty attributes are hidden
+- [x] Labels and units come from the attribute definitions
+- [x] Empty attributes are hidden
 
 ### US-13 · Manage craft types and attributes
 **Epic:** E3 · **Milestone:** M4 · **Priority:** Should · **Points:** 8
@@ -326,9 +326,9 @@ As a **researcher**, I want to **filter by attributes of the chosen craft type**
 As a **maker**, I want to **upload several photos, add alt text and a photo credit, and reorder them**, so that **the craft is shown well and accessibly**.
 
 **Acceptance criteria**
-- [ ] JPEG/PNG/WebP up to 10 MB; resized server-side or on upload
-- [ ] Alt text is required before publishing
-- [ ] First image is the cover in the catalogue
+- [x] JPEG/PNG/WebP up to 10 MB; resized server-side or on upload
+- [x] Alt text is required before publishing
+- [x] First image is the cover in the catalogue
 
 ### US-21 · Sensitive image notice
 **Epic:** E5 · **Milestone:** M4 · **Priority:** Should · **Points:** 2
@@ -471,10 +471,10 @@ Feedback from reviews and demos, delivered as extra items. Each has a closed iss
 | FB-04 | [#71](https://github.com/bakalit01/SWE573-2025719006/issues/71) | 3D size and units from different countries: H × W × D in mm/cm/m/in/ft, weight in g/kg/oz/lb, converted values, local measure | v0.4.0 · 25 Oct |
 | FB-05 | [#77](https://github.com/bakalit01/SWE573-2025719006/issues/77) | "Other (type your own)" for craft type, community, units and choice fields; own details; user tags | v0.4.5 · 26 Oct |
 | FB-06 | [#80](https://github.com/bakalit01/SWE573-2025719006/issues/80) | Real-life examples instead of abstract samples: 9 real crafts from public sources with credited photos | v0.4.2–v0.4.3 · 26 Oct |
+| FB-07 | [#81](https://github.com/bakalit01/SWE573-2025719006/issues/81) | Blue tones based on Boğaziçi University colours (navy #1e4a8b, blue #8cc8ea) | v0.4.4 · 26 Oct |
+| FB-08 | [#88](https://github.com/bakalit01/SWE573-2025719006/issues/88) | Eight more real crafts, four from Türkiye: Yörük kilim, Yörük black tent, Döşemealtı carpet, Midyat telkari; plus Ainu attus, Guna mola, Wayuu mochila, Shipibo-Conibo pottery | v0.4.8 · 26 Oct |
+| FB-09 | [#90](https://github.com/bakalit01/SWE573-2025719006/issues/90) | Crafts from East Asia: Miao silver headdress and Li brocade (China), Atayal weaving (Taiwan), Hahoe masks (Korea), Ryukyuan bingata (Japan) | v0.4.9 · 26 Oct |
 | FB-10 | [#95](https://github.com/bakalit01/SWE573-2025719006/issues/95) | Members add their own stories to crafts | v0.6.1 · 2 Nov |
 | FB-11 | [#96](https://github.com/bakalit01/SWE573-2025719006/issues/96) | Search crafts by location: near a place or my location, within a distance | v0.6.1 · 2 Nov |
-| FB-09 | [#90](https://github.com/bakalit01/SWE573-2025719006/issues/90) | Crafts from East Asia: Miao silver headdress and Li brocade (China), Atayal weaving (Taiwan), Hahoe masks (Korea), Ryukyuan bingata (Japan) | v0.4.9 · 26 Oct |
-| FB-08 | [#88](https://github.com/bakalit01/SWE573-2025719006/issues/88) | Eight more real crafts, four from Türkiye: Yörük kilim, Yörük black tent, Döşemealtı carpet, Midyat telkari; plus Ainu attus, Guna mola, Wayuu mochila, Shipibo-Conibo pottery | v0.4.8 · 26 Oct |
-| FB-07 | [#81](https://github.com/bakalit01/SWE573-2025719006/issues/81) | Blue tones based on Boğaziçi University colours (navy #1e4a8b, blue #8cc8ea) | v0.4.4 · 26 Oct |
 
 Bug fixed alongside: [#79](https://github.com/bakalit01/SWE573-2025719006/issues/79) maps and place search failed on the deployed site (v0.4.1).

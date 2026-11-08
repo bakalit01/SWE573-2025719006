@@ -20,7 +20,7 @@ A website to document and showcase Indigenous crafts. Registered users can recor
 - **Community pages**, in the community's own words, edited by its stewards
 - **Members' stories** on every craft, and **search by location** (near a place or your location, nearest first, on a map) ([v0.6.1](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.6.1))
 
-Earlier: M2 Contribute (25 Oct, [v0.4.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.4.0)) and feedback rounds FB-01–FB-09 (22 real examples, Boğaziçi colours, "Other" choices and tags). Next: user test #1, then **M4 Enrich**.
+Earlier: M2 Contribute (25 Oct, [v0.4.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.4.0)) and feedback rounds FB-01–FB-11 (22 real examples, Boğaziçi colours, "Other" choices and tags, stories, location search). Since then: admin login on the live site fixed ([v0.6.2](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.6.2)). Next: user test #1, then **M4 Enrich** (week 5: craft types in the admin, Traditional Knowledge labels, sensitive-image notices).
 
 | Milestone | Due | Deliverable |
 |---|---|---|
@@ -38,12 +38,12 @@ Earlier: M2 Contribute (25 Oct, [v0.4.0](https://github.com/bakalit01/SWE573-202
 |---|---|
 | [Project plan](docs/PROJECT_PLAN.md) | Milestones, week-by-week plan, **story sequence** (§3a), tech stack, workflow, risks |
 | [Requirements](docs/REQUIREMENTS.md) | Roles, functional & non-functional requirements, data model, ethics |
-| [User stories](docs/USER_STORIES.md) | 32 user stories, 8 technical tasks and 7 feedback items (FB-01–FB-07) with acceptance criteria and delivery order |
+| [User stories](docs/USER_STORIES.md) | 32 user stories, 8 technical tasks and 11 feedback items (FB-01–FB-11) with acceptance criteria and delivery order |
 | [ADR-001 Tech stack](docs/adr/001-tech-stack.md) | Why Python / Django, hosting on Render |
 | [UI design](docs/design/README.md) | Screenshots of every page (desktop and phone) |
 | [Changelog](CHANGELOG.md) | What changed in each release |
 | [AI acknowledgement](AI_ACKNOWLEDGEMENT.md) | How Claude Opus 5.5 (Medium) was used in this project |
-| [Issues](https://github.com/bakalit01/SWE573-2025719006/issues) | One issue per story/task (#24–#63) and per feedback item (#68–#71, #77, #80, #81); [Roadmap #65](https://github.com/bakalit01/SWE573-2025719006/issues/65) is the weekly checklist |
+| [Issues](https://github.com/bakalit01/SWE573-2025719006/issues) | One issue per story/task (#24–#63) and per feedback item (#68–#71, #77, #80, #81, #88, #90, #95, #96); [Roadmap #65](https://github.com/bakalit01/SWE573-2025719006/issues/65) is the weekly checklist |
 
 ## Getting started
 
@@ -65,7 +65,7 @@ uv run python manage.py runserver             # → http://localhost:8000
 
 **Tests:** `uv run pytest` (unit + integration). For the browser tests, first run `uv run playwright install chromium`.
 
-**Deploy (Render, free tier):** in Render choose **New → Blueprint**, then pick this repository. `render.yaml` creates the web service and the PostgreSQL database, then runs migrations and loads the real examples on start (crafts added by users are kept). To get into `/admin/` on the live site, set `DJANGO_SUPERUSER_EMAIL` and `DJANGO_SUPERUSER_PASSWORD` under the service's **Environment**; the admin account is created on the next start. Each start also re-applies that password and admin rights, so to reset a forgotten password, change the variable and redeploy. The deploy log shows a line starting with `ensure_admin:` saying what happened.
+**Deploy (Render, free tier):** in Render choose **New → Blueprint**, then pick this repository. `render.yaml` creates the web service and the PostgreSQL database, then runs migrations and loads the real examples on start (crafts added by users are kept). To get into `/admin/` on the live site, set `DJANGO_SUPERUSER_EMAIL` and `DJANGO_SUPERUSER_PASSWORD` under the service's **Environment**; then log in at `/admin/` with exactly those values (capital letters in the email don't matter). The account is created or repaired at that moment, and on every start-up, so to reset a forgotten password, change the variable and redeploy. The deploy log shows a line starting with `ensure_admin:`, and the page footer shows which commit is live.
 
 ### Demo script (M3 MVP)
 1. **Browse crafts**, then open a real example (e.g. the Pomo basket by Jenny Hughes). Show the "At a glance" card (made by / from / in, size with its converted value, weight, local measure) and the Materials and Techniques sections.

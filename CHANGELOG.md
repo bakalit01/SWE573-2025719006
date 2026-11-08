@@ -2,6 +2,18 @@
 
 All notable changes per release. Releases are tagged on GitHub (`vX.Y.Z`).
 
+## [v0.6.2] – 8 Nov 2026 · Admin login on the live site, docs brought up to date
+### Fixed
+- **Admin login on Render** (#101, #98–#100): logging in at `/admin/` with exactly `DJANGO_SUPERUSER_EMAIL` and `DJANGO_SUPERUSER_PASSWORD` creates or repairs that admin account, even if the start command doesn't run the set-up step. The `ensure_admin` start-up step logs what it did; spaces or line breaks pasted into the variables are ignored.
+- Email login (site and admin) ignores capital letters; new accounts are stored in lower case. New superusers get the admin role.
+- Password reset links now expire after **1 hour**, as US-03 requires (Django's default was 3 days).
+- The Docker image also runs the admin set-up step.
+
+### Changed
+- The footer shows the deployed commit next to the version, so you can see when new code is live.
+- Docs: README, project plan and user stories updated (feedback items FB-01–FB-11, delivered acceptance criteria ticked, user test #1 moved to week 5).
+- Tests: 192 (5 new since v0.6.1); coverage 97 %.
+
 ## [v0.6.1] – 2 Nov 2026 · Members' stories and search by location
 ### Added
 - **Stories** (#95): any signed-in member can share a story on a craft they can see (their connection to it, up to 2,000 characters). Authors edit or delete their own; the craft's author is e-mailed; the community's stewards and admins can hide a story with a reason, and new stories appear in the review queue.
