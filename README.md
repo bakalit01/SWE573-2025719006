@@ -39,6 +39,7 @@ Earlier: M2 Contribute (25 Oct, [v0.4.0](https://github.com/bakalit01/SWE573-202
 | [Project plan](docs/PROJECT_PLAN.md) | Milestones, week-by-week plan, **story sequence** (§3a), tech stack, workflow, risks |
 | [Requirements](docs/REQUIREMENTS.md) | Roles, functional & non-functional requirements, data model, ethics |
 | [User stories](docs/USER_STORIES.md) | 32 user stories, 8 technical tasks and 11 feedback items (FB-01–FB-11) with acceptance criteria and delivery order |
+| [Tests](docs/TESTING.md) | Every automated test (192): what it does and the expected result, and how to run them |
 | [ADR-001 Tech stack](docs/adr/001-tech-stack.md) | Why Python / Django, hosting on Render |
 | [UI design](docs/design/README.md) | Screenshots of every page (desktop and phone) |
 | [Changelog](CHANGELOG.md) | What changed in each release |
@@ -63,7 +64,7 @@ uv run python manage.py createsuperuser       # for /admin/
 uv run python manage.py runserver             # → http://localhost:8000
 ```
 
-**Tests:** `uv run pytest` (unit + integration). For the browser tests, first run `uv run playwright install chromium`.
+**Tests:** `uv run pytest` (unit + integration); every test is described in [docs/TESTING.md](docs/TESTING.md). For the browser tests, first run `uv run playwright install chromium`.
 
 **Deploy (Render, free tier):** in Render choose **New → Blueprint**, then pick this repository. `render.yaml` creates the web service and the PostgreSQL database, then runs migrations and loads the real examples on start (crafts added by users are kept). To get into `/admin/` on the live site, set `DJANGO_SUPERUSER_EMAIL` and `DJANGO_SUPERUSER_PASSWORD` under the service's **Environment**; then log in at `/admin/` with exactly those values (capital letters in the email don't matter). The account is created or repaired at that moment, and on every start-up, so to reset a forgotten password, change the variable and redeploy. The deploy log shows a line starting with `ensure_admin:`, and the page footer shows which commit is live.
 
