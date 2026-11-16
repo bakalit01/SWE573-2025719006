@@ -1,6 +1,6 @@
 # UI design
 
-The low-fidelity wireframes (T-06) were replaced by the working pages. These screenshots are the current UI reference for **v0.6.1** (2 Nov 2026), with the real examples, their Wikimedia Commons photos and OpenStreetMap maps; screenshots 22–25 were added for **v0.7.0** (16 Nov 2026).
+The low-fidelity wireframes (T-06) were replaced by the working pages. These screenshots are the current UI reference for **v0.7.0** (16 Nov 2026), with the real examples, their Wikimedia Commons photos and OpenStreetMap maps.
 
 To retake them, push a commit whose message contains `[take screenshots]` to any branch other than `main`, or run the **UI screenshots** workflow by hand. The workflow runs [`scripts/take_screenshots.py`](../../scripts/take_screenshots.py) on GitHub, which can reach Commons and OpenStreetMap, and commits the images to that branch.
 
