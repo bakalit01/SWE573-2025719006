@@ -9,13 +9,14 @@ from crafts.forms import unique_slug_for
 from crafts.models import (
     Craft,
     CraftMaterial,
+    CraftName,
     CraftTechnique,
     Material,
     Media,
     Tag,
     Technique,
 )
-from crafts.seeding import ensure_craft_types
+from crafts.seeding import ensure_craft_types, ensure_tk_labels
 
 COMMUNITY_NOTE = (
     "Records about this community are compiled from public sources such as museums and "
@@ -45,6 +46,7 @@ class Command(BaseCommand):
             self.stdout.write(f"Removed sample records ({removed} rows).")
 
         types = ensure_craft_types()
+        ensure_tk_labels()
         communities = {}
         for slug, name, region in data.COMMUNITIES:
             communities[slug], _ = Community.objects.update_or_create(
@@ -110,6 +112,21 @@ class Command(BaseCommand):
                 craft.tags.add(
                     tag or Tag.objects.create(name=name, slug=unique_slug_for(Tag, name))
                 )
+
+            # Names in other languages (US-10): added if missing; names that stewards or
+            # contributors added, and their choice of primary name, are kept.
+            for order, (name, language, code, primary) in enumerate(
+                data.NAMES.get(record["slug"], [])
+            ):
+                if not craft.names.filter(name=name, language=language).exists():
+                    CraftName.objects.create(
+                        craft=craft,
+                        name=name,
+                        language=language,
+                        lang_code=code,
+                        is_primary=primary and not craft.names.filter(is_primary=True).exists(),
+                        order=order,
+                    )
 
             craft.media.filter(image="").delete()  # keep any photos users uploaded
             for order, (file_name, alt, caption, credit) in enumerate(record["images"]):

@@ -15,7 +15,7 @@ def profile(request, pk):
         Craft.objects.listed_for(request.user)
         .filter(created_by=maker)
         .select_related("craft_type", "community")
-        .prefetch_related("media")
+        .prefetch_related("media", "names")
     )
     return render(request, "accounts/profile.html", {"maker": maker, "crafts": crafts})
 
