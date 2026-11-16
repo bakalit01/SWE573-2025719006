@@ -2,6 +2,14 @@
 
 All notable changes per release. Releases are tagged on GitHub (`vX.Y.Z`).
 
+## [v0.7.1] – 16 Nov 2026 · Safer deploys on Render
+### Fixed
+- **Deploys no longer depend on the `unaccent` extension**: if the database user can't enable it, migration 0009 prints a note and carries on, and search falls back to matching accents exactly instead of failing. Checked against a copy of the Render set-up (production settings, Python 3.12, a database user that isn't a superuser), both upgrading a v0.6.2 database and starting from an empty one.
+
+### Changed
+- README: the deploy section explains that Render's free PostgreSQL database expires 30 days after it is created, and what to do when it does.
+- Tests: 256 (1 new).
+
 ## [v0.7.0] – 16 Nov 2026 · M4 Enrich, part 1: craft types in the admin, TK labels, sensitive photos, names in other languages
 ### Added
 - **Craft types and their fields in the admin** (#44, US-13): admins create craft types and add, edit, reorder (↑ ↓ buttons or the Order numbers) and retire fields on the craft type page, with choices typed one per line. Changes show in the add form at once. Retiring a field hides it from forms and craft pages but keeps the stored values. Changing a field's data type is refused when stored values would not fit (e.g. "tall" in a field changed to Number), and so are renaming the key or deleting a field that has values; the message names an example craft. The craft type list shows how many fields and crafts each type has.

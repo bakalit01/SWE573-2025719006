@@ -120,6 +120,12 @@ class TestSearch:
         assert titles(client, "kara cadir") == ["Yörük black tent"]
         assert titles(client, "YORUK") == ["Yörük black tent"]
 
+    def test_search_still_works_without_unaccent(self, client, crafts, monkeypatch):
+        """If a database couldn't enable the extension, search matches accents exactly."""
+        monkeypatch.setattr("crafts.views.contains_lookup", lambda: "icontains")
+        assert titles(client, "döşemealtı") == ["Döşemealtı carpet"]
+        assert titles(client, "dosemealti") == []
+
     def test_query_typed_in_another_unicode_form_matches(self, client, crafts):
         assert titles(client, unicodedata.normalize("NFD", "Döşemealtı")) == ["Döşemealtı carpet"]
 
