@@ -17,10 +17,9 @@
   <button type="button" class="link-button" data-draft-clear>Start over</button>
 </div>
 
-{% if form.non_field_errors or materials.non_form_errors or names.non_form_errors %}
+{% if form.non_field_errors or materials.non_form_errors %}
 <div class="notice notice-error" role="alert">
   {% for e in form.non_field_errors %}<p>{{ e }}</p>{% endfor %}
-  {% for e in names.non_form_errors %}<p>{{ e }}</p>{% endfor %}
   {% for e in materials.non_form_errors %}<p>{{ e }}</p>{% endfor %}
 </div>
 {% endif %}
@@ -48,35 +47,6 @@
     <section class="form-card" id="sec-basics">
       <h2><span class="step">1</span> Basics</h2>
       {% include "crafts/_field.html" with field=form.title %}
-      <h3 id="names">Names in other languages</h3>
-      <p class="help">Add the craft's name in the community's own language, and in any other language. Tick “Show this name first” for the name to appear above the title.</p>
-      {{ names.management_form }}
-      {% for e in names.non_form_errors %}<p class="error" role="alert">{{ e }}</p>{% endfor %}
-      <div class="rows" data-rows="nam">
-        {% for row in names %}
-          <div class="row-card" data-row>
-            <div class="field-row three">
-              {% include "crafts/_field.html" with field=row.name %}
-              {% include "crafts/_field.html" with field=row.language %}
-              {% include "crafts/_field.html" with field=row.lang_code %}
-            </div>
-            {% include "crafts/_field.html" with field=row.is_primary %}
-            <button type="button" class="link-button remove-row" data-remove-row aria-label="Remove this name">Remove</button>
-          </div>
-        {% endfor %}
-      </div>
-      <template data-row-template="nam">
-          <div class="row-card" data-row>
-            <div class="field-row three">
-              {% include "crafts/_field.html" with field=names.empty_form.name %}
-              {% include "crafts/_field.html" with field=names.empty_form.language %}
-              {% include "crafts/_field.html" with field=names.empty_form.lang_code %}
-            </div>
-            {% include "crafts/_field.html" with field=names.empty_form.is_primary %}
-            <button type="button" class="link-button remove-row" data-remove-row aria-label="Remove this name">Remove</button>
-          </div>
-      </template>
-      <button type="button" class="btn btn-ghost" data-add-row="nam">+ Add a name</button>
       <div class="field-row">
         <div>
           {% include "crafts/_field.html" with field=form.craft_type %}
@@ -253,7 +223,6 @@
               <div>
                 <label for="media-{{ m.pk }}-alt">Alt text</label>
                 <input type="text" id="media-{{ m.pk }}-alt" name="media-{{ m.pk }}-alt_text" value="{{ m.alt_text }}" maxlength="300">
-                <label class="check"><input type="checkbox" name="media-{{ m.pk }}-sensitive" value="1"{% if m.is_sensitive %} checked{% endif %}> <span>Culturally sensitive: blur it until the viewer chooses to see it</span></label>
                 <label class="check"><input type="checkbox" name="remove_media" value="{{ m.pk }}"> <span>Remove this photo</span></label>
               </div>
             </li>
@@ -270,7 +239,6 @@
               {% include "crafts/_field.html" with field=row.credit %}
               {% include "crafts/_field.html" with field=row.caption %}
             </div>
-            {% include "crafts/_field.html" with field=row.is_sensitive %}
             <img class="upload-preview" data-preview alt="" hidden>
           </div>
         {% endfor %}
@@ -283,16 +251,12 @@
             {% include "crafts/_field.html" with field=images.empty_form.credit %}
             {% include "crafts/_field.html" with field=images.empty_form.caption %}
           </div>
-          {% include "crafts/_field.html" with field=images.empty_form.is_sensitive %}
           <img class="upload-preview" data-preview alt="" hidden>
           <button type="button" class="link-button remove-row" data-remove-row>Remove</button>
         </div>
       </template>
       <button type="button" class="btn btn-ghost" data-add-row="img">+ Add another photo</button>
       <p class="help">JPEG, PNG or WebP, up to 10 MB each. Large photos are resized automatically.</p>
-      <h3>Culturally sensitive photos</h3>
-      <p class="help">Photos marked as culturally sensitive are blurred behind a notice on the craft page and in lists, until each viewer chooses to see them. The community's stewards can mark or unmark them too.</p>
-      {% include "crafts/_field.html" with field=form.sensitive_notice %}
     </section>
 
     <section class="form-card" id="sec-story">
@@ -304,13 +268,6 @@
     <section class="form-card" id="sec-sharing">
       <h2><span class="step">9</span> Sharing</h2>
       {% include "crafts/_field.html" with field=form.visibility %}
-      {% if "tk_labels" in form.fields %}
-        <h3 id="labels">Traditional Knowledge labels</h3>
-        <details class="labels-edit"{% if form.tk_labels.value %} open{% endif %}>
-          <summary>Choose the community's labels</summary>
-          {% include "crafts/_field.html" with field=form.tk_labels %}
-        </details>
-      {% endif %}
 
       <h3 id="consent">Consent <span class="req" aria-hidden="true">*</span></h3>
       <p class="help">Who agreed to this craft being documented and shared, when, and for what use. Needed to submit or publish; optional for drafts. Only the community's stewards and site admins can see it.</p>

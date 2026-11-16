@@ -1,38 +1,12 @@
-/* Craft page: photo gallery thumbnails, sensitive-photo notices and the location map. */
+/* Craft page: photo gallery thumbnails and the location map. */
 (function () {
   "use strict";
   var main = document.querySelector("[data-gallery-main]");
-  var figure = document.querySelector("[data-gallery-figure]");
-  var cover = document.querySelector("[data-sensitive-cover]");
   var caption = document.querySelector("[data-gallery-caption]");
-  var revealed = {};  // photos this viewer chose to see (US-21), by address
-
-  /* Sensitive photos stay blurred, with no alt text read out, until "Show photo". */
-  function showPhoto(src, alt, sensitive) {
-    var hide = sensitive && !revealed[src];
-    main.src = src;
-    main.setAttribute("data-alt", alt);
-    main.alt = hide ? "" : alt;
-    if (figure) figure.classList.toggle("is-sensitive", hide);
-    if (cover) cover.hidden = !hide;
-  }
-  if (cover && main) {
-    var reveal = cover.querySelector("[data-reveal]");
-    if (reveal) reveal.addEventListener("click", function () {
-      var src = main.getAttribute("src");
-      revealed[src] = true;
-      showPhoto(src, main.getAttribute("data-alt") || "", false);
-      document.querySelectorAll("[data-gallery-thumb]").forEach(function (b) {
-        if (b.getAttribute("data-src") === src) b.classList.remove("thumb-sensitive");
-      });
-      main.setAttribute("tabindex", "-1");  // keep keyboard focus near the photo
-      main.focus();
-    });
-  }
   document.querySelectorAll("[data-gallery-thumb]").forEach(function (button) {
     button.addEventListener("click", function () {
-      showPhoto(button.getAttribute("data-src"), button.getAttribute("data-alt"),
-        button.getAttribute("data-sensitive") === "true");
+      main.src = button.getAttribute("data-src");
+      main.alt = button.getAttribute("data-alt");
       if (caption) caption.textContent = button.getAttribute("data-caption");
       document.querySelectorAll("[data-gallery-thumb]").forEach(function (b) {
         b.setAttribute("aria-current", b === button ? "true" : "false");

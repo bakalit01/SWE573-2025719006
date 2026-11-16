@@ -1199,27 +1199,3 @@ TAGS = {
     "hahoe-masks": ["mask", "alder wood", "dance", "East Asia"],
     "ryukyuan-bingata": ["stencil dyeing", "clothing", "East Asia"],
 }
-
-
-# Names in other languages (US-10), taken from the sources listed on each record:
-# (name, language, language code, shown first). Only names the sources give are listed;
-# a name is shown first when it is in the community's own language.
-NAMES = {
-    "yoruk-kilim": [("kilim", "Turkish", "tr", True)],
-    "yoruk-black-goat-hair-tent": [
-        ("kara çadır", "Turkish", "tr", True),
-        ("kıl çadır", "Turkish", "tr", False),
-    ],
-    "midyat-telkari-silver-filigree": [("telkari", "Turkish", "tr", False)],
-    "sami-guksi-drinking-cup": [
-        ("guksi", "Northern Sámi", "se", True),
-        ("kuksa", "Finnish", "fi", False),
-        ("kåsa", "Swedish", "sv", False),
-    ],
-    "maori-kete-harakeke-basket": [("kete", "Māori", "mi", True)],
-    "ainu-attus-robe": [("attus", "Ainu", "ain", True)],
-    "guna-mola": [("mola", "Guna", "cuk", True)],
-    "hahoe-masks": [("하회탈", "Korean", "ko", True)],
-    "ryukyuan-bingata": [("紅型", "Japanese", "ja", False)],
-    "li-brocade": [("黎锦", "Chinese", "zh-Hans", False)],
-}

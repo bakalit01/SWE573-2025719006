@@ -1,5 +1,0 @@
-/* Admin additions: move buttons for craft type fields (US-13). */
-.move-field { margin: 4px 2px 0 0; padding: 2px 8px; border: 1px solid var(--border-color, #ccc); border-radius: 4px; background: var(--body-bg, #fff); color: var(--body-fg, #333); cursor: pointer; font-size: 0.9rem; }
-.move-field:hover, .move-field:focus-visible { background: var(--selected-bg, #e4e4e4); }
-td.field-order input { width: 4em; }
-td.field-options textarea { width: 14em; }
