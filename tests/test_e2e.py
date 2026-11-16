@@ -127,3 +127,29 @@ def test_other_choices_and_tags_in_browser(live_server, page, seeded):
     assert "Felt making" in facts and "Yörük" in facts and "3 karış" in facts
     assert page.get_by_text("Madder root").is_visible()
     assert page.get_by_role("link", name="#nomadic").is_visible()
+
+
+def test_sensitive_photo_and_primary_name_in_browser(live_server, page, seeded):
+    """US-21: a sensitive photo stays blurred until "Show photo"; US-10: primary name first."""
+    from crafts.models import Craft, CraftName
+
+    craft = Craft.objects.get(slug="sample-coiled-sedge-basket")
+    craft.media.update(is_sensitive=True)
+    craft.sensitive_notice = "Shown with the weaver's permission."
+    craft.save()
+    CraftName.objects.create(craft=craft, name="Šúuḱa", language="Sample language", is_primary=True)
+
+    page.goto(f"{live_server.url}{craft.get_absolute_url()}")
+    assert page.locator("h1").inner_text().startswith("Šúuḱa")
+    figure = page.locator("[data-gallery-figure]")
+    photo = page.locator("[data-gallery-main]")
+    assert "is-sensitive" in figure.get_attribute("class")
+    assert page.get_by_text("Shown with the weaver's permission.").is_visible()
+    assert photo.get_attribute("alt") == ""
+    assert "blur" in photo.evaluate("el => getComputedStyle(el).filter")
+
+    page.get_by_role("button", name="Show photo").click()
+    assert "is-sensitive" not in figure.get_attribute("class")
+    assert photo.get_attribute("alt") == craft.media.first().alt_text
+    assert photo.evaluate("el => getComputedStyle(el).filter") == "none"
+    assert not page.get_by_role("button", name="Show photo").is_visible()

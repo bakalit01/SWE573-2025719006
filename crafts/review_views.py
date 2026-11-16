@@ -1,4 +1,4 @@
-"""Steward review queue, decisions and reports (US-24, US-25)."""
+"""Steward review queue, decisions, reports and TK / BC labels (US-24, US-25, US-26)."""
 
 from datetime import timedelta
 
@@ -10,10 +10,15 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
-from accounts.permissions import can_review, is_site_admin, stewarded_community_ids
+from accounts.permissions import (
+    can_review,
+    can_set_labels,
+    is_site_admin,
+    stewarded_community_ids,
+)
 
 from . import review
-from .forms import DecisionForm, ReportForm
+from .forms import DecisionForm, LabelsForm, ReportForm
 from .models import Consent, Craft, CraftStory, Report, ReviewDecision
 
 
@@ -85,6 +90,28 @@ def review_craft(request, slug):
         request, f"“{craft.title}”: {ReviewDecision.Decision(decision).label.lower()}."
     )
     return redirect("crafts:review_queue")
+
+
+@require_POST
+@login_required
+def craft_labels(request, slug):
+    """US-26: the community's stewards (and admins) attach TK / BC labels to a craft."""
+    craft = get_object_or_404(Craft.objects.visible_to(request.user), slug=slug)
+    if not can_set_labels(request.user, craft):
+        raise Http404
+    form = LabelsForm(request.POST, craft=craft)
+    if not form.is_valid():
+        messages.error(request, "Labels not saved: choose labels from the list.")
+        return redirect(craft)
+    craft.tk_labels.set(form.cleaned_data["tk_labels"])
+    count = len(form.cleaned_data["tk_labels"])
+    messages.success(
+        request,
+        f"Labels saved: {count} label{'s' if count != 1 else ''} on “{craft.title}”."
+        if count
+        else f"All labels removed from “{craft.title}”.",
+    )
+    return redirect(craft)
 
 
 def report_craft(request, slug):
