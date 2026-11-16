@@ -133,6 +133,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
 REPO_URL = env("REPO_URL", default="https://github.com/bakalit01/SWE573-2025719006")
-APP_VERSION = env("APP_VERSION", default="v0.7.0")
+APP_VERSION = env("APP_VERSION", default="v0.7.1")
 # Render sets RENDER_GIT_COMMIT; shown in the footer so you can see which code is live.
 APP_COMMIT = env("RENDER_GIT_COMMIT", default="")[:7]

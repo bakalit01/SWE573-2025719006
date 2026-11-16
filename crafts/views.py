@@ -54,6 +54,7 @@ from .models import (
     Technique,
     nfc,
 )
+from .search_support import contains_lookup
 from .story_views import visible_stories
 
 PAGE_SIZE = 24
@@ -114,10 +115,11 @@ def search(crafts, query):
     techniques, community, tags); results are ranked by full-text relevance of the craft's own
     text. Matching ignores capitals and accents (US-10): "dosemealti" finds "Döşemealtı"."""
     words = query.split()[:8]
+    lookup = contains_lookup()
     for word in words:
         match = Q()
         for field in SEARCH_FIELDS:
-            match |= Q(**{f"{field}__unaccent__icontains": word})
+            match |= Q(**{f"{field}__{lookup}": word})
         crafts = crafts.filter(pk__in=Craft.objects.filter(match).values("pk"))
     vector = SearchVector("title", weight="A", config="simple") + SearchVector(
         "summary", "description", "process", "cultural_context", weight="B", config="simple"

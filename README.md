@@ -40,7 +40,7 @@ Earlier: M2 Contribute (25 Oct, [v0.4.0](https://github.com/bakalit01/SWE573-202
 | [Project plan](docs/PROJECT_PLAN.md) | Milestones, week-by-week plan, **story sequence** (§3a), tech stack, workflow, risks |
 | [Requirements](docs/REQUIREMENTS.md) | Roles, functional & non-functional requirements, data model, ethics |
 | [User stories](docs/USER_STORIES.md) | 32 user stories, 8 technical tasks and 11 feedback items (FB-01–FB-11) with acceptance criteria and delivery order |
-| [Tests](docs/TESTING.md) | Every automated test (255): what it does and the expected result, and how to run them |
+| [Tests](docs/TESTING.md) | Every automated test (256): what it does and the expected result, and how to run them |
 | [ADR-001 Tech stack](docs/adr/001-tech-stack.md) | Why Python / Django, hosting on Render |
 | [UI design](docs/design/README.md) | Screenshots of every page (desktop and phone) |
 | [Changelog](CHANGELOG.md) | What changed in each release |
@@ -68,6 +68,8 @@ uv run python manage.py runserver             # → http://localhost:8000
 **Tests:** `uv run pytest` (unit + integration); every test is described in [docs/TESTING.md](docs/TESTING.md). For the browser tests, first run `uv run playwright install chromium`.
 
 **Deploy (Render, free tier):** in Render choose **New → Blueprint**, then pick this repository. `render.yaml` creates the web service and the PostgreSQL database, then runs migrations and loads the real examples on start (crafts added by users are kept). To get into `/admin/` on the live site, set `DJANGO_SUPERUSER_EMAIL` and `DJANGO_SUPERUSER_PASSWORD` under the service's **Environment**; then log in at `/admin/` with exactly those values (capital letters in the email don't matter). The account is created or repaired at that moment, and on every start-up, so to reset a forgotten password, change the variable and redeploy. The deploy log shows a line starting with `ensure_admin:`, and the page footer shows which commit is live.
+
+**If a deploy fails:** open the service's **Logs** in Render and look for the first error. Render's free PostgreSQL database expires 30 days after it is created (then 14 days' grace before it is deleted); after that, start-up fails at `migrate` with a database connection error. Create a new free database (or upgrade the old one), put its *Internal Database URL* in the web service's `DATABASE_URL`, and redeploy: migrations, the real examples, the label list and the admin account are all recreated on start-up, but crafts added by users are lost with the old database.
 
 ### Demo script (M3 MVP)
 1. **Browse crafts**, then open a real example (e.g. the Pomo basket by Jenny Hughes). Show the "At a glance" card (made by / from / in, size with its converted value, weight, local measure) and the Materials and Techniques sections.

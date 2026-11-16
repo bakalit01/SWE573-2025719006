@@ -1,6 +1,6 @@
 # Tests
 
-The project has **255 automated tests** (206 test functions; some run several times with different inputs). They cover **96 %** of the code. GitHub runs all of them on every pull request and every push to `main` (see [CI](#how-the-tests-run)).
+The project has **256 automated tests** (207 test functions; some run several times with different inputs). They cover **96 %** of the code. GitHub runs all of them on every pull request and every push to `main` (see [CI](#how-the-tests-run)).
 
 | Kind | What it means | Where |
 |---|---|---|
@@ -320,7 +320,7 @@ Story US-21 Sensitive image notice.
 | `test_cards_show_a_blurred_cover` | Opens the catalogue | The card's cover is blurred, with "Sensitive photo" and no description |
 | `test_editor_marks_and_unmarks_an_existing_photo` | Ticks, then unticks "Culturally sensitive" on an existing photo when editing | Marked, shown ticked in the form, then unmarked |
 
-## 18. Names in other languages · `test_names.py` (12)
+## 18. Names in other languages · `test_names.py` (13)
 Story US-10 Names in multiple languages.
 
 | Test | What it does | Expected result |
@@ -335,6 +335,7 @@ Story US-10 Names in multiple languages.
 | `test_names_are_stored_in_one_unicode_form` | Saves "Diyogí" typed with a separate accent character | Stored in the composed form (NFC) |
 | `test_finds_a_craft_by_any_of_its_names` | Searches "하회탈", "kara çadır", "korean" | The Hahoe masks, the Yörük tent, and the masks again (by the name's language) |
 | `test_ignores_accents_and_special_letters` | Searches "dosemealti", "kara cadir", "YORUK" | Döşemealtı carpet, Yörük tent, Yörük tent |
+| `test_search_still_works_without_unaccent` | Searches as if the database couldn't enable `unaccent` | "döşemealtı" still finds the carpet; "dosemealti" finds nothing (accents must match) |
 | `test_query_typed_in_another_unicode_form_matches` | Searches "Döşemealtı" typed with separate accent characters | Döşemealtı carpet |
 | `test_cards_show_the_primary_name_first` | Opens the catalogue | The card heading shows "attus" (`lang="ain"`) above "Ainu attus robe" |
 
