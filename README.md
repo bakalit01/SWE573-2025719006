@@ -10,25 +10,24 @@ A website to document and showcase Indigenous crafts. Registered users can recor
 | **Timeline** | 12 Oct – 6 Dec 2026 (feature-complete), buffer to 20 Dec |
 
 ## Project status
-**M4 – Enrich is under way: the first four stories shipped on 16 Nov 2026 in [release v0.7.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.7.0).**
+**M3 – MVP delivered on 2 Nov 2026, six days early: [release v0.6.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.6.0).** The platform now has everything the MVP promised:
 
-- **Craft types in the admin** (US-13): admins add craft types and add, reorder and retire their fields without a code change; edits that would break stored values are refused
-- **Traditional Knowledge labels** (US-26): the community's stewards attach Local Contexts TK / BC labels; every viewer sees each label's icon, name and explanation
-- **Culturally sensitive photos** (US-21): blurred behind the record's own notice until the viewer chooses **Show photo**
-- **Names in other languages** (US-10): the community's own name is shown first; search finds every name and ignores accents ("dosemealti" finds Döşemealtı)
+- **Roles**: member, maker, community steward, admin. Admins manage users, roles, stewards and suspensions; changes are logged ([v0.5.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.5.0))
+- **Four visibility levels**: Public, Members only, Community only, Restricted, enforced on every page, in search and on photo URLs
+- **Search** across names, text, materials, techniques, communities and tags, with country, material, technique and tag filters and sorting
+- **Consent records** and **steward review**: makers submit, the community's stewards approve, request changes or reject; everyone involved is e-mailed
+- **Report or request removal** on every craft page, without logging in; stewards can unpublish at once
+- **Community pages**, in the community's own words, edited by its stewards
+- **Members' stories** on every craft, and **search by location** (near a place or your location, nearest first, on a map) ([v0.6.1](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.6.1))
 
-Still to come in M4 (week 6, due 22 Nov): favourites and collections (US-18), managing taxonomies (US-28), the accessibility pass (US-29) and, as a stretch, filtering by craft-specific attributes (US-19).
-
-**M3 – MVP delivered on 2 Nov 2026, six days early: [release v0.6.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.6.0).** Roles (member, maker, community steward, admin) with logged role changes; four visibility levels enforced on every page, in search and on photo URLs; search, filters and sorting; consent records and steward review; report or request removal on every craft page; community pages; members' stories and search by location ([v0.6.1](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.6.1)).
-
-Earlier: M2 Contribute (25 Oct, [v0.4.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.4.0)) and feedback rounds FB-01–FB-11 (22 real examples, Boğaziçi colours, "Other" choices and tags, stories, location search); admin login on the live site fixed ([v0.6.2](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.6.2)).
+Earlier: M2 Contribute (25 Oct, [v0.4.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.4.0)) and feedback rounds FB-01–FB-11 (22 real examples, Boğaziçi colours, "Other" choices and tags, stories, location search). Since then: admin login on the live site fixed ([v0.6.2](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.6.2)). Next: user test #1, then **M4 Enrich** (week 5: craft types in the admin, Traditional Knowledge labels, sensitive-image notices).
 
 | Milestone | Due | Deliverable |
 |---|---|---|
 | [M1 – Running demo](https://github.com/bakalit01/SWE573-2025719006/milestone/2) | ✅ 13 Oct (week 1) | Browse sample crafts, craft page, sign up / log in / log out |
 | [M2 – Contribute](https://github.com/bakalit01/SWE573-2025719006/milestone/3) | ✅ 25 Oct (week 2) | Add/edit crafts with photos, craft-type-specific fields, profiles |
 | [M3 – MVP](https://github.com/bakalit01/SWE573-2025719006/milestone/4) | ✅ 2 Nov (week 4) | Search & filter, roles, visibility & consent, steward review, reports, community pages |
-| [M4 – Enrich](https://github.com/bakalit01/SWE573-2025719006/milestone/5) | 22 Nov (week 6) · part 1 ✅ 16 Nov | Admin-managed attributes ✅, TK labels ✅, sensitive photos ✅, multilingual names ✅, collections, taxonomies, accessibility |
+| [M4 – Enrich](https://github.com/bakalit01/SWE573-2025719006/milestone/5) | 22 Nov (week 6) | Admin-managed attributes, TK labels, multilingual names, accessibility |
 | [M5 – Final product](https://github.com/bakalit01/SWE573-2025719006/milestone/6) | 6 Dec (week 8) | Hardened, documented, tested v1.0 |
 | Buffer | 7–20 Dec (weeks 9–10) | Feedback, polish, stretch goals, final presentation |
 
@@ -40,7 +39,7 @@ Earlier: M2 Contribute (25 Oct, [v0.4.0](https://github.com/bakalit01/SWE573-202
 | [Project plan](docs/PROJECT_PLAN.md) | Milestones, week-by-week plan, **story sequence** (§3a), tech stack, workflow, risks |
 | [Requirements](docs/REQUIREMENTS.md) | Roles, functional & non-functional requirements, data model, ethics |
 | [User stories](docs/USER_STORIES.md) | 32 user stories, 8 technical tasks and 11 feedback items (FB-01–FB-11) with acceptance criteria and delivery order |
-| [Tests](docs/TESTING.md) | Every automated test (256): what it does and the expected result, and how to run them |
+| [Tests](docs/TESTING.md) | Every automated test (192): what it does and the expected result, and how to run them |
 | [ADR-001 Tech stack](docs/adr/001-tech-stack.md) | Why Python / Django, hosting on Render |
 | [UI design](docs/design/README.md) | Screenshots of every page (desktop and phone) |
 | [Changelog](CHANGELOG.md) | What changed in each release |
@@ -69,8 +68,6 @@ uv run python manage.py runserver             # → http://localhost:8000
 
 **Deploy (Render, free tier):** in Render choose **New → Blueprint**, then pick this repository. `render.yaml` creates the web service and the PostgreSQL database, then runs migrations and loads the real examples on start (crafts added by users are kept). To get into `/admin/` on the live site, set `DJANGO_SUPERUSER_EMAIL` and `DJANGO_SUPERUSER_PASSWORD` under the service's **Environment**; then log in at `/admin/` with exactly those values (capital letters in the email don't matter). The account is created or repaired at that moment, and on every start-up, so to reset a forgotten password, change the variable and redeploy. The deploy log shows a line starting with `ensure_admin:`, and the page footer shows which commit is live.
 
-**If a deploy fails:** open the service's **Logs** in Render and look for the first error. Render's free PostgreSQL database expires 30 days after it is created (then 14 days' grace before it is deleted); after that, start-up fails at `migrate` with a database connection error. Create a new free database (or upgrade the old one), put its *Internal Database URL* in the web service's `DATABASE_URL`, and redeploy: migrations, the real examples, the label list and the admin account are all recreated on start-up, but crafts added by users are lost with the old database.
-
 ### Demo script (M3 MVP)
 1. **Browse crafts**, then open a real example (e.g. the Pomo basket by Jenny Hughes). Show the "At a glance" card (made by / from / in, size with its converted value, weight, local measure) and the Materials and Techniques sections.
 2. **Sign up** (password ≥ 10 characters), then open **Add a craft**.
@@ -84,15 +81,7 @@ uv run python manage.py runserver             # → http://localhost:8000
 10. Open a **community page** from any craft; as its steward, **Edit page** to change the description. Try **Search** on Browse crafts, e.g. "wool", with a country filter, and **Near a place**, e.g. "Antalya" within 250 km.
 11. As any signed-in member, open a craft and **Share your story** at the bottom of the page.
 
-### Demo script (M4 part 1, v0.7.0)
-12. Open the **Hahoe masks**: the Korean name 하회탈 is shown above the title, and "At a glance" lists every name with its language. Search Browse crafts for **dosemealti** or **kara cadir**: accents don't matter.
-13. In **Add a craft**, add a name under **Names in other languages** and tick "Show this name first". Add a photo and tick **Culturally sensitive**; optionally write your own notice under Photos. On the craft page the photo is blurred behind the notice (also on its catalogue card) until you click **Show photo**.
-14. As the community's **steward**, open the craft: under **Traditional Knowledge labels**, tick e.g. *TK A: Attribution* and *TK CV: Community Voice* and **Save labels**. Log out: visitors see each label's icon, name and explanation, but can't change them.
-15. In `/admin/` → **Craft types**, open *Textile*: add a field (choices one per line), move fields with ↑ ↓, untick **Active** to retire one, and save. The add form changes at once. Try changing *Fibre* to **Number**: it is refused, because crafts store text in it.
-
-**Adding crafts as an admin:** `/admin/` → Crafts. Names, materials, techniques and photos are inline rows; labels and the sensitive-photo notice are under "Cultural protocols". Craft types and communities that users typed under "Other" can be listed with the **added by** filter in the admin.
-
-**Craft types and labels belong to the admins:** edit them in `/admin/` (Craft types, TK / BC labels). The start-up seed only adds missing types, fields and labels, so your edits survive redeploys. Retire a field or label (untick Active) rather than deleting it: retired items keep their data, while a deleted starter label is added again on the next start-up.
+**Adding crafts as an admin:** `/admin/` → Crafts. Materials, techniques and photos are inline rows. Craft types and communities that users typed under "Other" can be listed with the **added by** filter in the admin.
 
 ## Working on the backlog
 - Branch per issue (`us-11-dynamic-fields`), PR with `Closes #n`, CI must pass. Feedback items get an `FB-xx` issue with the `feedback` label.

@@ -1,12 +1,7 @@
 <li class="card">
   <a class="card-link" href="{{ craft.get_absolute_url }}">
     {% with cover=craft.cover %}
-      {% if cover and cover.is_sensitive %}
-        <div class="card-img-wrap">
-          <img class="card-img card-img-sensitive" src="{{ cover.url }}" alt="" loading="lazy" width="480" height="360">
-          <span class="sensitive-tag">Sensitive photo</span>
-        </div>
-      {% elif cover %}
+      {% if cover %}
         <img class="card-img" src="{{ cover.url }}" alt="{{ cover.alt_text }}" loading="lazy" width="480" height="360">
       {% else %}
         <div class="card-img card-img-empty" aria-hidden="true"></div>
@@ -14,13 +9,7 @@
     {% endwith %}
     <div class="card-body">
       <p class="eyebrow">{{ craft.craft_type.name }}</p>
-      {% with pn=craft.primary_name %}
-        {% if pn %}
-          <h3 class="card-title"><span{% if pn.lang_code %} lang="{{ pn.lang_code }}"{% endif %}>{{ pn.name }}</span> <span class="card-subtitle">{{ craft.title }}</span></h3>
-        {% else %}
-          <h3 class="card-title">{{ craft.title }}</h3>
-        {% endif %}
-      {% endwith %}
+      <h3 class="card-title">{{ craft.title }}</h3>
       <p class="card-meta">{{ craft.community.name }}{% if craft.made_in %} · {{ craft.made_in }}{% endif %}</p>
       {% if craft.distance_km is not None %}<p class="card-distance">≈ {{ craft.distance_km|floatformat:0 }} km away{% if craft.location_precision == "approximate" %} (approximate){% endif %}</p>{% endif %}
     </div>

@@ -8,13 +8,7 @@
 <header class="craft-head">
   <div>
     <p class="eyebrow">{{ craft.craft_type.name }} · <a href="{{ craft.community.get_absolute_url }}">{{ craft.community.name }}</a></p>
-    {% with pn=craft.primary_name %}
-      {% if pn %}
-        <h1><span class="name-primary"{% if pn.lang_code %} lang="{{ pn.lang_code }}"{% endif %}>{{ pn.name }}</span> <span class="title-sub">{{ craft.title }}</span></h1>
-      {% else %}
-        <h1>{{ craft.title }}</h1>
-      {% endif %}
-    {% endwith %}
+    <h1>{{ craft.title }}</h1>
     <p class="craft-meta">
       {% if craft.made_in %}Made {% if craft.year_made %}in {% endif %}{{ craft.made_in }}{% endif %}{% if craft.made_in and craft.place_label %} · {% endif %}{% if craft.place_label %}{{ craft.place_label }}{% endif %}
       {% if craft.created_by %} · Added by <a href="{{ craft.created_by.get_absolute_url }}">{{ craft.created_by.public_name }}</a>{% endif %}
@@ -40,15 +34,8 @@
     <div class="gallery">
       {% with first=craft.media.all.0 %}
         {% if first %}
-          <figure class="gallery-main{% if first.is_sensitive %} is-sensitive{% endif %}" data-gallery-figure>
-            <div class="photo-frame">
-              <img data-gallery-main src="{{ first.url }}" alt="{% if not first.is_sensitive %}{{ first.alt_text }}{% endif %}" data-alt="{{ first.alt_text }}" width="960" height="720">
-              <div class="sensitive-cover" data-sensitive-cover{% if not first.is_sensitive %} hidden{% endif %}>
-                <p>{{ craft.photo_notice }}</p>
-                <button type="button" class="btn btn-light" data-reveal>Show photo</button>
-                <noscript><a href="{{ first.url }}">Open the photo</a></noscript>
-              </div>
-            </div>
+          <figure class="gallery-main">
+            <img data-gallery-main src="{{ first.url }}" alt="{{ first.alt_text }}" width="960" height="720">
             <figcaption data-gallery-caption>{{ first.caption }}{% if first.credit %} · {{ first.credit }}{% endif %}</figcaption>
           </figure>
         {% else %}
@@ -58,8 +45,8 @@
       {% if craft.media.all|length > 1 %}
         <ul class="thumbs" aria-label="More photos">
           {% for m in craft.media.all %}
-            <li><button type="button" data-gallery-thumb data-src="{{ m.url }}" data-alt="{{ m.alt_text }}" data-sensitive="{{ m.is_sensitive|yesno:'true,false' }}" data-caption="{{ m.caption }}{% if m.credit %} · {{ m.credit }}{% endif %}" aria-current="{% if forloop.first %}true{% else %}false{% endif %}"{% if m.is_sensitive %} class="thumb-sensitive"{% endif %}>
-              <img src="{{ m.url }}" alt="Show photo {{ forloop.counter }}{% if m.is_sensitive %} (culturally sensitive){% else %}: {{ m.alt_text }}{% endif %}" width="96" height="72" loading="lazy">
+            <li><button type="button" data-gallery-thumb data-src="{{ m.url }}" data-alt="{{ m.alt_text }}" data-caption="{{ m.caption }}{% if m.credit %} · {{ m.credit }}{% endif %}" aria-current="{% if forloop.first %}true{% else %}false{% endif %}">
+              <img src="{{ m.url }}" alt="Show photo {{ forloop.counter }}: {{ m.alt_text }}" width="96" height="72" loading="lazy">
             </button></li>
           {% endfor %}
         </ul>
@@ -71,7 +58,7 @@
         <summary>Photo credits</summary>
         <ol>
           {% for m in craft.media.all %}
-            <li>{% if m.caption %}{{ m.caption }}{% elif m.is_sensitive %}Culturally sensitive photo{% else %}{{ m.alt_text }}{% endif %}: <span{% if m.commons_file and m.credit == "Wikimedia Commons" %} data-commons-credit="{{ m.commons_file }}"{% endif %}>{{ m.credit|default:"Uploaded by the contributor" }}</span>{% if m.source_page %} · <a href="{{ m.source_page }}" rel="noopener">file page and license</a>{% endif %}</li>
+            <li>{{ m.caption|default:m.alt_text }}: <span{% if m.commons_file and m.credit == "Wikimedia Commons" %} data-commons-credit="{{ m.commons_file }}"{% endif %}>{{ m.credit|default:"Uploaded by the contributor" }}</span>{% if m.source_page %} · <a href="{{ m.source_page }}" rel="noopener">file page and license</a>{% endif %}</li>
           {% endfor %}
         </ol>
       </details>
@@ -148,13 +135,9 @@
 
   <aside class="craft-side" aria-label="Craft facts">
     {% if is_reviewer %}{% include "crafts/_review_panel.html" %}{% endif %}
-    {% if labels or labels_form %}{% include "crafts/_labels.html" %}{% endif %}
     <section class="side-card">
       <h2>At a glance</h2>
       <dl class="facts">
-        {% if craft.names.all %}
-          <div><dt>Names</dt><dd><ul class="name-list">{% for n in craft.names.all %}<li><span{% if n.lang_code %} lang="{{ n.lang_code }}"{% endif %}>{{ n.name }}</span> <span class="muted">({{ n.language }})</span></li>{% endfor %}</ul></dd></div>
-        {% endif %}
         <div><dt>Made by</dt><dd>{{ craft.maker_credit }}</dd></div>
         {% if craft.made_from %}<div><dt>Made from</dt><dd>{{ craft.made_from }}</dd></div>{% endif %}
         {% if craft.made_in %}<div><dt>Made in</dt><dd>{{ craft.made_in }}</dd></div>{% endif %}

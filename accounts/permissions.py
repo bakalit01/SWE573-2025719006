@@ -38,17 +38,6 @@ def can_review(user, craft):
     return is_steward_of(user, craft.community_id)
 
 
-def can_set_labels(user, craft):
-    """Traditional Knowledge / Biocultural labels are the community's call (US-26): only
-    the stewards of the craft's community, and admins, add or remove them."""
-    return can_review(user, craft)
-
-
-def can_set_labels_somewhere(user):
-    """Show the labels field in the craft form (it is applied only where allowed)."""
-    return is_site_admin(user) or bool(stewarded_community_ids(user))
-
-
 def is_author(user, craft):
     return bool(user and user.is_authenticated and craft.created_by_id == user.pk)
 

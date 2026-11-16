@@ -3,12 +3,12 @@
 Source of truth for GitHub issues: `scripts/seed_github.py` turns every `### US-xx` and `### T-xx` section below into an issue (labels + milestone included). Edit here, then re-run the script; existing issue titles are skipped.
 
 **Epics:** E0 Setup & DevOps · E1 Accounts · E2 Craft catalogue · E3 Flexible attributes · E4 Discovery · E5 Media · E6 Cultural protocols · E7 Administration · E8 Quality
-**Milestones:** M1 Demo (✅ 13 Oct) · M2 Contribute (✅ 25 Oct) · M3 MVP (✅ 2 Nov) · M4 Enrich (wk 6; part 1 ✅ 16 Nov) · M5 Final (wk 8) · buffer wk 9–10
+**Milestones:** M1 Demo (✅ 13 Oct) · M2 Contribute (✅ 25 Oct) · M3 MVP (✅ 2 Nov) · M4 Enrich (wk 6) · M5 Final (wk 8) · buffer wk 9–10
 **Feedback items** (FB-01–FB-11) are listed at the [end of this file](#feedback-items); their issues are created by hand with the `feedback` label.
 
 ## Delivery order
 
-Stories are grouped by epic below. This is the order to build them in (timeline accelerated on 13 Oct; M1, M2 and M3 delivered, and the first four M4 stories). Details and dependencies are in [PROJECT_PLAN §3a](PROJECT_PLAN.md#3a-story-sequence-what-to-build-in-order).
+Stories are grouped by epic below. This is the order to build them in (timeline accelerated on 13 Oct; M1, M2 and M3 delivered). Details and dependencies are in [PROJECT_PLAN §3a](PROJECT_PLAN.md#3a-story-sequence-what-to-build-in-order).
 
 | Week | Milestone | Items |
 |---|---|---|
@@ -18,8 +18,8 @@ Stories are grouped by epic below. This is the order to build them in (timeline 
 | 3 (26 Oct) | M2 feedback | FB-06 [#80](https://github.com/bakalit01/SWE573-2025719006/issues/80) → FB-07 [#81](https://github.com/bakalit01/SWE573-2025719006/issues/81) → FB-05 [#77](https://github.com/bakalit01/SWE573-2025719006/issues/77) → FB-08 [#88](https://github.com/bakalit01/SWE573-2025719006/issues/88) → FB-09 [#90](https://github.com/bakalit01/SWE573-2025719006/issues/90) ✅ |
 | 3 (26 Oct–1 Nov) | M3 | US-05 [#36](https://github.com/bakalit01/SWE573-2025719006/issues/36) → US-22 [#53](https://github.com/bakalit01/SWE573-2025719006/issues/53) → US-15 [#46](https://github.com/bakalit01/SWE573-2025719006/issues/46) → US-16 [#47](https://github.com/bakalit01/SWE573-2025719006/issues/47) ✅ (built 2 Nov) |
 | 4 (2–8 Nov) | M3 | US-23 [#54](https://github.com/bakalit01/SWE573-2025719006/issues/54) → US-24 [#55](https://github.com/bakalit01/SWE573-2025719006/issues/55) → US-25 [#56](https://github.com/bakalit01/SWE573-2025719006/issues/56) → US-17 [#48](https://github.com/bakalit01/SWE573-2025719006/issues/48) → US-27 [#58](https://github.com/bakalit01/SWE573-2025719006/issues/58) → FB-10 [#95](https://github.com/bakalit01/SWE573-2025719006/issues/95) → FB-11 [#96](https://github.com/bakalit01/SWE573-2025719006/issues/96) ✅ |
-| 5 (9–15 Nov) | M4 | US-13 [#44](https://github.com/bakalit01/SWE573-2025719006/issues/44) → US-26 [#57](https://github.com/bakalit01/SWE573-2025719006/issues/57) → US-21 [#52](https://github.com/bakalit01/SWE573-2025719006/issues/52) ✅ (built 16 Nov, v0.7.0) |
-| 6 (16–22 Nov) | M4 | US-10 [#41](https://github.com/bakalit01/SWE573-2025719006/issues/41) ✅ (16 Nov, v0.7.0) → US-18 [#49](https://github.com/bakalit01/SWE573-2025719006/issues/49) → US-28 [#59](https://github.com/bakalit01/SWE573-2025719006/issues/59) → US-29 [#60](https://github.com/bakalit01/SWE573-2025719006/issues/60) → US-19 [#50](https://github.com/bakalit01/SWE573-2025719006/issues/50) |
+| 5 (9–15 Nov) | M4 | US-13 [#44](https://github.com/bakalit01/SWE573-2025719006/issues/44) → US-26 [#57](https://github.com/bakalit01/SWE573-2025719006/issues/57) → US-21 [#52](https://github.com/bakalit01/SWE573-2025719006/issues/52) |
+| 6 (16–22 Nov) | M4 | US-10 [#41](https://github.com/bakalit01/SWE573-2025719006/issues/41) → US-18 [#49](https://github.com/bakalit01/SWE573-2025719006/issues/49) → US-28 [#59](https://github.com/bakalit01/SWE573-2025719006/issues/59) → US-29 [#60](https://github.com/bakalit01/SWE573-2025719006/issues/60) → US-19 [#50](https://github.com/bakalit01/SWE573-2025719006/issues/50) |
 | 7 (23–29 Nov) | M5 | US-30 [#61](https://github.com/bakalit01/SWE573-2025719006/issues/61) → US-31 [#62](https://github.com/bakalit01/SWE573-2025719006/issues/62) → US-14 [#45](https://github.com/bakalit01/SWE573-2025719006/issues/45) |
 | 8 (30 Nov–6 Dec) | M5 | US-32 [#63](https://github.com/bakalit01/SWE573-2025719006/issues/63) |
 | 9–10 (7–20 Dec) | — | Buffer: feedback, polish, stretch goals |
@@ -207,11 +207,9 @@ As a **maker**, I want to **edit or delete crafts I created**, so that **informa
 As a **maker**, I want to **add the craft's name in my own language alongside other languages**, so that **the original name is preserved and shown first**.
 
 **Acceptance criteria**
-- [x] Multiple (language, name) pairs per craft
-- [x] Indigenous-language name can be marked primary
-- [x] Full Unicode (diacritics, special orthography) renders and searches correctly
-
-_Implementation (v0.7.0): `CraftName` rows (name, language, optional language code for the `lang` attribute, one primary per craft, enforced in the database). Names are stored in Unicode NFC; search covers every name and its language and ignores accents (PostgreSQL `unaccent`)._
+- [ ] Multiple (language, name) pairs per craft
+- [ ] Indigenous-language name can be marked primary
+- [ ] Full Unicode (diacritics, special orthography) renders and searches correctly
 
 ---
 
@@ -245,11 +243,11 @@ As a **visitor**, I want to **see the craft-specific details in a readable "Deta
 As an **admin**, I want to **create craft types and add, reorder or retire attribute fields in the UI**, so that **new traditions can be documented without a code change**.
 
 **Acceptance criteria**
-- [x] Retiring a field hides it from forms but keeps existing data
-- [x] Changing a field's type is blocked if existing data would become invalid
-- [x] Changes are reflected in forms immediately
+- [ ] Retiring a field hides it from forms but keeps existing data
+- [ ] Changing a field's type is blocked if existing data would become invalid
+- [ ] Changes are reflected in forms immediately
 
-_Implementation (v0.7.0): Django admin with an `AttributeDefinition` inline on `CraftType`, reordered with ↑ ↓ buttons or Order numbers, choices typed one per line. `AttributeDefinition.clean()` refuses a type change when stored values would not fit, and a key change when values exist; the inline formset refuses deleting a field with values. The start-up seed only adds missing types and fields._
+_Implementation: start from Django admin with an `AttributeDefinition` inline on `CraftType` (sortable); add validation in `ModelAdmin.save_model`._
 
 ### US-14 · Suggest a new craft type or attribute
 **Epic:** E3 · **Milestone:** M5 · **Priority:** Could · **Points:** 3
@@ -338,10 +336,8 @@ As a **maker**, I want to **upload several photos, add alt text and a photo cred
 As a **community steward**, I want to **mark images as culturally sensitive so they are blurred behind a notice**, so that **viewers choose whether to see them**.
 
 **Acceptance criteria**
-- [x] Blurred until the viewer clicks "show"
-- [x] Notice text can be customised per record
-
-_Implementation (v0.7.0): `Media.is_sensitive`, set in the craft form by anyone who may edit the craft (author, the community's stewards, admins); `Craft.sensitive_notice` with a standard notice as fallback. Blurred on the craft page, thumbnails and catalogue cards; alt text is read only after "Show photo"._
+- [ ] Blurred until the viewer clicks "show"
+- [ ] Notice text can be customised per record
 
 ---
 
@@ -394,10 +390,8 @@ As **anyone**, I want to **report inaccurate or inappropriate content or request
 As a **community steward**, I want to **attach TK/BC labels (e.g. Local Contexts) to a craft**, so that **viewers understand the cultural conditions of use**.
 
 **Acceptance criteria**
-- [x] Labels show with icon, name and explanation on the detail page
-- [x] Labels are selectable from a managed list
-
-_Implementation (v0.7.0): `TKLabel` (managed in the admin; 20 TK and 10 BC Local Contexts labels loaded by a migration, explanations in our own words, icons drawn as code badges). Set by the community's stewards and admins from the craft page or the craft form._
+- [ ] Labels show with icon, name and explanation on the detail page
+- [ ] Labels are selectable from a managed list
 
 ---
 

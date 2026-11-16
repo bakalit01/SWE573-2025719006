@@ -17,7 +17,7 @@ def community_detail(request, slug):
         Craft.objects.listed_for(request.user)
         .filter(community=community)
         .select_related("craft_type", "community")
-        .prefetch_related("media", "names")
+        .prefetch_related("media")
     )
     return render(
         request,
