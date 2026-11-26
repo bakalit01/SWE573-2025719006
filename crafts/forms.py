@@ -14,6 +14,7 @@ from . import units
 from .models import (
     LANGUAGE_TAG,
     AttributeDefinition,
+    Collection,
     Consent,
     Craft,
     CraftStory,
@@ -737,3 +738,35 @@ class StoryForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["connection"].choices = [("", "Choose…")] + list(CraftStory.Connection.choices)
+
+
+# ---------- Collections (US-18) ----------
+
+
+class CollectionForm(forms.ModelForm):
+    class Meta:
+        model = Collection
+        fields = ["name", "description", "is_public"]
+        labels = {"name": "Collection name", "description": "Description (optional)"}
+        help_texts = {
+            "is_public": "Collections are private. If you show one on your profile, others "
+            "see only the crafts they are allowed to see."
+        }
+        widgets = {"name": forms.TextInput(attrs={"placeholder": "e.g. Natural dyes"})}
+
+    def __init__(self, *args, owner=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.owner = owner
+
+    def clean_name(self):
+        name = " ".join(self.cleaned_data["name"].split())
+        taken = Collection.objects.filter(owner=self.owner, name__iexact=name)
+        if self.instance.pk:
+            taken = taken.exclude(pk=self.instance.pk)
+        if taken.exists():
+            raise forms.ValidationError(f"You already have a collection called “{name}”.")
+        return name
+
+    def save(self, commit=True):
+        self.instance.owner = self.owner
+        return super().save(commit)

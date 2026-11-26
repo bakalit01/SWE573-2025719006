@@ -312,11 +312,24 @@ def craft_detail(request, slug):
             "open_reports": craft.reports.filter(status="open") if reviewer else [],
             "stories": visible_stories(craft, request.user),
             "story_form": StoryForm() if can_add_story(request.user) else None,
+            **_saved_state(request.user, craft),
         },
     )
 
 
 # ---------- Add / edit / delete (US-08, US-09, US-11, US-20) ----------
+
+
+def _saved_state(user, craft):
+    """Favourite and collection state for the "Save" card on the craft page (US-18)."""
+    if not user.is_authenticated:
+        return {}
+    collections = list(user.collections.all())
+    holding = set(craft.collections.filter(owner=user).values_list("pk", flat=True))
+    return {
+        "is_favourite": craft.favourited_by.filter(user=user).exists(),
+        "my_collections": [(c, c.pk in holding) for c in collections],
+    }
 
 
 def _name_initial(craft):

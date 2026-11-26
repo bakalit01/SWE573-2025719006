@@ -4,6 +4,7 @@ from django.db.models import Count
 
 from .models import (
     AttributeDefinition,
+    Collection,
     Consent,
     Craft,
     CraftMaterial,
@@ -201,6 +202,24 @@ class CraftAdmin(admin.ModelAdmin):
 class TermAdmin(admin.ModelAdmin):
     list_display = ["name", "description"]
     search_fields = ["name"]
+
+
+@admin.register(Collection)
+class CollectionAdmin(admin.ModelAdmin):
+    """Members' collections (US-18); private ones are for support only."""
+
+    list_display = ["name", "owner", "is_public", "craft_count", "updated_at"]
+    list_filter = ["is_public"]
+    search_fields = ["name", "owner__email", "owner__display_name"]
+    autocomplete_fields = ["owner"]
+    filter_horizontal = ["crafts"]
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(n_crafts=Count("crafts"))
+
+    @admin.display(description="Crafts", ordering="n_crafts")
+    def craft_count(self, obj):
+        return obj.n_crafts
 
 
 @admin.register(Tag)

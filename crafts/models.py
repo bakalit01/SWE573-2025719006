@@ -15,6 +15,7 @@ from django.core.validators import (
 )
 from django.db import models
 from django.db.models import Q
+from django.db.models.functions import Lower
 from django.templatetags.static import static
 from django.urls import reverse
 
@@ -739,3 +740,64 @@ class CraftStory(models.Model):
 
     def __str__(self):
         return f"{self.author} on {self.craft}"
+
+
+# ---------- Favourites and collections (US-18) ----------
+
+
+class Favourite(models.Model):
+    """A craft a member saved with the ♡ button. Only that member sees their favourites."""
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="favourites"
+    )
+    craft = models.ForeignKey(Craft, on_delete=models.CASCADE, related_name="favourited_by")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at", "-id"]
+        constraints = [models.UniqueConstraint(fields=["user", "craft"], name="unique_favourite")]
+
+    def __str__(self):
+        return f"{self.user} ♡ {self.craft}"
+
+
+class Collection(models.Model):
+    """A member's named group of crafts. Private unless the owner shows it on their profile.
+
+    Whoever looks at a collection, owner included, sees only the crafts they may still see:
+    if a craft is unpublished or its visibility narrowed, it drops out of every collection
+    for those who lost access, and comes back if access returns.
+    """
+
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="collections"
+    )
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=300, blank=True)
+    is_public = models.BooleanField(
+        "Show on my profile",
+        default=False,
+        help_text="Private by default; if shown, people see only the crafts they may see",
+    )
+    crafts = models.ManyToManyField(Craft, blank=True, related_name="collections")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = [Lower("name"), "id"]
+        constraints = [
+            models.UniqueConstraint(Lower("name"), "owner", name="unique_collection_name")
+        ]
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("collections:detail", kwargs={"pk": self.pk})
+
+    def visible_crafts(self, viewer):
+        return Craft.objects.visible_to(viewer).filter(collections=self)
+
+    def can_view(self, viewer):
+        return self.is_public or (viewer.is_authenticated and viewer.pk == self.owner_id)

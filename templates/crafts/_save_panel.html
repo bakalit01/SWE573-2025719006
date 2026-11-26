@@ -1,0 +1,27 @@
+<section class="side-card save-card" aria-labelledby="save-heading">
+  <h2 id="save-heading">Save</h2>
+  <form method="post" action="{% url 'crafts:favourite' craft.slug %}">
+    {% csrf_token %}
+    <button type="submit" class="btn {% if is_favourite %}btn-primary{% else %}btn-ghost{% endif %} fav-button" aria-pressed="{{ is_favourite|yesno:'true,false' }}">
+      <span aria-hidden="true">{% if is_favourite %}♥{% else %}♡{% endif %}</span> {% if is_favourite %}In your favourites{% else %}Add to favourites{% endif %}
+    </button>
+  </form>
+  <details class="collections-edit">
+    <summary>Add to a collection</summary>
+    <form method="post" action="{% url 'crafts:collections' craft.slug %}">
+      {% csrf_token %}
+      {% if my_collections %}
+        <fieldset class="choices">
+          <legend class="sr-only">Your collections</legend>
+          {% for collection, holds in my_collections %}
+            <label class="check"><input type="checkbox" name="collection" value="{{ collection.pk }}"{% if holds %} checked{% endif %}> <span>{{ collection.name }}{% if not collection.is_public %} <span class="muted">(private)</span>{% endif %}</span></label>
+          {% endfor %}
+        </fieldset>
+      {% endif %}
+      <label for="new-collection">New collection</label>
+      <input type="text" id="new-collection" name="new_collection" maxlength="100" placeholder="e.g. Natural dyes">
+      <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+  </details>
+  <p class="small"><a href="{% url 'collections:saved' %}">Your favourites and collections</a></p>
+</section>
