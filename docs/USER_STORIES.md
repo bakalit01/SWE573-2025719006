@@ -3,8 +3,8 @@
 Source of truth for GitHub issues: `scripts/seed_github.py` turns every `### US-xx` and `### T-xx` section below into an issue (labels + milestone included). Edit here, then re-run the script; existing issue titles are skipped.
 
 **Epics:** E0 Setup & DevOps · E1 Accounts · E2 Craft catalogue · E3 Flexible attributes · E4 Discovery · E5 Media · E6 Cultural protocols · E7 Administration · E8 Quality
-**Milestones:** M1 Demo (✅ 13 Oct) · M2 Contribute (✅ 25 Oct) · M3 MVP (✅ 2 Nov) · M4 Enrich (✅ 26 Nov, **final**) · ~~M5 Final~~ (dropped 26 Nov)
-**Scope closed on 26 Nov 2026:** the project ends with M4. Seven stories were dropped from the backlog; they are listed under [Dropped stories](#dropped-stories), and their issues are closed as not planned.
+**Milestones:** M1 Demo (✅ 13 Oct) · M2 Contribute (✅ 25 Oct) · M3 MVP (✅ 2 Nov) · M4 Enrich (✅ 26 Nov, **final**)
+The project ends with M4. Story numbers missing from the list belong to stories that were dropped; their issues are closed as not planned.
 **Feedback items** (FB-01–FB-11) are listed at the [end of this file](#feedback-items); their issues are created by hand with the `feedback` label.
 
 ## Delivery order
@@ -20,7 +20,6 @@ Stories are grouped by epic below. This is the order to build them in (timeline 
 | 3 (26 Oct–1 Nov) | M3 | US-05 [#36](https://github.com/bakalit01/SWE573-2025719006/issues/36) → US-22 [#53](https://github.com/bakalit01/SWE573-2025719006/issues/53) → US-15 [#46](https://github.com/bakalit01/SWE573-2025719006/issues/46) → US-16 [#47](https://github.com/bakalit01/SWE573-2025719006/issues/47) ✅ (built 2 Nov) |
 | 4 (2–8 Nov) | M3 | US-23 [#54](https://github.com/bakalit01/SWE573-2025719006/issues/54) → US-24 [#55](https://github.com/bakalit01/SWE573-2025719006/issues/55) → US-25 [#56](https://github.com/bakalit01/SWE573-2025719006/issues/56) → US-17 [#48](https://github.com/bakalit01/SWE573-2025719006/issues/48) → US-27 [#58](https://github.com/bakalit01/SWE573-2025719006/issues/58) → FB-10 [#95](https://github.com/bakalit01/SWE573-2025719006/issues/95) → FB-11 [#96](https://github.com/bakalit01/SWE573-2025719006/issues/96) ✅ |
 | 5–7 (16–26 Nov) | M4 | US-13 [#44](https://github.com/bakalit01/SWE573-2025719006/issues/44) → US-10 [#41](https://github.com/bakalit01/SWE573-2025719006/issues/41) → US-18 [#49](https://github.com/bakalit01/SWE573-2025719006/issues/49) → US-28 [#59](https://github.com/bakalit01/SWE573-2025719006/issues/59) → US-19 [#50](https://github.com/bakalit01/SWE573-2025719006/issues/50) ✅ (v0.8.0, 26 Nov) |
-| — | dropped 26 Nov | US-21 [#52](https://github.com/bakalit01/SWE573-2025719006/issues/52), US-26 [#57](https://github.com/bakalit01/SWE573-2025719006/issues/57), US-29 [#60](https://github.com/bakalit01/SWE573-2025719006/issues/60); M5: US-30 [#61](https://github.com/bakalit01/SWE573-2025719006/issues/61), US-31 [#62](https://github.com/bakalit01/SWE573-2025719006/issues/62), US-14 [#45](https://github.com/bakalit01/SWE573-2025719006/issues/45), US-32 [#63](https://github.com/bakalit01/SWE573-2025719006/issues/63) |
 
 ---
 
@@ -391,20 +390,6 @@ _Implementation (v0.8.0): regions became a managed `Region` model (existing regi
 ---
 
 ---
-
-## Dropped stories
-
-Dropped on 26 Nov 2026, when the scope was closed at M4. Their issues are closed as not planned.
-
-| Story | Was | Issue |
-|---|---|---|
-| US-14 · Suggest a new craft type or attribute | M5, Could | [#45](https://github.com/bakalit01/SWE573-2025719006/issues/45) (typing a new type under "Other" remains, FB-05) |
-| US-21 · Sensitive image notice | M4, Should | [#52](https://github.com/bakalit01/SWE573-2025719006/issues/52) (built in v0.7.0, removed in v0.8.0) |
-| US-26 · Traditional Knowledge labels | M4, Should | [#57](https://github.com/bakalit01/SWE573-2025719006/issues/57) (built in v0.7.0, removed in v0.8.0) |
-| US-29 · Accessible site (axe checks, keyboard walkthrough) | M4, Must | [#60](https://github.com/bakalit01/SWE573-2025719006/issues/60) (the basics remain: labels, alt text, focus, AA colours) |
-| US-30 · Security and privacy hardening | M5, Must | [#61](https://github.com/bakalit01/SWE573-2025719006/issues/61) |
-| US-31 · Fast on mobile | M5, Should | [#62](https://github.com/bakalit01/SWE573-2025719006/issues/62) |
-| US-32 · Final documentation and handover | M5, Must | [#63](https://github.com/bakalit01/SWE573-2025719006/issues/63) |
 
 ## Feedback items
 

@@ -145,7 +145,7 @@ class CraftTechniqueInline(admin.TabularInline):
 class MediaInline(admin.TabularInline):
     model = Media
     extra = 0
-    fields = ["order", "image", "commons_file", "alt_text", "caption", "credit", "is_sensitive"]
+    fields = ["order", "image", "commons_file", "alt_text", "caption", "credit"]
 
 
 class CraftNameInline(admin.TabularInline):

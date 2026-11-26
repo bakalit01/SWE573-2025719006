@@ -2,8 +2,16 @@
 
 All notable changes per release. Releases are tagged on GitHub (`vX.Y.Z`).
 
+## [v0.8.1] – 26 Nov 2026 · Clean-up after the final release
+### Changed
+- Docs: the dropped final-product milestone and its stories are no longer mentioned anywhere (README, project plan, user stories, requirements, ADR, changelog); requirements that were not built were removed from the lists, and the non-functional requirements now describe what the site actually does.
+- The backlog script (`scripts/seed_github.py`) lists only milestones M1–M4 and the stories that remain.
+
+### Removed
+- The unused `Media.is_sensitive` flag (left over from the dropped sensitive-photo story); migration 0012 removes the column.
+
 ## [v0.8.0] – 26 Nov 2026 · M4 Enrich, the final release
-The project ends with this release: on 26 Nov the scope was closed at M4. M5 (security hardening, performance, final documentation) and three M4 stories (US-21 sensitive photos, US-26 TK labels, US-29 accessibility audit) were dropped, and their issues closed as not planned.
+The project ends with this release: M4 is the final milestone. Three M4 stories (US-21 sensitive photos, US-26 TK labels, US-29 accessibility audit) were dropped and their issues closed as not planned.
 
 ### Added
 - **Craft types and their fields in the admin** (#44, US-13): add craft types; add, edit, reorder (↑ ↓ or the Order numbers) and retire fields, with choices one per line. Changes show in the add form at once; retired fields keep their data. Changing a field's type is refused when stored values wouldn't fit, and so are renaming the key or deleting a field that has values.
@@ -15,7 +23,7 @@ The project ends with this release: on 26 Nov the scope was closed at M4. M5 (se
 
 ### Changed
 - The start-up seed only adds missing craft types and fields, and sets a real example community's region only if it has none, so admins' edits survive redeploys.
-- Docs: README, project plan, user stories (dropped stories listed), requirements (dropped ones marked ✖), test catalogue and design notes brought up to date. The backlog script no longer has an M5 milestone.
+- Docs: README, project plan, user stories, requirements, test catalogue and design notes brought up to date.
 
 ### Removed
 - The TK / BC labels (US-26) and culturally sensitive photo notices (US-21) of v0.7.0 are not part of this release.
