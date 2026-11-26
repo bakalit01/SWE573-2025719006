@@ -31,6 +31,7 @@
             {% if user_is_reviewer %}
             <li><a href="{% url 'crafts:review_queue' %}"{% if request.resolver_match.url_name == "review_queue" %} aria-current="page"{% endif %}>Review{% if review_count %} <span class="count" aria-label="{{ review_count }} waiting">{{ review_count }}</span>{% endif %}</a></li>
             {% endif %}
+            <li><a href="{% url 'collections:saved' %}"{% if request.resolver_match.namespace == "collections" %} aria-current="page"{% endif %}>Saved</a></li>
             <li class="nav-user">Signed in as <a href="{{ user.get_absolute_url }}"><strong>{{ user.public_name }}</strong></a></li>
             <li>
               <form method="post" action="{% url 'account_logout' %}" class="inline-form">

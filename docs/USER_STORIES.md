@@ -3,12 +3,13 @@
 Source of truth for GitHub issues: `scripts/seed_github.py` turns every `### US-xx` and `### T-xx` section below into an issue (labels + milestone included). Edit here, then re-run the script; existing issue titles are skipped.
 
 **Epics:** E0 Setup & DevOps · E1 Accounts · E2 Craft catalogue · E3 Flexible attributes · E4 Discovery · E5 Media · E6 Cultural protocols · E7 Administration · E8 Quality
-**Milestones:** M1 Demo (✅ 13 Oct) · M2 Contribute (✅ 25 Oct) · M3 MVP (✅ 2 Nov) · M4 Enrich (wk 6) · M5 Final (wk 8) · buffer wk 9–10
+**Milestones:** M1 Demo (✅ 13 Oct) · M2 Contribute (✅ 25 Oct) · M3 MVP (✅ 2 Nov) · M4 Enrich (✅ 26 Nov, **final**) · ~~M5 Final~~ (dropped 26 Nov)
+**Scope closed on 26 Nov 2026:** the project ends with M4. Seven stories were dropped from the backlog; they are listed under [Dropped stories](#dropped-stories), and their issues are closed as not planned.
 **Feedback items** (FB-01–FB-11) are listed at the [end of this file](#feedback-items); their issues are created by hand with the `feedback` label.
 
 ## Delivery order
 
-Stories are grouped by epic below. This is the order to build them in (timeline accelerated on 13 Oct; M1, M2 and M3 delivered). Details and dependencies are in [PROJECT_PLAN §3a](PROJECT_PLAN.md#3a-story-sequence-what-to-build-in-order).
+Stories are grouped by epic below. This is the order to build them in (timeline accelerated on 13 Oct; all milestones delivered, M4 being the last). Details and dependencies are in [PROJECT_PLAN §3a](PROJECT_PLAN.md#3a-story-sequence-what-to-build-in-order).
 
 | Week | Milestone | Items |
 |---|---|---|
@@ -18,11 +19,8 @@ Stories are grouped by epic below. This is the order to build them in (timeline 
 | 3 (26 Oct) | M2 feedback | FB-06 [#80](https://github.com/bakalit01/SWE573-2025719006/issues/80) → FB-07 [#81](https://github.com/bakalit01/SWE573-2025719006/issues/81) → FB-05 [#77](https://github.com/bakalit01/SWE573-2025719006/issues/77) → FB-08 [#88](https://github.com/bakalit01/SWE573-2025719006/issues/88) → FB-09 [#90](https://github.com/bakalit01/SWE573-2025719006/issues/90) ✅ |
 | 3 (26 Oct–1 Nov) | M3 | US-05 [#36](https://github.com/bakalit01/SWE573-2025719006/issues/36) → US-22 [#53](https://github.com/bakalit01/SWE573-2025719006/issues/53) → US-15 [#46](https://github.com/bakalit01/SWE573-2025719006/issues/46) → US-16 [#47](https://github.com/bakalit01/SWE573-2025719006/issues/47) ✅ (built 2 Nov) |
 | 4 (2–8 Nov) | M3 | US-23 [#54](https://github.com/bakalit01/SWE573-2025719006/issues/54) → US-24 [#55](https://github.com/bakalit01/SWE573-2025719006/issues/55) → US-25 [#56](https://github.com/bakalit01/SWE573-2025719006/issues/56) → US-17 [#48](https://github.com/bakalit01/SWE573-2025719006/issues/48) → US-27 [#58](https://github.com/bakalit01/SWE573-2025719006/issues/58) → FB-10 [#95](https://github.com/bakalit01/SWE573-2025719006/issues/95) → FB-11 [#96](https://github.com/bakalit01/SWE573-2025719006/issues/96) ✅ |
-| 5 (9–15 Nov) | M4 | US-13 [#44](https://github.com/bakalit01/SWE573-2025719006/issues/44) → US-26 [#57](https://github.com/bakalit01/SWE573-2025719006/issues/57) → US-21 [#52](https://github.com/bakalit01/SWE573-2025719006/issues/52) |
-| 6 (16–22 Nov) | M4 | US-10 [#41](https://github.com/bakalit01/SWE573-2025719006/issues/41) → US-18 [#49](https://github.com/bakalit01/SWE573-2025719006/issues/49) → US-28 [#59](https://github.com/bakalit01/SWE573-2025719006/issues/59) → US-29 [#60](https://github.com/bakalit01/SWE573-2025719006/issues/60) → US-19 [#50](https://github.com/bakalit01/SWE573-2025719006/issues/50) |
-| 7 (23–29 Nov) | M5 | US-30 [#61](https://github.com/bakalit01/SWE573-2025719006/issues/61) → US-31 [#62](https://github.com/bakalit01/SWE573-2025719006/issues/62) → US-14 [#45](https://github.com/bakalit01/SWE573-2025719006/issues/45) |
-| 8 (30 Nov–6 Dec) | M5 | US-32 [#63](https://github.com/bakalit01/SWE573-2025719006/issues/63) |
-| 9–10 (7–20 Dec) | — | Buffer: feedback, polish, stretch goals |
+| 5–7 (16–26 Nov) | M4 | US-13 [#44](https://github.com/bakalit01/SWE573-2025719006/issues/44) → US-10 [#41](https://github.com/bakalit01/SWE573-2025719006/issues/41) → US-18 [#49](https://github.com/bakalit01/SWE573-2025719006/issues/49) → US-28 [#59](https://github.com/bakalit01/SWE573-2025719006/issues/59) → US-19 [#50](https://github.com/bakalit01/SWE573-2025719006/issues/50) ✅ (v0.8.0, 26 Nov) |
+| — | dropped 26 Nov | US-21 [#52](https://github.com/bakalit01/SWE573-2025719006/issues/52), US-26 [#57](https://github.com/bakalit01/SWE573-2025719006/issues/57), US-29 [#60](https://github.com/bakalit01/SWE573-2025719006/issues/60); M5: US-30 [#61](https://github.com/bakalit01/SWE573-2025719006/issues/61), US-31 [#62](https://github.com/bakalit01/SWE573-2025719006/issues/62), US-14 [#45](https://github.com/bakalit01/SWE573-2025719006/issues/45), US-32 [#63](https://github.com/bakalit01/SWE573-2025719006/issues/63) |
 
 ---
 
@@ -207,9 +205,11 @@ As a **maker**, I want to **edit or delete crafts I created**, so that **informa
 As a **maker**, I want to **add the craft's name in my own language alongside other languages**, so that **the original name is preserved and shown first**.
 
 **Acceptance criteria**
-- [ ] Multiple (language, name) pairs per craft
-- [ ] Indigenous-language name can be marked primary
-- [ ] Full Unicode (diacritics, special orthography) renders and searches correctly
+- [x] Multiple (language, name) pairs per craft
+- [x] Indigenous-language name can be marked primary
+- [x] Full Unicode (diacritics, special orthography) renders and searches correctly
+
+_Implementation (v0.8.0): `CraftName` rows (name, language, optional language code for the `lang` attribute, one primary per craft, enforced in the database). Names are stored in Unicode NFC; search covers every name and its language and ignores accents (PostgreSQL `unaccent`)._
 
 ---
 
@@ -243,22 +243,11 @@ As a **visitor**, I want to **see the craft-specific details in a readable "Deta
 As an **admin**, I want to **create craft types and add, reorder or retire attribute fields in the UI**, so that **new traditions can be documented without a code change**.
 
 **Acceptance criteria**
-- [ ] Retiring a field hides it from forms but keeps existing data
-- [ ] Changing a field's type is blocked if existing data would become invalid
-- [ ] Changes are reflected in forms immediately
+- [x] Retiring a field hides it from forms but keeps existing data
+- [x] Changing a field's type is blocked if existing data would become invalid
+- [x] Changes are reflected in forms immediately
 
-_Implementation: start from Django admin with an `AttributeDefinition` inline on `CraftType` (sortable); add validation in `ModelAdmin.save_model`._
-
-### US-14 · Suggest a new craft type or attribute
-**Epic:** E3 · **Milestone:** M5 · **Priority:** Could · **Points:** 3
-
-As a **maker**, I want to **suggest a new craft type or field when mine is missing**, so that **the schema grows with real needs**.
-
-**Acceptance criteria**
-- [ ] Suggestion goes to the admin queue with my explanation
-- [ ] I'm notified when it is accepted or declined
-
-_Progress (FB-05, v0.4.5): makers can already type a new craft type under "Other"; it is added straight away and marked "added by" for review in the admin. Still to do: an explanation, an approve/decline queue and notifications._
+_Implementation (v0.8.0): Django admin with an `AttributeDefinition` inline on `CraftType`, reordered with ↑ ↓ buttons or Order numbers, choices typed one per line. `AttributeDefinition.clean()` refuses a type change when stored values would not fit, and a key change when values exist; the inline formset refuses deleting a field with values. The start-up seed only adds missing types and fields._
 
 ---
 
@@ -285,7 +274,6 @@ As a **visitor**, I want to **filter by craft type, community, region, material 
 - [x] Filters combine (AND) and are reflected in the URL (shareable)
 - [x] Pagination of 24 per page
 
-
 _Implementation: `django-filter` FilterSet + Django `Paginator`; HTMX partial reload of results._
 
 ### US-17 · Community pages
@@ -297,15 +285,16 @@ As a **visitor**, I want to **see a page for each community with its self-descri
 - [x] Community's own name is displayed first
 - [x] Description is editable by that community's stewards
 
-
 ### US-18 · Favourites and collections
 **Epic:** E4 · **Milestone:** M4 · **Priority:** Could · **Points:** 5
 
 As a **member**, I want to **favourite crafts and group them into named collections**, so that **I can return to them later**.
 
 **Acceptance criteria**
-- [ ] Collections are private by default
-- [ ] Removing access to a craft also hides it from my collections
+- [x] Collections are private by default
+- [x] Removing access to a craft also hides it from my collections
+
+_Implementation (v0.8.0): `Favourite` and `Collection` (owner, name unique per owner, description, "Show on my profile", crafts). A "Save" card on each craft page; a **Saved** page; public collections on the owner's profile. Every list is filtered through `Craft.objects.visible_to`, so crafts the viewer can't see drop out (and come back if access returns)._
 
 ### US-19 · Filter by craft-specific attributes
 **Epic:** E4 · **Milestone:** M4 · **Priority:** Could · **Points:** 5
@@ -313,8 +302,10 @@ As a **member**, I want to **favourite crafts and group them into named collecti
 As a **researcher**, I want to **filter by attributes of the chosen craft type** (e.g. "natural dyes only"), so that **I can compare techniques**.
 
 **Acceptance criteria**
-- [ ] Attribute filters appear once a single craft type is selected
-- [ ] Only select/boolean/number attributes are filterable
+- [x] Attribute filters appear once a single craft type is selected
+- [x] Only select/boolean/number attributes are filterable
+
+_Implementation (v0.8.0): `crafts/attribute_filters.py`. Choice and multiple-choice fields offer their options plus values typed under "Other"; yes/no fields offer Yes/No; number fields take a from–to range (numbers stored as text by older records count too). Retired fields are not offered._
 
 ---
 
@@ -330,15 +321,6 @@ As a **maker**, I want to **upload several photos, add alt text and a photo cred
 - [x] Alt text is required before publishing
 - [x] First image is the cover in the catalogue
 
-### US-21 · Sensitive image notice
-**Epic:** E5 · **Milestone:** M4 · **Priority:** Should · **Points:** 2
-
-As a **community steward**, I want to **mark images as culturally sensitive so they are blurred behind a notice**, so that **viewers choose whether to see them**.
-
-**Acceptance criteria**
-- [ ] Blurred until the viewer clicks "show"
-- [ ] Notice text can be customised per record
-
 ---
 
 ## E6 — Cultural protocols
@@ -352,7 +334,6 @@ As a **maker or steward**, I want to **set a craft as Public, Members only, Comm
 - [x] Visibility is enforced in pages, search, API and image URLs via a single `Craft.objects.visible_to(user)` queryset method
 - [x] Default for new records is "Members only" until reviewed
 - [x] Tests cover each visibility level for each role
-
 
 ### US-23 · Record consent
 **Epic:** E6 · **Milestone:** M3 · **Priority:** Must · **Points:** 3
@@ -383,16 +364,6 @@ As **anyone**, I want to **report inaccurate or inappropriate content or request
 - [x] Reports appear in the steward/admin queue
 - [x] A steward or admin can unpublish immediately
 
-
-### US-26 · Traditional Knowledge labels
-**Epic:** E6 · **Milestone:** M4 · **Priority:** Should · **Points:** 3
-
-As a **community steward**, I want to **attach TK/BC labels (e.g. Local Contexts) to a craft**, so that **viewers understand the cultural conditions of use**.
-
-**Acceptance criteria**
-- [ ] Labels show with icon, name and explanation on the detail page
-- [ ] Labels are selectable from a managed list
-
 ---
 
 ## E7 — Administration
@@ -412,52 +383,28 @@ As an **admin**, I want to **search users, change roles, assign stewards to comm
 As an **admin**, I want to **manage communities, regions, materials and techniques**, so that **records use consistent terms**.
 
 **Acceptance criteria**
-- [ ] Merge duplicate terms without losing links to crafts
-- [ ] Terms can have alternate spellings used by search
+- [x] Merge duplicate terms without losing links to crafts
+- [x] Terms can have alternate spellings used by search
+
+_Implementation (v0.8.0): regions became a managed `Region` model (existing region text converted by a migration). Materials, techniques, communities and regions have "Other names or spellings", used by search and when a name is typed in a form. Admin action "Merge selected into one" for materials, techniques, communities, regions and tags moves every link to the term kept and records the old names as alternate spellings._
 
 ---
 
-## E8 — Quality
-
-### US-29 · Accessible site
-**Epic:** E8 · **Milestone:** M4 · **Priority:** Must · **Points:** 5
-
-As a **visitor using assistive technology**, I want **the site to be keyboard and screen-reader friendly**, so that **I can use it fully**.
-
-**Acceptance criteria**
-- [ ] Automated axe checks pass in CI on key pages (`axe-playwright-python`)
-- [ ] Manual keyboard walkthrough of all core flows documented
-- [ ] Colour contrast meets WCAG AA
-
-### US-30 · Security and privacy hardening
-**Epic:** E8 · **Milestone:** M5 · **Priority:** Must · **Points:** 5
-
-As a **user**, I want **my account and restricted community content to be protected**, so that **I can trust the platform**.
-
-**Acceptance criteria**
-- [ ] OWASP Top 10 checklist reviewed and findings fixed; `pip-audit` and `bandit` run in CI
-- [ ] Rate limiting on login, register and report endpoints (`django-axes` / `django-ratelimit`)
-- [ ] Users can delete their account and personal data
-
-### US-31 · Fast on mobile
-**Epic:** E8 · **Milestone:** M5 · **Priority:** Should · **Points:** 3
-
-As a **visitor on a slow connection**, I want **pages to load quickly**, so that **I can browse in rural or low-bandwidth areas**.
-
-**Acceptance criteria**
-- [ ] Lighthouse performance ≥ 85 on catalogue and detail pages (mobile)
-- [ ] Images lazy-loaded and served in modern formats
-
-### US-32 · Final documentation and handover
-**Epic:** E8 · **Milestone:** M5 · **Priority:** Must · **Points:** 3
-
-As a **future maintainer**, I want **setup, architecture, data model and content-governance docs**, so that **the project can continue after week 10**.
-
-**Acceptance criteria**
-- [ ] README, architecture overview, ADRs, data model diagram, steward guide
-- [ ] Final demo recorded and linked from the v1.0 release
-
 ---
+
+## Dropped stories
+
+Dropped on 26 Nov 2026, when the scope was closed at M4. Their issues are closed as not planned.
+
+| Story | Was | Issue |
+|---|---|---|
+| US-14 · Suggest a new craft type or attribute | M5, Could | [#45](https://github.com/bakalit01/SWE573-2025719006/issues/45) (typing a new type under "Other" remains, FB-05) |
+| US-21 · Sensitive image notice | M4, Should | [#52](https://github.com/bakalit01/SWE573-2025719006/issues/52) (built in v0.7.0, removed in v0.8.0) |
+| US-26 · Traditional Knowledge labels | M4, Should | [#57](https://github.com/bakalit01/SWE573-2025719006/issues/57) (built in v0.7.0, removed in v0.8.0) |
+| US-29 · Accessible site (axe checks, keyboard walkthrough) | M4, Must | [#60](https://github.com/bakalit01/SWE573-2025719006/issues/60) (the basics remain: labels, alt text, focus, AA colours) |
+| US-30 · Security and privacy hardening | M5, Must | [#61](https://github.com/bakalit01/SWE573-2025719006/issues/61) |
+| US-31 · Fast on mobile | M5, Should | [#62](https://github.com/bakalit01/SWE573-2025719006/issues/62) |
+| US-32 · Final documentation and handover | M5, Must | [#63](https://github.com/bakalit01/SWE573-2025719006/issues/63) |
 
 ## Feedback items
 

@@ -5,7 +5,7 @@ from django.core.management import call_command
 
 from communities.models import Community
 from crafts import reference_data
-from crafts.models import Craft, Media, commons_image_url
+from crafts.models import Craft, CraftName, Media, commons_image_url
 
 from .factories import CraftFactory
 
@@ -35,6 +35,22 @@ def test_seed_is_idempotent():
     counts = (Craft.objects.count(), Media.objects.count(), Community.objects.count())
     call_command("seed_reference_crafts")
     assert (Craft.objects.count(), Media.objects.count(), Community.objects.count()) == counts
+
+
+def test_seed_adds_names_in_other_languages_and_keeps_stewards_choices():
+    call_command("seed_reference_crafts")
+    masks = Craft.objects.get(slug="hahoe-masks")
+    assert masks.primary_name.name == "하회탈" and masks.primary_name.lang_code == "ko"
+    guksi = Craft.objects.get(slug="sami-guksi-drinking-cup")
+    assert [n.name for n in guksi.names.all()] == ["guksi", "kuksa", "kåsa"]
+    assert set(reference_data.NAMES) <= set(Craft.objects.values_list("slug", flat=True))
+    # A steward picks another primary name; the next start-up keeps it.
+    masks.names.update(is_primary=False)
+    CraftName.objects.create(
+        craft=masks, name="Hahoe-tal", language="Korean (romanised)", is_primary=True
+    )
+    call_command("seed_reference_crafts")
+    assert masks.primary_name.name == "Hahoe-tal" and masks.names.count() == 2
 
 
 def test_replace_samples_keeps_user_records():

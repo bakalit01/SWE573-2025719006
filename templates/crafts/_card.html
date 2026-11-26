@@ -9,7 +9,13 @@
     {% endwith %}
     <div class="card-body">
       <p class="eyebrow">{{ craft.craft_type.name }}</p>
-      <h3 class="card-title">{{ craft.title }}</h3>
+      {% with pn=craft.primary_name %}
+        {% if pn %}
+          <h3 class="card-title"><span{% if pn.lang_code %} lang="{{ pn.lang_code }}"{% endif %}>{{ pn.name }}</span> <span class="card-subtitle">{{ craft.title }}</span></h3>
+        {% else %}
+          <h3 class="card-title">{{ craft.title }}</h3>
+        {% endif %}
+      {% endwith %}
       <p class="card-meta">{{ craft.community.name }}{% if craft.made_in %} · {{ craft.made_in }}{% endif %}</p>
       {% if craft.distance_km is not None %}<p class="card-distance">≈ {{ craft.distance_km|floatformat:0 }} km away{% if craft.location_precision == "approximate" %} (approximate){% endif %}</p>{% endif %}
     </div>

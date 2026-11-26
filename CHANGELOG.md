@@ -2,6 +2,50 @@
 
 All notable changes per release. Releases are tagged on GitHub (`vX.Y.Z`).
 
+## [v0.8.0] – 26 Nov 2026 · M4 Enrich, the final release
+The project ends with this release: on 26 Nov the scope was closed at M4. M5 (security hardening, performance, final documentation) and three M4 stories (US-21 sensitive photos, US-26 TK labels, US-29 accessibility audit) were dropped, and their issues closed as not planned.
+
+### Added
+- **Craft types and their fields in the admin** (#44, US-13): add craft types; add, edit, reorder (↑ ↓ or the Order numbers) and retire fields, with choices one per line. Changes show in the add form at once; retired fields keep their data. Changing a field's type is refused when stored values wouldn't fit, and so are renaming the key or deleting a field that has values.
+- **Names in other languages** (#41, US-10): any number of names per craft with their language and an optional language code; one can be shown first, above the title and on cards. Ten real examples carry names from their sources (e.g. 하회탈 for the Hahoe masks). Search covers every name and ignores accents ("dosemealti" finds Döşemealtı); if the database can't enable PostgreSQL's `unaccent`, search still works with exact accents.
+- **Favourites and collections** (#49, US-18): a **Save** card on every craft page (♡ favourite, add to a collection or start a new one) and a **Saved** page in the menu. Collections are private unless the owner ticks "Show on my profile". Crafts someone can no longer see drop out of their favourites and collections, and come back if access returns.
+- **Managed taxonomies** (#59, US-28): regions are now managed terms (the existing region text of each community is converted by a migration). Materials, techniques, communities and regions have *Other names or spellings*, which search uses and which a name typed in the add form is matched against (typing "yün" picks Wool). The admin action **Merge selected into one** (materials, techniques, communities, regions, tags) moves every link to the term kept and records the old names as spellings.
+- **Filters for a craft type's own fields** (#50, US-19): choose one craft type on Browse crafts and its choice, multiple-choice, yes/no and number fields become filters (a from–to range for numbers).
+- Tests: 277; coverage 96 %.
+
+### Changed
+- The start-up seed only adds missing craft types and fields, and sets a real example community's region only if it has none, so admins' edits survive redeploys.
+- Docs: README, project plan, user stories (dropped stories listed), requirements (dropped ones marked ✖), test catalogue and design notes brought up to date. The backlog script no longer has an M5 milestone.
+
+### Removed
+- The TK / BC labels (US-26) and culturally sensitive photo notices (US-21) of v0.7.0 are not part of this release.
+
+## [v0.7.1] – 16 Nov 2026 · Safer deploys on Render
+_Withdrawn the same day (#106) and replaced by v0.8.0._
+
+### Fixed
+- **Deploys no longer depend on the `unaccent` extension**: if the database user can't enable it, migration 0009 prints a note and carries on, and search falls back to matching accents exactly instead of failing. Checked against a copy of the Render set-up (production settings, Python 3.12, a database user that isn't a superuser), both upgrading a v0.6.2 database and starting from an empty one.
+
+### Changed
+- README: the deploy section explains that Render's free PostgreSQL database expires 30 days after it is created, and what to do when it does.
+- Tests: 256 (1 new).
+
+## [v0.7.0] – 16 Nov 2026 · M4 Enrich, part 1: craft types in the admin, TK labels, sensitive photos, names in other languages
+_Withdrawn the same day (#106): the failed deploy was caused by an expired database, not by this code. Replaced by v0.8.0, without TK labels and sensitive photos._
+
+### Added
+- **Craft types and their fields in the admin** (#44, US-13): admins create craft types and add, edit, reorder (↑ ↓ buttons or the Order numbers) and retire fields on the craft type page, with choices typed one per line. Changes show in the add form at once. Retiring a field hides it from forms and craft pages but keeps the stored values. Changing a field's data type is refused when stored values would not fit (e.g. "tall" in a field changed to Number), and so are renaming the key or deleting a field that has values; the message names an example craft. The craft type list shows how many fields and crafts each type has.
+- **Traditional Knowledge (TK) and Biocultural (BC) labels** (#57, US-26): a managed list of the 20 TK and 10 BC labels of Local Contexts (code, name, category, an explanation in our own words and a link), editable in the admin. The stewards of a craft's community, and admins, set its labels from a "Traditional Knowledge labels" card on the craft page (or in the craft form); everyone who can see the craft sees each label's icon, name and explanation. Makers and stewards of other communities can't set them. Retired labels can't be chosen but stay on crafts that have them.
+- **Culturally sensitive photos** (#52, US-21): a photo can be marked culturally sensitive when uploading or editing. It is blurred behind a notice on the craft page, in thumbnails and on catalogue cards until the viewer clicks **Show photo**; its alt text is read out only after that. Each craft can have its own notice text; otherwise a standard notice is shown.
+- **Names in other languages** (#41, US-10): any number of names per craft, each with its language and an optional language code (used for screen-reader pronunciation). One name can be shown first: it appears above the title on the craft page and on cards. All names are listed under "At a glance". Ten real examples now carry names from their sources, e.g. 하회탈 (Korean) for the Hahoe masks, guksi / kuksa / kåsa for the Sámi cup, kara çadır for the Yörük tent.
+- **Search ignores accents and special letters**: "dosemealti" finds Döşemealtı, "yoruk" finds Yörük, and text typed in a different Unicode form matches (PostgreSQL `unaccent`, enabled by a migration). Search also covers every name and its language.
+- Admin: names on the craft page, labels and the sensitive-photo notice under "Cultural protocols", and a TK / BC labels list.
+- Tests: 255 (63 new, including a browser test of the sensitive-photo notice); coverage 96 %.
+
+### Changed
+- The start-up seed (`seed_reference_crafts` on Render) now only **adds** missing craft types, fields and labels; it no longer overwrites, reorders, retires or re-activates what admins changed. Names users or stewards gave a real example, and their choice of name shown first, are kept.
+- The UI screenshots workflow also captures the new pages (TK labels, a sensitive photo, names, the craft type admin page).
+
 ## [v0.6.2] – 8 Nov 2026 · Admin login on the live site, docs brought up to date
 ### Fixed
 - **Admin login on Render** (#101, #98–#100): logging in at `/admin/` with exactly `DJANGO_SUPERUSER_EMAIL` and `DJANGO_SUPERUSER_PASSWORD` creates or repairs that admin account, even if the start command doesn't run the set-up step. The `ensure_admin` start-up step logs what it did; spaces or line breaks pasted into the variables are ignored.

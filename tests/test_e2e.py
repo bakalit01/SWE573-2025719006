@@ -127,3 +127,18 @@ def test_other_choices_and_tags_in_browser(live_server, page, seeded):
     assert "Felt making" in facts and "Yörük" in facts and "3 karış" in facts
     assert page.get_by_text("Madder root").is_visible()
     assert page.get_by_role("link", name="#nomadic").is_visible()
+
+
+def test_primary_name_in_browser(live_server, page, seeded):
+    """US-10: the name marked primary is shown first, with its language for screen readers."""
+    from crafts.models import Craft, CraftName
+
+    craft = Craft.objects.get(slug="sample-coiled-sedge-basket")
+    CraftName.objects.create(
+        craft=craft, name="Šúuḱa", language="Sample language", lang_code="und", is_primary=True
+    )
+    page.goto(f"{live_server.url}{craft.get_absolute_url()}")
+    heading = page.locator("h1")
+    assert heading.inner_text().startswith("Šúuḱa")
+    assert heading.locator("[lang=und]").inner_text() == "Šúuḱa"
+    assert craft.title in heading.inner_text()

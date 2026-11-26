@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import review_views, story_views, views
+from . import collection_views, review_views, story_views, views
 
 app_name = "crafts"
 
@@ -19,5 +19,7 @@ urlpatterns = [
     path("<slug:slug>/delete/", views.craft_delete, name="delete"),
     path("<slug:slug>/review/", review_views.review_craft, name="review"),
     path("<slug:slug>/report/", review_views.report_craft, name="report"),
+    path("<slug:slug>/favourite/", collection_views.toggle_favourite, name="favourite"),
+    path("<slug:slug>/collections/", collection_views.craft_collections, name="collections"),
     path("<slug:slug>/stories/", story_views.add_story, name="add_story"),
 ]

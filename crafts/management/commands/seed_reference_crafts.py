@@ -3,12 +3,13 @@ from decimal import Decimal
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from communities.models import Community
+from communities.models import Community, Region
 from crafts import reference_data as data
 from crafts.forms import unique_slug_for
 from crafts.models import (
     Craft,
     CraftMaterial,
+    CraftName,
     CraftTechnique,
     Material,
     Media,
@@ -49,13 +50,11 @@ class Command(BaseCommand):
         for slug, name, region in data.COMMUNITIES:
             communities[slug], _ = Community.objects.update_or_create(
                 slug=slug,
-                defaults={
-                    "name": name,
-                    "region": region,
-                    "description": COMMUNITY_NOTE,
-                    "is_sample": False,
-                },
+                defaults={"name": name, "description": COMMUNITY_NOTE, "is_sample": False},
             )
+            if communities[slug].region_id is None:  # admins manage regions after that (US-28)
+                communities[slug].region = Region.for_name(region)
+                communities[slug].save(update_fields=["region"])
 
         for record in data.CRAFTS:
             place_name, country, lat, lng = record["place"]
@@ -110,6 +109,21 @@ class Command(BaseCommand):
                 craft.tags.add(
                     tag or Tag.objects.create(name=name, slug=unique_slug_for(Tag, name))
                 )
+
+            # Names in other languages (US-10): added if missing; names that stewards or
+            # contributors added, and their choice of primary name, are kept.
+            for order, (name, language, code, primary) in enumerate(
+                data.NAMES.get(record["slug"], [])
+            ):
+                if not craft.names.filter(name=name, language=language).exists():
+                    CraftName.objects.create(
+                        craft=craft,
+                        name=name,
+                        language=language,
+                        lang_code=code,
+                        is_primary=primary and not craft.names.filter(is_primary=True).exists(),
+                        order=order,
+                    )
 
             craft.media.filter(image="").delete()  # keep any photos users uploaded
             for order, (file_name, alt, caption, credit) in enumerate(record["images"]):

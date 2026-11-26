@@ -42,14 +42,11 @@ MILESTONES = {
     ),
     "M4": (
         "M4 – Enrich (week 6)",
-        "2026-11-22T20:59:59Z",
-        "Admin-managed attributes, TK labels, multilingual names, collections, accessibility.",
+        "2026-11-26T20:59:59Z",
+        "Final milestone (v0.8.0): admin-managed craft types, multilingual names, favourites "
+        "and collections, managed taxonomies, filters by craft-specific fields.",
     ),
-    "M5": (
-        "M5 – Final product (week 8)",
-        "2026-12-06T20:59:59Z",
-        "Hardened, documented, tested v1.0 release.",
-    ),
+    # M5 – Final product was dropped on 26 Nov 2026: the project ends with M4.
 }
 
 EPICS = {
@@ -98,10 +95,9 @@ TYPE = {  # default for US-* is "feature"
     "T-06": "documentation",
     "T-07": "documentation",
     "T-08": "test",
-    "US-29": "test",
-    "US-32": "documentation",
 }
 
+# Stories dropped on 26 Nov 2026 (US-14, US-21, US-26, US-29–US-32) are no longer listed.
 AREA = {
     "T-01": ["requirements"],
     "T-02": ["requirements"],
@@ -124,25 +120,18 @@ AREA = {
     "US-11": ["backend", "database"],
     "US-12": ["frontend"],
     "US-13": ["backend"],
-    "US-14": ["backend"],
     "US-15": ["backend", "database"],
     "US-16": ["frontend"],
     "US-17": ["frontend"],
     "US-18": ["backend"],
     "US-19": ["database"],
     "US-20": ["backend"],
-    "US-21": ["frontend"],
     "US-22": ["backend"],
     "US-23": ["database"],
     "US-24": ["backend"],
     "US-25": ["frontend"],
-    "US-26": ["frontend"],
     "US-27": ["backend"],
     "US-28": ["database"],
-    "US-29": ["frontend"],
-    "US-30": ["backend"],
-    "US-31": ["frontend"],
-    "US-32": ["wiki"],
 }
 
 FUNCTIONAL = {
@@ -154,7 +143,7 @@ FUNCTIONAL = {
         "US-05",
     },
     "Functional requirement-Email": {"US-03"},
-    "Functional requirement-Gallery": {"US-06", "US-20", "US-21"},
+    "Functional requirement-Gallery": {"US-06", "US-20"},
 }
 
 HEADER = re.compile(r"^### ((?:US|T)-\d+) · (.+)$")

@@ -1,6 +1,6 @@
 # UI design
 
-The low-fidelity wireframes (T-06) were replaced by the working pages. These screenshots are the current UI reference for **v0.6.1** (2 Nov 2026), with the real examples, their Wikimedia Commons photos and OpenStreetMap maps.
+The low-fidelity wireframes (T-06) were replaced by the working pages. These screenshots are the current UI reference for **v0.8.0** (26 Nov 2026), the final release, with the real examples, their Wikimedia Commons photos and OpenStreetMap maps.
 
 To retake them, push a commit whose message contains `[take screenshots]` to any branch other than `main`, or run the **UI screenshots** workflow by hand. The workflow runs [`scripts/take_screenshots.py`](../../scripts/take_screenshots.py) on GitHub, which can reach Commons and OpenStreetMap, and commits the images to that branch.
 
@@ -16,6 +16,8 @@ To retake them, push a commit whose message contains `[take screenshots]` to any
 | Members' stories on a craft page, with the form to share one | ![Stories](screenshots/20-stories.png) | |
 | Report or request removal: no login needed | ![Report](screenshots/19-report-form.png) | |
 | Catalogue filtered by a tag (`?tag=painted`); the Tag box suggests tags and also matches part of a tag | ![Tag filter](screenshots/09-catalogue-tag-filter.png) | |
+| Names in other languages: the Korean name 하회탈 shown first, above the title (US-10) | ![Names](screenshots/25-names.png) | |
+| Filters for a craft type's own fields: with Textile chosen, a “Textile details” box filters by loom type, dye source and threads per cm (US-19) | ![Attribute filters](screenshots/23-attribute-filters.png) | |
 | Craft page: tags, gallery with photo credits and licences, "At a glance", map, materials and techniques in detail, details, sources, report link | ![Craft page](screenshots/03-craft-detail.png) | ![Craft page on phone](screenshots/08-mobile-detail.png) |
 
 ## Accounts
@@ -26,6 +28,7 @@ To retake them, push a commit whose message contains `[take screenshots]` to any
 | Login with a generic error message | ![Login error](screenshots/06-login-error.png) |
 | Signed in: name in the header, Add a craft and My crafts | ![Signed in](screenshots/05-signed-in-catalogue.png) |
 | Maker profile with the crafts they added | ![Profile](screenshots/12-maker-profile.png) |
+| Saved crafts: favourites and private collections, with a form for a new collection (US-18) | ![Saved crafts](screenshots/22-saved-crafts.png) |
 
 ## Contributing
 
@@ -43,6 +46,14 @@ To retake them, push a commit whose message contains `[take screenshots]` to any
 | Review queue: records waiting for review (with their consent status) and open reports with “Unpublish now” | ![Review queue](screenshots/15-review-queue.png) |
 | Review panel on a submitted craft: consent record, decision (approve, request changes, reject) with a note, history | ![Review panel](screenshots/16-review-panel.png) |
 
+## Admins (M4)
+
+| Page | Screenshot |
+|---|---|
+| Craft type in the admin: fields with order (↑ ↓), data type, unit, choices one per line, help text, required and active (US-13) | ![Craft type admin](screenshots/24-admin-craft-type.png) |
+
+Materials, techniques, communities, regions and tags have an *Other names or spellings* field and a **Merge selected into one** action, which first asks which one to keep (US-28).
+
 ## Colours
 Based on Boğaziçi University's corporate identity guide (2020): navy **#1e4a8b** (PANTONE 7686C) as the primary colour, blue **#8cc8ea** (PANTONE 297C) as the secondary. Text is dark navy #0f2340 on blue-white #f4f8fc. Red (errors) and amber (drafts) are kept for status.
 
@@ -51,10 +62,10 @@ Based on Boğaziçi University's corporate identity guide (2020): navy **#1e4a8b
 - **Sources shown, no remark badges:** real examples list their Sources and photo credits on the craft page; pages carry no status remarks ("Real example", "Sample data", "Public"), except "Draft" for the author.
 - **Nothing forced into a list:** every choice offers "Other (type your own)", and contributors can add their own details and tags.
 - **Craft-type details** come from the attribute definitions, so each type shows its own fields.
-- **Accessible basics:** skip link, visible focus ring, labelled form fields, alt text on every image, AA colour contrast.
+- **Accessible basics:** skip link, visible focus ring, labelled form fields, alt text on every image, AA colour contrast. Names in other languages carry a `lang` attribute.
 - **Low bandwidth:** server-rendered HTML, one CSS file, lazy-loaded images, no JavaScript framework. The forms work without JavaScript; maps and type-specific fields load on top.
 
 The add form and craft page took cues from reference craft-archive sites: a facts sidebar, a location map and a sectioned entry form. They differ in the step navigation, the "Made" summary, materials and techniques with per-row detail, measurements with unit conversion, and privacy controls for places.
 
 ---
-Next pages (M3–M4): search, roles, consent records, steward review queue, report form.
+No further pages are planned: the project ends with M4 (v0.8.0).

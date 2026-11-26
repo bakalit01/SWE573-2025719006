@@ -1,10 +1,15 @@
+from django import forms
 from django.contrib import admin
+from django.db.models import Count
 
+from .admin_merge import merge_selected
 from .models import (
     AttributeDefinition,
+    Collection,
     Consent,
     Craft,
     CraftMaterial,
+    CraftName,
     CraftTechnique,
     CraftType,
     Material,
@@ -15,20 +20,112 @@ from .models import (
     Technique,
 )
 
+# ---------- Craft types and their fields, managed in the admin (US-13) ----------
+
+
+class LinesField(forms.CharField):
+    """A list of strings edited as one item per line (blank lines and repeats dropped)."""
+
+    widget = forms.Textarea(attrs={"rows": 3, "cols": 22})
+
+    def prepare_value(self, value):
+        return "\n".join(value) if isinstance(value, list) else value
+
+    def to_python(self, value):
+        items = []
+        for line in (super().to_python(value) or "").splitlines():
+            line = " ".join(line.split())
+            if line and line not in items:
+                items.append(line)
+        return items
+
+
+class AttributeDefinitionForm(forms.ModelForm):
+    options = LinesField(
+        label="Choices", required=False, help_text="One per line (choice fields only)"
+    )
+
+    class Meta:
+        model = AttributeDefinition
+        fields = [
+            "order",
+            "key",
+            "label",
+            "data_type",
+            "unit",
+            "options",
+            "help_text",
+            "required",
+            "is_active",
+        ]
+        labels = {"is_active": "Active", "order": "Order"}
+        help_texts = {"is_active": "Untick to retire: hidden from forms, data kept"}
+
+
+class AttributeDefinitionFormSet(forms.BaseInlineFormSet):
+    def clean(self):
+        super().clean()
+        for form in self.deleted_forms:
+            definition = form.instance
+            if definition.pk:
+                count = definition.crafts_with_values().count()
+                if count:
+                    raise forms.ValidationError(
+                        f"“{definition.label}” has values in {count} craft(s), so it can't be "
+                        "deleted. Untick Active to retire it instead; its data is kept."
+                    )
+
 
 class AttributeDefinitionInline(admin.TabularInline):
+    """Add, edit, reorder (↑ ↓ or the Order numbers) and retire a craft type's fields."""
+
     model = AttributeDefinition
-    extra = 0
-    fields = ["order", "key", "label", "data_type", "unit", "options", "required", "is_active"]
+    form = AttributeDefinitionForm
+    formset = AttributeDefinitionFormSet
+    extra = 1
+    fields = [
+        "order",
+        "key",
+        "label",
+        "data_type",
+        "unit",
+        "options",
+        "help_text",
+        "required",
+        "is_active",
+    ]
+    ordering = ["order", "id"]
+
+    class Media:
+        js = ["js/admin_attributes.js"]
+        css = {"all": ["css/admin.css"]}
 
 
 @admin.register(CraftType)
 class CraftTypeAdmin(admin.ModelAdmin):
-    list_display = ["name", "slug", "added_by"]
+    list_display = ["name", "slug", "field_count", "craft_count", "added_by"]
     list_filter = [("added_by", admin.EmptyFieldListFilter)]
     search_fields = ["name"]
     prepopulated_fields = {"slug": ("name",)}
     inlines = [AttributeDefinitionInline]
+
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .annotate(
+                n_fields=Count("attributes", distinct=True),
+                n_crafts=Count("crafts", distinct=True),
+            )
+        )
+
+    @admin.display(description="Fields", ordering="n_fields")
+    def field_count(self, obj):
+        return obj.n_fields
+
+    @admin.display(description="Crafts", ordering="n_crafts")
+    def craft_count(self, obj):
+        return obj.n_crafts
 
 
 class CraftMaterialInline(admin.TabularInline):
@@ -48,7 +145,13 @@ class CraftTechniqueInline(admin.TabularInline):
 class MediaInline(admin.TabularInline):
     model = Media
     extra = 0
-    fields = ["order", "image", "static_path", "alt_text", "credit", "is_sensitive"]
+    fields = ["order", "image", "commons_file", "alt_text", "caption", "credit", "is_sensitive"]
+
+
+class CraftNameInline(admin.TabularInline):
+    model = CraftName
+    extra = 0
+    fields = ["order", "name", "language", "lang_code", "is_primary"]
 
 
 @admin.register(Craft)
@@ -63,9 +166,9 @@ class CraftAdmin(admin.ModelAdmin):
         "is_sample",
     ]
     list_filter = ["status", "visibility", "craft_type", "is_sample"]
-    search_fields = ["title", "summary", "description", "maker_credit", "place_name"]
+    search_fields = ["title", "names__name", "summary", "description", "maker_credit", "place_name"]
     prepopulated_fields = {"slug": ("title",)}
-    inlines = [CraftMaterialInline, CraftTechniqueInline, MediaInline]
+    inlines = [CraftNameInline, CraftMaterialInline, CraftTechniqueInline, MediaInline]
     filter_horizontal = ["tags"]
     fieldsets = (
         (None, {"fields": ("title", "slug", "craft_type", "community", "summary")}),
@@ -98,8 +201,37 @@ class CraftAdmin(admin.ModelAdmin):
 
 @admin.register(Material, Technique)
 class TermAdmin(admin.ModelAdmin):
-    list_display = ["name", "description"]
-    search_fields = ["name"]
+    """Materials and techniques (US-28): alternate spellings, and merging duplicates."""
+
+    list_display = ["name", "other_names", "craft_count"]
+    search_fields = ["name", "other_names", "description"]
+    fields = ["name", "other_names", "description"]
+    actions = [merge_selected]
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(n_crafts=Count("crafts", distinct=True))
+
+    @admin.display(description="Crafts", ordering="n_crafts")
+    def craft_count(self, obj):
+        return obj.n_crafts
+
+
+@admin.register(Collection)
+class CollectionAdmin(admin.ModelAdmin):
+    """Members' collections (US-18); private ones are for support only."""
+
+    list_display = ["name", "owner", "is_public", "craft_count", "updated_at"]
+    list_filter = ["is_public"]
+    search_fields = ["name", "owner__email", "owner__display_name"]
+    autocomplete_fields = ["owner"]
+    filter_horizontal = ["crafts"]
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(n_crafts=Count("crafts"))
+
+    @admin.display(description="Crafts", ordering="n_crafts")
+    def craft_count(self, obj):
+        return obj.n_crafts
 
 
 @admin.register(Tag)
@@ -107,6 +239,7 @@ class TagAdmin(admin.ModelAdmin):
     list_display = ["name", "slug"]
     search_fields = ["name"]
     prepopulated_fields = {"slug": ("name",)}
+    actions = [merge_selected]
 
 
 @admin.register(Consent)

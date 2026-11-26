@@ -100,6 +100,10 @@ def main():
         page.goto(BASE + "/crafts/add/")
         page.wait_for_selector("form[data-ready=true]", state="attached")
         page.fill("#id_title", "Felt rug")
+        page.fill("#id_nam-0-name", "keçe")  # US-10: a name in another language, shown first
+        page.fill("#id_nam-0-language", "Turkish")
+        page.fill("#id_nam-0-lang_code", "tr")
+        page.check("#id_nam-0-is_primary")
         page.select_option("#id_craft_type", "__other__")
         page.fill("#id_craft_type_other", "Felt making")
         page.select_option("#id_community", "__other__")
@@ -173,6 +177,16 @@ def main():
         settle(page)
         page.locator("#stories").screenshot(path=OUT / "20-stories.png")
         print("saved 20-stories.png")
+        # US-18: favourite the kilim and put it in a new collection.
+        page.get_by_role("button", name="Add to favourites").click()
+        page.wait_for_load_state()
+        page.locator(".collections-edit summary").click()
+        page.fill("#new-collection", "Anatolian weaving")
+        page.locator(".collections-edit").get_by_role("button", name="Save").click()
+        page.wait_for_load_state()
+        page.goto(BASE + "/saved/")
+        settle(page)
+        shot(page, "22-saved-crafts.png")
         desk.close()
 
         # ---- Community steward (created by the workflow for the Yörük community) ----
@@ -195,6 +209,20 @@ def main():
         shot(page, "12-maker-profile.png")
         steward.close()
 
+        # ---- Admin: craft types and their fields (US-13) ----
+        admin = browser.new_context(viewport={"width": 1440, "height": 900}, locale="en-GB")
+        page = admin.new_page()
+        page.goto(f"{BASE}/admin/login/")
+        page.fill("input[name=username]", "admin@example.com")
+        page.fill("input[name=password]", PASSWORD)
+        page.locator("input[type=submit]").click()
+        page.wait_for_load_state()
+        page.goto(f"{BASE}/admin/crafts/crafttype/")
+        page.get_by_role("link", name="Textile", exact=True).click()
+        page.wait_for_load_state()
+        shot(page, "24-admin-craft-type.png")
+        admin.close()
+
         # ---- Visitor: search, community page, report form ----
         visitor = browser.new_context(viewport={"width": 1280, "height": 800}, locale="en-GB")
         page = visitor.new_page()
@@ -202,10 +230,17 @@ def main():
         shot(page, "17-search.png")
         page.goto(BASE + "/crafts/?place=Antalya&lat=36.8969&lng=30.7133&km=250")
         shot(page, "21-location-search.png", maps=True)
+        page.goto(BASE + "/crafts/?type=textile")  # US-19: the textile fields as filters
+        page.locator(".filters").screenshot(path=OUT / "23-attribute-filters.png")
+        print("saved 23-attribute-filters.png")
         page.goto(BASE + "/communities/yoruk/")
         shot(page, "18-community-page.png")
         page.goto(BASE + EXAMPLE + "report/")
         shot(page, "19-report-form.png", full=False)
+        page.goto(BASE + "/crafts/hahoe-masks/")  # US-10: the Korean name is shown first
+        settle(page)
+        page.locator(".craft-head").screenshot(path=OUT / "25-names.png")
+        print("saved 25-names.png")
         visitor.close()
 
         # ---- Visitor, phone ----

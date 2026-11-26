@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
+from crafts.collection_views import with_visible_counts
 from crafts.models import Craft
 
 from .forms import ProfileForm
@@ -15,9 +16,14 @@ def profile(request, pk):
         Craft.objects.listed_for(request.user)
         .filter(created_by=maker)
         .select_related("craft_type", "community")
-        .prefetch_related("media")
+        .prefetch_related("media", "names")
     )
-    return render(request, "accounts/profile.html", {"maker": maker, "crafts": crafts})
+    collections = with_visible_counts(maker.collections.filter(is_public=True), request.user)
+    return render(
+        request,
+        "accounts/profile.html",
+        {"maker": maker, "crafts": crafts, "collections": collections},
+    )
 
 
 @login_required

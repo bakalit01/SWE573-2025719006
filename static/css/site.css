@@ -361,3 +361,30 @@ a.tag-chip:hover { background: var(--bu-blue); color: var(--ink); }
 .card-distance { font-size: .9rem; font-weight: 700; color: var(--accent); margin: -4px 0 6px; }
 .sr-only { width: 1px !important; height: 1px !important; }
 .story-actions .link-button { font-weight: inherit; }
+
+/* Names in other languages (US-10) */
+.name-primary { display: block; }
+.title-sub { display: block; font-size: .5em; font-family: var(--sans); font-weight: 700; color: var(--ink-soft); margin-top: .35em; }
+.card-subtitle { display: block; font: 600 .92rem/1.35 var(--sans); color: var(--ink-soft); margin-top: 2px; }
+.name-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 2px; }
+
+/* Favourites and collections (US-18) */
+.save-card form + details { margin-top: 10px; }
+.fav-button { width: 100%; justify-content: center; }
+.collections-edit summary { cursor: pointer; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+.collections-edit input[type=text] { width: 100%; margin-bottom: 8px; }
+.collection-list { list-style: none; padding: 0; margin: 0 0 20px; display: grid; gap: 10px; }
+.collection-form { max-width: 34rem; margin-top: 16px; }
+.collection-manage { margin: 20px 0; }
+.collection-manage summary { cursor: pointer; font-weight: 700; color: var(--accent); }
+.remove-list { list-style: none; padding: 0; display: grid; gap: 6px; }
+.remove-list form { display: flex; gap: 10px; align-items: center; }
+.collection-admin { margin-top: 28px; display: grid; gap: 12px; }
+
+/* Filters for a craft type's own fields (US-19) */
+.attr-filters { border: 1px dashed var(--line); border-radius: var(--radius); padding: 10px 14px 14px; margin: 0; }
+.attr-filters legend { font-weight: 800; padding: 0 6px; }
+.range-filter { display: grid; gap: 4px; }
+.range-label { font-weight: 700; font-size: .9rem; }
+.range-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.range-row input { width: 100%; min-width: 0; }

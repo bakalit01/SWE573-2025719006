@@ -15,6 +15,7 @@ urlpatterns = [
     path("", craft_views.home, name="home"),
     path("crafts/", include("crafts.urls")),
     path("communities/", include("communities.urls")),
+    path("saved/", include("crafts.collection_urls")),
     path("", include("accounts.urls")),
     path("accounts/", include("allauth.urls")),
     path("admin/", admin.site.urls),

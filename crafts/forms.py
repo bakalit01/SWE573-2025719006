@@ -1,4 +1,4 @@
-"""Forms for adding and editing crafts (US-08, US-09, US-11, US-20 and feedback FB-01…FB-04)."""
+"""Forms for adding and editing crafts (US-08–US-11, US-20; feedback FB-01…FB-05)."""
 
 import io
 from decimal import Decimal
@@ -12,7 +12,9 @@ from communities.models import Community
 
 from . import units
 from .models import (
+    LANGUAGE_TAG,
     AttributeDefinition,
+    Collection,
     Consent,
     Craft,
     CraftStory,
@@ -20,7 +22,9 @@ from .models import (
     Report,
     ReviewDecision,
     Tag,
+    nfc,
 )
+from .terms import find_term
 
 OTHER = "__other__"  # "Other (type your own)" in craft type, community and choice fields
 MAX_TAGS = 15
@@ -212,7 +216,12 @@ class CraftForm(forms.ModelForm):
         if not typed:
             self.add_error(f"{name}_other", "Type the name, or choose one from the list.")
             return None
-        return model.objects.filter(name__iexact=typed).first() or typed[:max_length]
+        existing = (
+            find_term(model, typed)  # e.g. "Navajo" picks Diné (US-28)
+            if model is Community
+            else model.objects.filter(name__iexact=typed).first()
+        )
+        return existing or typed[:max_length]
 
     def clean(self):
         data = super().clean()
@@ -431,6 +440,67 @@ class DetailFormSet(forms.BaseFormSet):
 DetailRows = forms.formset_factory(
     DetailRowForm, formset=DetailFormSet, extra=0, min_num=1, max_num=30
 )
+
+
+# ---------- Names in other languages (US-10) ----------
+
+
+class NameRowForm(forms.Form):
+    name = forms.CharField(
+        label="Name",
+        max_length=200,
+        required=False,
+        widget=forms.TextInput(attrs={"placeholder": "e.g. attus", "autocomplete": "off"}),
+    )
+    language = forms.CharField(
+        label="Language",
+        max_length=80,
+        required=False,
+        widget=forms.TextInput(attrs={"placeholder": "e.g. Ainu"}),
+    )
+    lang_code = forms.CharField(
+        label="Language code (optional)",
+        max_length=20,
+        required=False,
+        validators=[LANGUAGE_TAG],
+        widget=forms.TextInput(attrs={"placeholder": "e.g. ain", "autocapitalize": "off"}),
+    )
+    is_primary = forms.BooleanField(label="Show this name first", required=False)
+
+    def clean(self):
+        data = super().clean()
+        name = " ".join(nfc(data.get("name")).split())
+        language = " ".join(nfc(data.get("language")).split())
+        data["name"], data["language"] = name, language
+        if name and not language:
+            self.add_error("language", "Say which language this name is in.")
+        elif language and not name:
+            self.add_error("name", "Type the name, or remove the row.")
+        return data
+
+
+class NameFormSet(forms.BaseFormSet):
+    def clean(self):
+        super().clean()
+        if any(self.errors):
+            return
+        primary = [r for r in self.filled_rows() if r["is_primary"]]
+        if len(primary) > 1:
+            raise forms.ValidationError("Choose only one name to show first.")
+
+    def filled_rows(self):
+        rows, seen = [], set()
+        for form in self.forms:
+            if not form.is_valid() or not form.cleaned_data.get("name"):
+                continue
+            key = (form.cleaned_data["name"].casefold(), form.cleaned_data["language"].casefold())
+            if key not in seen:
+                seen.add(key)
+                rows.append(form.cleaned_data)
+        return rows
+
+
+NameRows = forms.formset_factory(NameRowForm, formset=NameFormSet, extra=0, min_num=1, max_num=12)
 
 
 # ---------- Materials and techniques with detail (FB-02) ----------
@@ -674,3 +744,35 @@ class StoryForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["connection"].choices = [("", "Choose…")] + list(CraftStory.Connection.choices)
+
+
+# ---------- Collections (US-18) ----------
+
+
+class CollectionForm(forms.ModelForm):
+    class Meta:
+        model = Collection
+        fields = ["name", "description", "is_public"]
+        labels = {"name": "Collection name", "description": "Description (optional)"}
+        help_texts = {
+            "is_public": "Collections are private. If you show one on your profile, others "
+            "see only the crafts they are allowed to see."
+        }
+        widgets = {"name": forms.TextInput(attrs={"placeholder": "e.g. Natural dyes"})}
+
+    def __init__(self, *args, owner=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.owner = owner
+
+    def clean_name(self):
+        name = " ".join(self.cleaned_data["name"].split())
+        taken = Collection.objects.filter(owner=self.owner, name__iexact=name)
+        if self.instance.pk:
+            taken = taken.exclude(pk=self.instance.pk)
+        if taken.exists():
+            raise forms.ValidationError(f"You already have a collection called “{name}”.")
+        return name
+
+    def save(self, commit=True):
+        self.instance.owner = self.owner
+        return super().save(commit)

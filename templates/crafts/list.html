@@ -77,6 +77,43 @@
       </select>
     </label>
   </div>
+  {% if attribute_specs %}
+    <fieldset class="attr-filters">
+      <legend>{{ attribute_specs.0.definition.craft_type.name }} details</legend>
+      <div class="filter-grid">
+        {% for spec in attribute_specs %}
+          {% with d=spec.definition %}
+            {% if spec.kind == "choice" %}
+              <label>{{ d.label }}
+                <select name="{{ spec.param }}">
+                  <option value="">Any</option>
+                  {% for o in spec.options %}<option value="{{ o }}"{% if o|lower == spec.value|lower %} selected{% endif %}>{{ o }}</option>{% endfor %}
+                </select>
+              </label>
+            {% elif spec.kind == "boolean" %}
+              <label>{{ d.label }}
+                <select name="{{ spec.param }}">
+                  <option value="">Any</option>
+                  <option value="yes"{% if spec.value == "yes" %} selected{% endif %}>Yes</option>
+                  <option value="no"{% if spec.value == "no" %} selected{% endif %}>No</option>
+                </select>
+              </label>
+            {% else %}
+              <div class="range-filter" role="group" aria-labelledby="{{ spec.param }}-label">
+                <span id="{{ spec.param }}-label" class="range-label">{{ d.label }}{% if d.unit and d.unit not in d.label %} ({{ d.unit }}){% endif %}</span>
+                <div class="range-row">
+                  <label><span class="sr-only">{{ d.label }} from</span><input type="number" step="any" name="{{ spec.param }}_min" value="{{ spec.min_value }}" placeholder="from" inputmode="decimal"></label>
+                  <label><span class="sr-only">{{ d.label }} to</span><input type="number" step="any" name="{{ spec.param }}_max" value="{{ spec.max_value }}" placeholder="to" inputmode="decimal"></label>
+                </div>
+              </div>
+            {% endif %}
+          {% endwith %}
+        {% endfor %}
+      </div>
+    </fieldset>
+  {% elif not selected.type %}
+    <p class="help">Choose a craft type to filter by its own details too (e.g. dyes or loom type for textiles).</p>
+  {% endif %}
   <div class="filter-actions">
     <button class="btn btn-primary" type="submit">Apply filters</button>
     {% if any_filter %}<a href="{% url 'crafts:list' %}">Clear all</a>{% endif %}

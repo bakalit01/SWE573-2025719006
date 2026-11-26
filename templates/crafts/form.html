@@ -17,9 +17,10 @@
   <button type="button" class="link-button" data-draft-clear>Start over</button>
 </div>
 
-{% if form.non_field_errors or materials.non_form_errors %}
+{% if form.non_field_errors or materials.non_form_errors or names.non_form_errors %}
 <div class="notice notice-error" role="alert">
   {% for e in form.non_field_errors %}<p>{{ e }}</p>{% endfor %}
+  {% for e in names.non_form_errors %}<p>{{ e }}</p>{% endfor %}
   {% for e in materials.non_form_errors %}<p>{{ e }}</p>{% endfor %}
 </div>
 {% endif %}
@@ -47,6 +48,35 @@
     <section class="form-card" id="sec-basics">
       <h2><span class="step">1</span> Basics</h2>
       {% include "crafts/_field.html" with field=form.title %}
+      <h3 id="names">Names in other languages</h3>
+      <p class="help">Add the craft's name in the community's own language, and in any other language. Tick “Show this name first” for the name to appear above the title.</p>
+      {{ names.management_form }}
+      {% for e in names.non_form_errors %}<p class="error" role="alert">{{ e }}</p>{% endfor %}
+      <div class="rows" data-rows="nam">
+        {% for row in names %}
+          <div class="row-card" data-row>
+            <div class="field-row three">
+              {% include "crafts/_field.html" with field=row.name %}
+              {% include "crafts/_field.html" with field=row.language %}
+              {% include "crafts/_field.html" with field=row.lang_code %}
+            </div>
+            {% include "crafts/_field.html" with field=row.is_primary %}
+            <button type="button" class="link-button remove-row" data-remove-row aria-label="Remove this name">Remove</button>
+          </div>
+        {% endfor %}
+      </div>
+      <template data-row-template="nam">
+          <div class="row-card" data-row>
+            <div class="field-row three">
+              {% include "crafts/_field.html" with field=names.empty_form.name %}
+              {% include "crafts/_field.html" with field=names.empty_form.language %}
+              {% include "crafts/_field.html" with field=names.empty_form.lang_code %}
+            </div>
+            {% include "crafts/_field.html" with field=names.empty_form.is_primary %}
+            <button type="button" class="link-button remove-row" data-remove-row aria-label="Remove this name">Remove</button>
+          </div>
+      </template>
+      <button type="button" class="btn btn-ghost" data-add-row="nam">+ Add a name</button>
       <div class="field-row">
         <div>
           {% include "crafts/_field.html" with field=form.craft_type %}

@@ -25,6 +25,7 @@ from accounts.permissions import (
 from communities.models import Community
 
 from . import geo, review
+from .attribute_filters import attribute_filters
 from .forms import (
     OTHER,
     AttributesForm,
@@ -34,6 +35,7 @@ from .forms import (
     DetailRows,
     ImageRows,
     MaterialRows,
+    NameRows,
     StoryForm,
     TechniqueRows,
     craft_type_from,
@@ -42,14 +44,18 @@ from .forms import (
 from .models import (
     Craft,
     CraftMaterial,
+    CraftName,
     CraftTechnique,
     CraftType,
     Material,
     Media,
     Tag,
     Technique,
+    nfc,
 )
+from .search_support import contains_lookup
 from .story_views import visible_stories
+from .terms import find_term
 
 PAGE_SIZE = 24
 
@@ -58,7 +64,7 @@ def _listed(request):
     return (
         Craft.objects.listed_for(request.user)
         .select_related("craft_type", "community")
-        .prefetch_related("media")
+        .prefetch_related("media", "names")
     )
 
 
@@ -78,6 +84,8 @@ def home(request):
 
 SEARCH_FIELDS = [
     "title",
+    "names__name",
+    "names__language",
     "summary",
     "description",
     "process",
@@ -87,9 +95,13 @@ SEARCH_FIELDS = [
     "country",
     "community__name",
     "community__other_names",
+    "community__region__name",
+    "community__region__other_names",
     "craft_type__name",
     "craft_materials__material__name",
+    "craft_materials__material__other_names",
     "craft_techniques__technique__name",
+    "craft_techniques__technique__other_names",
     "tags__name",
 ]
 SORTS = {
@@ -103,13 +115,15 @@ SORTS = {
 
 
 def search(crafts, query):
-    """US-15: every word must appear somewhere (names, text, materials, techniques, community,
-    tags); results are ranked by full-text relevance of the craft's own text."""
+    """US-15: every word must appear somewhere (names in every language, text, materials,
+    techniques, community, tags); results are ranked by full-text relevance of the craft's own
+    text. Matching ignores capitals and accents (US-10): "dosemealti" finds "Döşemealtı"."""
     words = query.split()[:8]
+    lookup = contains_lookup()
     for word in words:
         match = Q()
         for field in SEARCH_FIELDS:
-            match |= Q(**{f"{field}__icontains": word})
+            match |= Q(**{f"{field}__{lookup}": word})
         crafts = crafts.filter(pk__in=Craft.objects.filter(match).values("pk"))
     vector = SearchVector("title", weight="A", config="simple") + SearchVector(
         "summary", "description", "process", "cultural_context", weight="B", config="simple"
@@ -121,7 +135,7 @@ def craft_list(request):
     visible = _listed(request)
     crafts = visible
     get = request.GET
-    query = " ".join(get.get("q", "").split())[:100]
+    query = " ".join(nfc(get.get("q", "")).split())[:100]
     craft_type = get.get("type", "")
     community = get.get("community", "")
     material = get.get("material", "")
@@ -142,8 +156,16 @@ def craft_list(request):
     )
     if query:
         crafts = search(crafts, query)
+    attribute_specs, attribute_chosen = [], {}
     if craft_type:
         crafts = crafts.filter(craft_type__slug=craft_type)
+        chosen_type = CraftType.objects.filter(slug=craft_type).first()
+        if chosen_type:  # US-19: its own fields become filters
+            attribute_specs, matching, attribute_chosen = attribute_filters(
+                chosen_type, crafts, get
+            )
+            if matching is not None:
+                crafts = crafts.filter(pk__in=matching)
     if community:
         crafts = crafts.filter(community__slug=community)
     if material:
@@ -164,7 +186,8 @@ def craft_list(request):
             crafts = crafts.filter(
                 Q(place_name__icontains=word)
                 | Q(country__icontains=word)
-                | Q(community__region__icontains=word)
+                | Q(community__region__name__icontains=word)
+                | Q(community__region__other_names__icontains=word)
             )
     if tag:
         crafts = crafts.filter(tags=tag)
@@ -211,7 +234,7 @@ def craft_list(request):
         "tag": tag.slug if tag else tag_query,
         "place": place,
     }
-    filters = {k: v for k, v in selected.items() if v}
+    filters = {k: v for k, v in selected.items() if v} | attribute_chosen
     if point:
         filters.update(lat=f"{point[0]:.5f}", lng=f"{point[1]:.5f}", km=km)
     if sort != default_sort:
@@ -261,6 +284,7 @@ def craft_list(request):
             if point
             else [],
             "sort": sort,
+            "attribute_specs": attribute_specs,
             "any_filter": bool(filters),
             "other_filters": any(
                 v for k, v in filters.items() if k not in ("q", "sort", "lat", "lng", "km")
@@ -276,7 +300,11 @@ def craft_detail(request, slug):
         Craft.objects.visible_to(request.user)
         .select_related("craft_type", "community", "created_by")
         .prefetch_related(
-            "media", "tags", "craft_materials__material", "craft_techniques__technique"
+            "media",
+            "tags",
+            "names",
+            "craft_materials__material",
+            "craft_techniques__technique",
         ),
         slug=slug,
     )
@@ -300,11 +328,37 @@ def craft_detail(request, slug):
             "open_reports": craft.reports.filter(status="open") if reviewer else [],
             "stories": visible_stories(craft, request.user),
             "story_form": StoryForm() if can_add_story(request.user) else None,
+            **_saved_state(request.user, craft),
         },
     )
 
 
 # ---------- Add / edit / delete (US-08, US-09, US-11, US-20) ----------
+
+
+def _saved_state(user, craft):
+    """Favourite and collection state for the "Save" card on the craft page (US-18)."""
+    if not user.is_authenticated:
+        return {}
+    collections = list(user.collections.all())
+    holding = set(craft.collections.filter(owner=user).values_list("pk", flat=True))
+    return {
+        "is_favourite": craft.favourited_by.filter(user=user).exists(),
+        "my_collections": [(c, c.pk in holding) for c in collections],
+    }
+
+
+def _name_initial(craft):
+    names = [
+        {
+            "name": n.name,
+            "language": n.language,
+            "lang_code": n.lang_code,
+            "is_primary": n.is_primary,
+        }
+        for n in (craft.names.all() if craft else [])
+    ]
+    return names or [{}]
 
 
 def _row_initial(craft):
@@ -332,6 +386,13 @@ def _craft_form_page(request, craft=None):
         data, craft_type=craft_type, values=craft.attributes if craft else None
     )
     material_initial, technique_initial = _row_initial(craft)
+    # A form rendered before names existed (e.g. open during a deploy) leaves names alone.
+    names_posted = data is not None and "nam-TOTAL_FORMS" in data
+    names = NameRows(
+        data if names_posted else None,
+        prefix="nam",
+        initial=None if names_posted else _name_initial(craft),
+    )
     materials = MaterialRows(data, prefix="mat", initial=None if data else material_initial)
     techniques = TechniqueRows(data, prefix="tec", initial=None if data else technique_initial)
     details = DetailRows(
@@ -346,6 +407,7 @@ def _craft_form_page(request, craft=None):
         materials.require_one = submit
         consent_form.require = submit
         parts = (form, attr_form, materials, techniques, details, images, consent_form)
+        parts += (names,) if names_posted else ()
         valid = all([f.is_valid() for f in parts])
         if valid:
             was_published = editing and craft.status == Craft.Status.PUBLISHED
@@ -362,6 +424,8 @@ def _craft_form_page(request, craft=None):
                 )
                 craft.save()
                 form.save_tags(craft)
+                if names_posted:
+                    _save_names(craft, names.filled_rows())
                 _save_rows(craft, materials.filled_rows(), techniques.filled_rows())
                 _save_images(request, craft, images)
                 if consent_form.has_data:
@@ -398,6 +462,7 @@ def _craft_form_page(request, craft=None):
         {
             "form": form,
             "attr_form": attr_form,
+            "names": names,
             "materials": materials,
             "techniques": techniques,
             "details": details,
@@ -417,10 +482,23 @@ def _craft_form_page(request, craft=None):
     )
 
 
+def _save_names(craft, rows):
+    craft.names.all().delete()
+    for order, row in enumerate(rows):
+        CraftName.objects.create(
+            craft=craft,
+            name=row["name"],
+            language=row["language"],
+            lang_code=row.get("lang_code", ""),
+            is_primary=row.get("is_primary", False),
+            order=order,
+        )
+
+
 def _save_rows(craft, material_rows, technique_rows):
     craft.craft_materials.all().delete()
     for order, row in enumerate(material_rows):
-        material = Material.objects.filter(name__iexact=row["name"]).first()
+        material = find_term(Material, row["name"])  # alternate spellings too (US-28)
         material = material or Material.objects.create(name=row["name"])
         CraftMaterial.objects.create(
             craft=craft,
@@ -431,7 +509,7 @@ def _save_rows(craft, material_rows, technique_rows):
         )
     craft.craft_techniques.all().delete()
     for order, row in enumerate(technique_rows):
-        technique = Technique.objects.filter(name__iexact=row["name"]).first()
+        technique = find_term(Technique, row["name"])
         technique = technique or Technique.objects.create(name=row["name"])
         CraftTechnique.objects.create(
             craft=craft, technique=technique, notes=row.get("notes", ""), order=order

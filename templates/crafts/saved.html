@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block head_title %}Saved crafts{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Saved crafts</h1>
+  <p class="muted">Your favourites and collections are private unless you choose to show a collection on your profile. If a craft is unpublished or you lose access to it, it disappears from here too.</p>
+</div>
+
+<section class="section" aria-labelledby="fav-heading">
+  <h2 id="fav-heading">Favourites ({{ favourites|length }})</h2>
+  {% if favourites %}
+    <ul class="grid">{% for craft in favourites %}{% include "crafts/_card.html" %}{% endfor %}</ul>
+  {% else %}
+    <p class="empty">No favourites yet. Open a craft and choose <strong>♡ Add to favourites</strong>.</p>
+  {% endif %}
+</section>
+
+<section class="section" aria-labelledby="col-heading">
+  <h2 id="col-heading">Collections ({{ collections|length }})</h2>
+  {% if collections %}
+    <ul class="collection-list">
+      {% for c in collections %}
+        <li><a href="{{ c.get_absolute_url }}"><strong>{{ c.name }}</strong></a>
+          <span class="muted">· {{ c.n_visible }} craft{{ c.n_visible|pluralize }} · {% if c.is_public %}shown on your profile{% else %}private{% endif %}</span>
+          {% if c.description %}<p class="help">{{ c.description }}</p>{% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="empty">No collections yet.</p>
+  {% endif %}
+  <form method="post" action="{% url 'collections:create' %}" class="side-card collection-form">
+    {% csrf_token %}
+    <h3>New collection</h3>
+    {% include "crafts/_field.html" with field=form.name %}
+    {% include "crafts/_field.html" with field=form.description %}
+    {% include "crafts/_field.html" with field=form.is_public %}
+    <button type="submit" class="btn btn-primary">Create collection</button>
+  </form>
+</section>
+{% endblock %}

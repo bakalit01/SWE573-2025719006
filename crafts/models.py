@@ -1,12 +1,21 @@
 import datetime
+import math
+import unicodedata
+from decimal import Decimal, InvalidOperation
 from urllib.parse import quote
 
 from django.conf import settings
 from django.contrib.postgres.indexes import GinIndex
 from django.core.exceptions import ValidationError
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import (
+    MaxValueValidator,
+    MinValueValidator,
+    RegexValidator,
+    URLValidator,
+)
 from django.db import models
 from django.db.models import Q
+from django.db.models.functions import Lower
 from django.templatetags.static import static
 from django.urls import reverse
 
@@ -17,6 +26,12 @@ class Term(models.Model):
     """Base for small controlled vocabularies (materials, techniques)."""
 
     name = models.CharField(max_length=120, unique=True)
+    other_names = models.CharField(
+        "Other names or spellings",
+        max_length=300,
+        blank=True,
+        help_text="Comma-separated; search finds the term by these too (US-28)",
+    )
     description = models.TextField(blank=True, help_text="Short general explanation (glossary)")
 
     class Meta:
@@ -106,6 +121,51 @@ class AttributeDefinition(models.Model):
     def __str__(self):
         return f"{self.craft_type}: {self.label}"
 
+    def crafts_with_values(self, key=None, craft_type_id=None):
+        """Crafts of this type that store a value under this field's key (US-13)."""
+        return Craft.objects.filter(
+            craft_type_id=craft_type_id or self.craft_type_id,
+            attributes__has_key=key or self.key,
+        )
+
+    def clean(self):
+        """Admins edit fields in the UI (US-13). Edits that would strand or break stored
+        values are refused: retire the field and add a new one instead."""
+        super().clean()
+        if not isinstance(self.options, list) or not all(
+            isinstance(o, str) and o.strip() for o in self.options
+        ):
+            raise ValidationError({"options": "Give the choices as a list of names."})
+        if not self.pk:
+            return
+        old = AttributeDefinition.objects.filter(pk=self.pk).first()
+        if old is None:
+            return
+        if old.key != self.key or old.craft_type_id != self.craft_type_id:
+            count = old.crafts_with_values().count()
+            if count:
+                raise ValidationError(
+                    {
+                        "key": f"{count} craft(s) store values under “{old.key}”. Keep the "
+                        "key, or retire this field and add a new one."
+                    }
+                )
+        if old.data_type != self.data_type:
+            misfits = [
+                (title, value)
+                for title, attributes in old.crafts_with_values().values_list("title", "attributes")
+                if not attribute_value_fits(self.data_type, (value := attributes.get(old.key)))
+            ]
+            if misfits:
+                title, value = misfits[0]
+                raise ValidationError(
+                    {
+                        "data_type": f"Can't change to “{self.get_data_type_display()}”: "
+                        f"{len(misfits)} craft(s) have values that don't fit, e.g. “{title}”: "
+                        f"{value!r}. Retire this field and add a new one instead."
+                    }
+                )
+
     def display_value(self, value):
         """Human-readable value for the detail page."""
         if value in (None, "", []):
@@ -115,6 +175,39 @@ class AttributeDefinition(models.Model):
         if isinstance(value, list):
             value = ", ".join(str(v) for v in value)
         return f"{value} {self.unit}".strip() if self.unit else str(value)
+
+
+def _is_scalar(value):
+    return isinstance(value, (str, int, float)) and not isinstance(value, bool)
+
+
+def attribute_value_fits(data_type, value):
+    """Would a stored value still be valid if its field had this data type? (US-13)"""
+    T = AttributeDefinition.DataType
+    if value in (None, "", []):
+        return True
+    if data_type in (T.TEXT, T.LONG_TEXT, T.CHOICE, T.DATE):
+        return _is_scalar(value)  # a choice outside the options counts as "Other"
+    if data_type == T.MULTI_CHOICE:
+        return _is_scalar(value) or (isinstance(value, list) and all(_is_scalar(v) for v in value))
+    if data_type == T.NUMBER:
+        if isinstance(value, bool):
+            return False
+        if isinstance(value, (int, float)):
+            return math.isfinite(value)
+        try:
+            return isinstance(value, str) and Decimal(value.strip()).is_finite()
+        except InvalidOperation:
+            return False
+    if data_type == T.BOOLEAN:
+        return isinstance(value, bool)
+    if data_type == T.URL:
+        try:
+            URLValidator(schemes=["http", "https"])(value)
+        except (ValidationError, TypeError):
+            return False
+        return True
+    return False
 
 
 class CraftQuerySet(models.QuerySet):
@@ -289,6 +382,16 @@ class Craft(models.Model):
     def cover(self):
         return self.media.first()
 
+    # ---- Names in other languages (US-10) ----
+    @property
+    def primary_name(self):
+        """The name marked as primary (usually in the community's own language), or None."""
+        return next((n for n in self.names.all() if n.is_primary), None)
+
+    @property
+    def other_names(self):
+        return [n for n in self.names.all() if not n.is_primary]
+
     def clean(self):
         super().clean()
         this_year = datetime.date.today().year
@@ -406,6 +509,55 @@ class CraftTechnique(models.Model):
 
     def __str__(self):
         return f"{self.craft}: {self.technique}"
+
+
+LANGUAGE_TAG = RegexValidator(
+    r"^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$",
+    "Use a language code such as 'tr', 'ain' or 'zh-Hant', or leave it empty.",
+)
+
+
+def nfc(text):
+    """One Unicode form for typed text, so 'í' typed two ways is stored and searched alike."""
+    return unicodedata.normalize("NFC", text or "")
+
+
+class CraftName(models.Model):
+    """The craft's name in one language (US-10). One name per craft may be primary: it is
+    shown first, above the title."""
+
+    craft = models.ForeignKey(Craft, on_delete=models.CASCADE, related_name="names")
+    name = models.CharField(max_length=200)
+    language = models.CharField(
+        max_length=80, help_text="In the language's own name if you like, e.g. 'Ainu (Aynu itak)'"
+    )
+    lang_code = models.CharField(
+        "Language code",
+        max_length=20,
+        blank=True,
+        validators=[LANGUAGE_TAG],
+        help_text="Optional, e.g. 'ain' or 'tr'; helps screen readers pronounce the name",
+    )
+    is_primary = models.BooleanField(
+        "Primary name", default=False, help_text="Shown first, above the title"
+    )
+    order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["-is_primary", "order", "id"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["craft"], condition=Q(is_primary=True), name="one_primary_name"
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.name} ({self.language})"
+
+    def save(self, *args, **kwargs):
+        self.name = nfc(self.name).strip()
+        self.language = nfc(self.language).strip()
+        super().save(*args, **kwargs)
 
 
 class Media(models.Model):
@@ -594,3 +746,64 @@ class CraftStory(models.Model):
 
     def __str__(self):
         return f"{self.author} on {self.craft}"
+
+
+# ---------- Favourites and collections (US-18) ----------
+
+
+class Favourite(models.Model):
+    """A craft a member saved with the ♡ button. Only that member sees their favourites."""
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="favourites"
+    )
+    craft = models.ForeignKey(Craft, on_delete=models.CASCADE, related_name="favourited_by")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at", "-id"]
+        constraints = [models.UniqueConstraint(fields=["user", "craft"], name="unique_favourite")]
+
+    def __str__(self):
+        return f"{self.user} ♡ {self.craft}"
+
+
+class Collection(models.Model):
+    """A member's named group of crafts. Private unless the owner shows it on their profile.
+
+    Whoever looks at a collection, owner included, sees only the crafts they may still see:
+    if a craft is unpublished or its visibility narrowed, it drops out of every collection
+    for those who lost access, and comes back if access returns.
+    """
+
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="collections"
+    )
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=300, blank=True)
+    is_public = models.BooleanField(
+        "Show on my profile",
+        default=False,
+        help_text="Private by default; if shown, people see only the crafts they may see",
+    )
+    crafts = models.ManyToManyField(Craft, blank=True, related_name="collections")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = [Lower("name"), "id"]
+        constraints = [
+            models.UniqueConstraint(Lower("name"), "owner", name="unique_collection_name")
+        ]
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("collections:detail", kwargs={"pk": self.pk})
+
+    def visible_crafts(self, viewer):
+        return Craft.objects.visible_to(viewer).filter(collections=self)
+
+    def can_view(self, viewer):
+        return self.is_public or (viewer.is_authenticated and viewer.pk == self.owner_id)

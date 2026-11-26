@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block head_title %}{{ collection.name }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <p class="eyebrow">{% if is_owner %}<a href="{% url 'collections:saved' %}">Saved crafts</a> · {% if collection.is_public %}Shown on your profile{% else %}Private collection{% endif %}{% else %}Collection by <a href="{{ collection.owner.get_absolute_url }}">{{ collection.owner.public_name }}</a>{% endif %}</p>
+  <h1>{{ collection.name }}</h1>
+  {% if collection.description %}<p class="lead">{{ collection.description }}</p>{% endif %}
+  <p class="muted">{{ crafts|length }} craft{{ crafts|length|pluralize }}{% if not is_owner %} you can see{% endif %}</p>
+</div>
+
+{% if crafts %}
+  <ul class="grid">
+    {% for craft in crafts %}
+      {% include "crafts/_card.html" %}
+    {% endfor %}
+  </ul>
+  {% if is_owner %}
+    <details class="collection-manage">
+      <summary>Remove crafts from this collection</summary>
+      <ul class="remove-list">
+        {% for craft in crafts %}
+          <li>
+            <form method="post" action="{% url 'collections:remove' collection.pk craft.slug %}" class="inline-form">
+              {% csrf_token %}
+              <span>{{ craft.title }}</span>
+              <button type="submit" class="link-button">Remove</button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+    </details>
+  {% endif %}
+{% else %}
+  <p class="empty">{% if is_owner %}This collection is empty. On a craft's page, use <strong>Add to a collection</strong>.{% else %}There are no crafts here that you can see.{% endif %}</p>
+{% endif %}
+
+{% if is_owner %}
+  <div class="collection-admin">
+    <form method="post" action="{% url 'collections:edit' collection.pk %}" class="side-card collection-form">
+      {% csrf_token %}
+      <h2>Edit collection</h2>
+      {% include "crafts/_field.html" with field=form.name %}
+      {% include "crafts/_field.html" with field=form.description %}
+      {% include "crafts/_field.html" with field=form.is_public %}
+      <button type="submit" class="btn btn-primary">Save changes</button>
+    </form>
+    <form method="post" action="{% url 'collections:delete' collection.pk %}" class="inline-form">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-ghost">Delete this collection</button>
+      <span class="help">The crafts themselves are not affected.</span>
+    </form>
+  </div>
+{% endif %}
+{% endblock %}
