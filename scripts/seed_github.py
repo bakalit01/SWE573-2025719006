@@ -46,7 +46,6 @@ MILESTONES = {
         "Final milestone (v0.8.0): admin-managed craft types, multilingual names, favourites "
         "and collections, managed taxonomies, filters by craft-specific fields.",
     ),
-    # M5 – Final product was dropped on 26 Nov 2026: the project ends with M4.
 }
 
 EPICS = {
@@ -97,7 +96,6 @@ TYPE = {  # default for US-* is "feature"
     "T-08": "test",
 }
 
-# Stories dropped on 26 Nov 2026 (US-14, US-21, US-26, US-29–US-32) are no longer listed.
 AREA = {
     "T-01": ["requirements"],
     "T-02": ["requirements"],

@@ -574,7 +574,6 @@ class Media(models.Model):
     alt_text = models.CharField(max_length=300)
     caption = models.CharField(max_length=300, blank=True)
     credit = models.CharField(max_length=200, blank=True)
-    is_sensitive = models.BooleanField(default=False)
     order = models.PositiveSmallIntegerField(default=0)
 
     class Meta:

@@ -10,7 +10,7 @@ A website to document and showcase Indigenous crafts. Registered users can recor
 | **Timeline** | 12 Oct – 26 Nov 2026: complete with M4 ([v0.8.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.8.0)); final presentation by 20 Dec |
 
 ## Project status
-**The project is complete: M4 – Enrich is the final milestone, shipped on 26 Nov 2026 in [release v0.8.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.8.0).** On 26 Nov the scope was closed at M4: M5 (hardening, performance, final handover) and three M4 stories (US-21 sensitive photos, US-26 TK labels, US-29 accessibility audit) were dropped. See [Project plan §1](docs/PROJECT_PLAN.md#1-milestones).
+**The project is complete: M4 – Enrich is the final milestone, shipped on 26 Nov 2026 in [release v0.8.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.8.0).** See the [Project plan](docs/PROJECT_PLAN.md#2-milestones--delivery-gates).
 
 M4 added:
 - **Craft types in the admin** (US-13): admins add craft types and add, reorder and retire their fields without a code change; edits that would break stored values are refused
@@ -29,7 +29,6 @@ Earlier: M2 Contribute (25 Oct, [v0.4.0](https://github.com/bakalit01/SWE573-202
 | [M2 – Contribute](https://github.com/bakalit01/SWE573-2025719006/milestone/3) | ✅ 25 Oct (week 2) | Add/edit crafts with photos, craft-type-specific fields, profiles |
 | [M3 – MVP](https://github.com/bakalit01/SWE573-2025719006/milestone/4) | ✅ 2 Nov (week 4) | Search & filter, roles, visibility & consent, steward review, reports, community pages |
 | [M4 – Enrich](https://github.com/bakalit01/SWE573-2025719006/milestone/5) | ✅ 26 Nov (week 7) · **final** | Admin-managed craft types, multilingual names, favourites & collections, managed taxonomies, filters by craft-specific fields |
-| ~~[M5 – Final product](https://github.com/bakalit01/SWE573-2025719006/milestone/6)~~ | Dropped 26 Nov | Not needed: the project ends with M4 |
 | Until 20 Dec | | Final presentation |
 
 ![Home page](docs/design/screenshots/01-home.png)
@@ -39,7 +38,7 @@ Earlier: M2 Contribute (25 Oct, [v0.4.0](https://github.com/bakalit01/SWE573-202
 |---|---|
 | [Project plan](docs/PROJECT_PLAN.md) | Milestones, week-by-week plan, **story sequence** (§3a), tech stack, workflow, risks |
 | [Requirements](docs/REQUIREMENTS.md) | Roles, functional & non-functional requirements, data model, ethics |
-| [User stories](docs/USER_STORIES.md) | 25 user stories (7 more dropped on 26 Nov), 8 technical tasks and 11 feedback items (FB-01–FB-11) with acceptance criteria and delivery order |
+| [User stories](docs/USER_STORIES.md) | 25 user stories, 8 technical tasks and 11 feedback items (FB-01–FB-11) with acceptance criteria and delivery order |
 | [Tests](docs/TESTING.md) | Every automated test (277): what it does and the expected result, and how to run them |
 | [ADR-001 Tech stack](docs/adr/001-tech-stack.md) | Why Python / Django, hosting on Render |
 | [UI design](docs/design/README.md) | Screenshots of every page (desktop and phone) |

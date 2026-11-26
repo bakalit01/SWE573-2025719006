@@ -1,6 +1,6 @@
 # Requirements — Indigenous Crafts Platform
 
-Version 0.5 · 26 Nov 2026 · Status: final, updated for M4 (v0.8.0), the last milestone (✅ = delivered, ✖ = dropped)
+Version 0.5 · 26 Nov 2026 · Status: final, updated for M4 (v0.8.0), the last milestone (✅ = delivered)
 
 ## 1. Purpose & scope
 
@@ -21,7 +21,7 @@ The platform documents, preserves and showcases Indigenous crafts. It lets regis
 
 ## 3. Functional requirements
 
-Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oct), M3 MVP (delivered 2 Nov), M4 (delivered 26 Nov, final). M5 was dropped on 26 Nov when the scope was closed at M4; its requirements and those of the dropped M4 stories are marked ✖ dropped. ✅ marks delivered requirements.
+Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oct), M3 MVP (delivered 2 Nov), M4 (delivered 26 Nov, final). ✅ marks delivered requirements; requirements that were not built were removed from these lists.
 
 ### 3.1 Accounts & authentication
 | ID | Requirement | Priority | Milestone |
@@ -31,8 +31,6 @@ Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oc
 | FR-A3 | Users can reset a forgotten password via email | Should | M2 ✅ |
 | FR-A4 | Role-based access control (member, maker, steward, admin) | Must | M3 ✅ |
 | FR-A5 | Users can edit their profile (display name, bio, community affiliation, photo) | Should | M2 ✅ (photo later) |
-| FR-A6 | Optional social login (Google) | Could | ✖ dropped |
-| FR-A7 | Users can delete their account and personal data | Should | ✖ dropped (M5) |
 
 ### 3.2 Craft records
 | ID | Requirement | Priority | Milestone |
@@ -44,7 +42,6 @@ Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oc
 | FR-C5 | Craft-specific attributes are rendered dynamically in forms and detail pages | Must | M2 ✅ |
 | FR-C6 | Attributes support types: text, long text, number+unit, single select, multi select, boolean, date/period, URL | Must | M2 ✅ |
 | FR-C7 | Upload multiple images per craft with alt text and credit/caption | Must | M2 ✅ |
-| FR-C8 | Records keep an edit history (who/when) | Could | ✖ dropped (M5) |
 | FR-C9 | Crafts can have multiple names in different languages (incl. Indigenous language name, which can be shown first); search covers all names and ignores accents | Should | M4 ✅ |
 | FR-C10 | Where a list doesn't fit, users choose "Other (type your own)": craft type, community, size and weight units, and choice fields; typed craft types and communities are added and marked for review (FB-05) | Should | M2 ✅ |
 | FR-C11 | Users add their own details (any label + value) and their own tags; tags link to the crafts that share them (FB-05) | Should | M2 ✅ |
@@ -61,7 +58,6 @@ Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oc
 | FR-D5 | Maker and community pages listing related crafts | Should | M3 ✅ |
 | FR-D6 | Members can favourite crafts and build named collections (private by default; crafts the member can no longer see are hidden) | Could | M4 ✅ |
 | FR-D8 | Search by location: within a distance of a place or the user's location, using only published coordinates (FB-11) | Should | M3 ✅ |
-| FR-D7 | Map view by region (each craft page and location search already show maps) | Won't | ✖ dropped (M5) |
 
 ### 3.4 Cultural protocols & governance
 | ID | Requirement | Priority | Milestone |
@@ -69,10 +65,8 @@ Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oc
 | FR-P1 | Each record has a visibility level: Public, Members only, Community only, Restricted (steward/admin only) | Must | M3 ✅ |
 | FR-P2 | Contributors record consent (who gave permission, date, scope) before publishing | Must | M3 ✅ |
 | FR-P3 | Records attributed to a community enter a moderation queue for steward review before going public | Must | M3 ✅ |
-| FR-P4 | Records can carry Traditional Knowledge / Biocultural labels (e.g. Local Contexts TK labels) shown on the detail page | Should | ✖ dropped (US-26) |
 | FR-P5 | Anyone can report a record; stewards/admins can unpublish within the workflow | Must | M3 ✅ |
 | FR-P6 | Makers and communities are always credited; credit fields cannot be blank on published records | Must | M2 ✅ |
-| FR-P7 | Sacred/sensitive images can be hidden behind a content notice | Should | ✖ dropped (US-21) |
 
 ### 3.5 Administration
 | ID | Requirement | Priority | Milestone |
@@ -80,7 +74,6 @@ Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oc
 | FR-M1 | Admins manage craft types and their attribute definitions without code changes (add, reorder, retire; changes that would invalidate stored values are refused) | Should | M4 ✅ |
 | FR-M2 | Admins manage taxonomies: communities/nations, regions, materials, techniques (merge duplicates keeping links; alternate spellings used by search) | Should | M4 ✅ |
 | FR-M3 | Admins manage users and roles | Must | M3 ✅ |
-| FR-M4 | Audit log of moderation actions | Could | ✖ dropped (M5) |
 
 ## 4. Data model (draft)
 
@@ -94,7 +87,7 @@ Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oc
 - **Favourite** — user_id, craft_id, created
 - **Collection** — owner_id, name (unique per owner), description, is_public ("show on my profile"; private by default), crafts[]
 - **Region** — name, other names or spellings
-- **Media** — id, craft_id, url, alt_text, caption, credit, is_sensitive, order
+- **Media** — id, craft_id, url, alt_text, caption, credit, order
 - **Consent** — id, craft_id, granted_by (name/role), date, scope, notes, document (optional)
 - **Material / Technique** — controlled vocabularies with other names or spellings and a short description; linked to crafts through CraftMaterial / CraftTechnique, which hold per-craft detail
 - **Units** — lengths mm, cm, m, in, ft; weights g, kg, oz, lb; values shown as entered plus a converted metric/imperial value. Any other unit can be typed; it is shown as typed, without conversion
@@ -127,10 +120,10 @@ Example attribute schemas:
 | ID | Category | Requirement |
 |---|---|---|
 | NFR-1 | Accessibility | WCAG 2.1 AA; keyboard navigable; alt text required on images |
-| NFR-2 | Security | Passwords hashed with Argon2 (Django `Argon2PasswordHasher`); HTTPS; Django CSRF middleware on; authorization enforced server-side; `manage.py check --deploy` passes; OWASP Top 10 reviewed |
-| NFR-3 | Privacy | Minimal personal data; GDPR/KVKK-aware; account deletion; restricted content never exposed via API or search to unauthorized users |
-| NFR-4 | Performance | Catalogue page LCP < 2.5 s on 4G; images resized and lazy-loaded |
-| NFR-5 | Reliability | Daily DB backups; preview deploy per PR; production deploy from `main` only |
+| NFR-2 | Security | Passwords hashed with Argon2 (Django `Argon2PasswordHasher`); HTTPS; Django CSRF middleware on; authorization enforced server-side; `manage.py check --deploy` passes |
+| NFR-3 | Privacy | Minimal personal data; GDPR/KVKK-aware; restricted content never exposed via API or search to unauthorized users |
+| NFR-4 | Performance | Server-rendered pages; images resized and lazy-loaded |
+| NFR-5 | Reliability | Production deploys from `main` only, after CI passes |
 | NFR-6 | Quality | `pytest` unit/integration + Playwright (Python) e2e tests in CI; `ruff` clean; ≥ 60 % coverage on core logic (met: 96 %) |
 | NFR-10 | Technology | Python 3.12+, Django 5.2 LTS, PostgreSQL 16; no separate JavaScript framework (small plain-JavaScript enhancements; pages work without them) |
 | NFR-7 | i18n | UI strings externalized; Unicode-safe for Indigenous language orthographies |

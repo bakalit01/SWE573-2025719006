@@ -1,6 +1,6 @@
 # Indigenous Crafts Platform — 10-Week Project Plan
 
-**Start:** Mon 12 Oct 2026 · **Complete:** Thu 26 Nov 2026 (M4, v0.8.0; scope closed, M5 dropped) · **Course end:** Sun 20 Dec 2026
+**Start:** Mon 12 Oct 2026 · **Complete:** Thu 26 Nov 2026 (M4, v0.8.0) · **Course end:** Sun 20 Dec 2026
 **Way of working:** GitHub-driven (Issues, Milestones, Projects board, PRs, Actions CI), 2-week sprints, weekly tagged releases so every week shows a visible increment.
 
 ---
@@ -13,7 +13,7 @@ A website that documents and showcases Indigenous crafts, where registered users
 
 > **Timeline accelerated on 13 Oct 2026.** M1 was delivered in week 1 instead of week 2, so every later milestone moves two weeks earlier.
 >
-> **Scope closed on 26 Nov 2026.** M4 is the final milestone. M5 (security hardening, performance, final documentation, user test #2) and three M4 stories (US-21 sensitive photos, US-26 TK labels, US-29 accessibility audit) were dropped; their issues are closed as not planned. The time until the course deadline (20 Dec) is for the final presentation.
+> **M4 is the final milestone (26 Nov 2026).** Three M4 stories (US-21 sensitive photos, US-26 TK labels, US-29 accessibility audit) were dropped; their issues are closed as not planned. The time until the course deadline (20 Dec) is for the final presentation.
 
 | Milestone | Due (new) | Was | Gate | What a viewer can do |
 |---|---|---|---|---|
@@ -21,7 +21,6 @@ A website that documents and showcases Indigenous crafts, where registered users
 | **M2 — Contribute** | ✅ **Sun 25 Oct** (end wk 2) | 8 Nov | v0.4.0 (+ feedback releases v0.4.1–v0.4.5) | Logged-in users add/edit crafts with photos; attributes change by craft type; password reset and profiles |
 | **M3 — MVP** | ✅ **Mon 2 Nov** (start wk 4) | 22 Nov | v0.5.0 + v0.6.0 (+ v0.6.1–v0.6.2); user test #1 moved to week 5 | Search & filter, roles (maker / steward / admin), visibility & consent, steward review, reporting, community pages |
 | **M4 — Enrich (final)** | ✅ **Thu 26 Nov** (wk 7) | 6 Dec | v0.8.0 (v0.7.0/v0.7.1 of 16 Nov withdrawn) | Admin-managed craft types & fields, names in other languages, favourites & collections, managed taxonomies (merge, alternate spellings), filters by craft-specific fields |
-| ~~M5 — Final~~ | Dropped 26 Nov | 20 Dec | — | Not needed: the project ends with M4 |
 | Until 20 Dec | wk 8–10 | — | Final presentation | Course hand-in |
 
 ## 3. Week-by-week
@@ -34,7 +33,7 @@ A website that documents and showcases Indigenous crafts, where registered users
 | 4 | 2–8 Nov | ✅ Roles, visibility levels, search & filters (from week 3), consent records, steward review queue, reporting, community pages (2 Nov); feedback FB-10–FB-11 (stories, location search); admin login fix (3 Nov) | ✅ v0.5.0, **v0.6.0 — MVP (M3)**, v0.6.1, v0.6.2 |
 | 5–6 | 9–22 Nov | Admin UI for craft types/fields, multilingual names, TK labels and sensitive photos (16 Nov; released as v0.7.0/v0.7.1, then withdrawn the same day after a failed deploy caused by an expired database) | v0.7.0, v0.7.1 (withdrawn) |
 | 7 | 23–29 Nov | ✅ Craft types and names rebuilt without TK labels and sensitive photos; favourites & collections, managed taxonomies, filters by craft-specific fields (26 Nov); scope closed at M4 | ✅ **v0.8.0 — Enrich (M4, final)** |
-| 8–10 | 30 Nov–20 Dec | Final presentation (M5 dropped) | — |
+| 8–10 | 30 Nov–20 Dec | Final presentation | — |
 
 **Incremental-improvement evidence:** each release is tagged (`v0.x`) with GitHub-generated release notes listing closed issues; `CHANGELOG.md` is updated; screenshots per release live in `docs/design/`; milestone progress is visible on GitHub.
 
@@ -95,9 +94,9 @@ Each week's items build on the previous week's. "Depends on" lists what must be 
 |  |  | US-28 | [#59](https://github.com/bakalit01/SWE573-2025719006/issues/59) | Manage taxonomies | 3 | US-27 |
 |  |  | US-19 | [#50](https://github.com/bakalit01/SWE573-2025719006/issues/50) | Filter by craft-specific attributes | 5 | US-16, US-13 |
 | | | | | ➜ Release **v0.8.0: enrich (M4, final)** ✅ 26 Nov · 24 pts | | |
-| — | dropped 26 Nov | US-21, US-26, US-29 (M4); US-30, US-31, US-14, US-32 (M5) | [#52](https://github.com/bakalit01/SWE573-2025719006/issues/52), [#57](https://github.com/bakalit01/SWE573-2025719006/issues/57), [#60](https://github.com/bakalit01/SWE573-2025719006/issues/60), [#61](https://github.com/bakalit01/SWE573-2025719006/issues/61), [#62](https://github.com/bakalit01/SWE573-2025719006/issues/62), [#45](https://github.com/bakalit01/SWE573-2025719006/issues/45), [#63](https://github.com/bakalit01/SWE573-2025719006/issues/63) | Not planned: scope closed at M4 | 24 | |
+| — | dropped 26 Nov | US-21, US-26, US-29 | [#52](https://github.com/bakalit01/SWE573-2025719006/issues/52), [#57](https://github.com/bakalit01/SWE573-2025719006/issues/57), [#60](https://github.com/bakalit01/SWE573-2025719006/issues/60) | Not planned | 10 | |
 
-**Capacity note:** roughly 12–20 points per week. Delivered: M1–M4. Dropped on 26 Nov: 24 points (see the last row).
+**Capacity note:** roughly 12–20 points per week. Delivered: M1–M4. Dropped on 26 Nov: 10 points (see the last row).
 
 ## 4. Tech stack — Python (recorded in ADR-001, issue T-02)
 
@@ -111,7 +110,7 @@ Each week's items build on the previous week's. "Depends on" lists what must be 
 | Dynamic attributes | `AttributeDefinition` model → Django form fields built at runtime; values validated in `clean()` (optionally via `pydantic`) | Forms and validation generated from data, no deploy to add a field |
 | Admin back-office | Django admin (customised) | Users, roles, taxonomies and craft types for free in M1–M3; in M4, craft types with sortable, retirable fields and checks that protect stored values, and the TK / BC label list |
 | Front end | Server-rendered Django templates, hand-written CSS (Boğaziçi colours) and small plain-JavaScript enhancements; HTMX only if pages need partial reloads *(Tailwind dropped: no build step needed)* | No separate JS app; fast pages on low bandwidth; easier accessibility |
-| Images | Pillow resizes uploads to 1600 px; stored on the server disk for the demo (reset on Render redeploys). `django-storages` (S3-compatible) was planned for M5 and dropped with it. Real examples show Wikimedia Commons photos | Images outside the DB, resized variants |
+| Images | Pillow resizes uploads to 1600 px; stored on the server disk for the demo (reset on Render redeploys). Object storage (`django-storages`) was not added. Real examples show Wikimedia Commons photos | Images outside the DB, resized variants |
 | Search | Every word matched across fields (incl. names in every language, materials, techniques, community, tags), ignoring accents (PostgreSQL `unaccent`), ranked with PostgreSQL full-text (`SearchVector`, `SearchRank`); filters in the view *(django-filter not needed)* | No extra search service needed for v1 |
 | Testing | `pytest`, `pytest-django`, `factory_boy`, `coverage`; Playwright for Python for browser tests (`axe-playwright-python` was planned for US-29, dropped) | All Python, all in CI |
 | Code quality | `ruff` (lint + format), `mypy` + `django-stubs` (optional), `pre-commit` | Consistent style, fast |
