@@ -83,8 +83,9 @@ class TestMerge:
         assert community.region == keep and keep.other_names == "Black sea coast"
 
     def test_tags(self):
-        keep, dupe = Tag.objects.create(name="dye", slug="dye"), Tag.objects.create(
-            name="dyes", slug="dyes"
+        keep, dupe = (
+            Tag.objects.create(name="dye", slug="dye"),
+            Tag.objects.create(name="dyes", slug="dyes"),
         )
         craft = CraftFactory()
         craft.tags.add(dupe)
@@ -110,9 +111,7 @@ class TestAdminMerge:
         assert f'value="{wool.pk}" checked' in html  # the one with most crafts is suggested
         done = admin_client.post(url, chosen | {"keep": wool.pk, "confirm": "yes"}, follow=True)
         assert "Merged “Wool yarn” into “Wool”" in done.content.decode()
-        assert list(Material.objects.values_list("name", "other_names")) == [
-            ("Wool", "Wool yarn")
-        ]
+        assert list(Material.objects.values_list("name", "other_names")) == [("Wool", "Wool yarn")]
 
     def test_needs_two(self, admin_client):
         wool = Material.objects.create(name="Wool")

@@ -177,6 +177,16 @@ def main():
         settle(page)
         page.locator("#stories").screenshot(path=OUT / "20-stories.png")
         print("saved 20-stories.png")
+        # US-18: favourite the kilim and put it in a new collection.
+        page.get_by_role("button", name="Add to favourites").click()
+        page.wait_for_load_state()
+        page.locator(".collections-edit summary").click()
+        page.fill("#new-collection", "Anatolian weaving")
+        page.locator(".collections-edit").get_by_role("button", name="Save").click()
+        page.wait_for_load_state()
+        page.goto(BASE + "/saved/")
+        settle(page)
+        shot(page, "22-saved-crafts.png")
         desk.close()
 
         # ---- Community steward (created by the workflow for the Yörük community) ----
@@ -220,6 +230,9 @@ def main():
         shot(page, "17-search.png")
         page.goto(BASE + "/crafts/?place=Antalya&lat=36.8969&lng=30.7133&km=250")
         shot(page, "21-location-search.png", maps=True)
+        page.goto(BASE + "/crafts/?type=textile")  # US-19: the textile fields as filters
+        page.locator(".filters").screenshot(path=OUT / "23-attribute-filters.png")
+        print("saved 23-attribute-filters.png")
         page.goto(BASE + "/communities/yoruk/")
         shot(page, "18-community-page.png")
         page.goto(BASE + EXAMPLE + "report/")

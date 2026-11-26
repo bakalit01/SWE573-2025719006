@@ -380,3 +380,11 @@ a.tag-chip:hover { background: var(--bu-blue); color: var(--ink); }
 .remove-list { list-style: none; padding: 0; display: grid; gap: 6px; }
 .remove-list form { display: flex; gap: 10px; align-items: center; }
 .collection-admin { margin-top: 28px; display: grid; gap: 12px; }
+
+/* Filters for a craft type's own fields (US-19) */
+.attr-filters { border: 1px dashed var(--line); border-radius: var(--radius); padding: 10px 14px 14px; margin: 0; }
+.attr-filters legend { font-weight: 800; padding: 0 6px; }
+.range-filter { display: grid; gap: 4px; }
+.range-label { font-weight: 700; font-size: .9rem; }
+.range-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.range-row input { width: 100%; min-width: 0; }

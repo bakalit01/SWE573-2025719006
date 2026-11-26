@@ -25,6 +25,7 @@ from accounts.permissions import (
 from communities.models import Community
 
 from . import geo, review
+from .attribute_filters import attribute_filters
 from .forms import (
     OTHER,
     AttributesForm,
@@ -155,8 +156,16 @@ def craft_list(request):
     )
     if query:
         crafts = search(crafts, query)
+    attribute_specs, attribute_chosen = [], {}
     if craft_type:
         crafts = crafts.filter(craft_type__slug=craft_type)
+        chosen_type = CraftType.objects.filter(slug=craft_type).first()
+        if chosen_type:  # US-19: its own fields become filters
+            attribute_specs, matching, attribute_chosen = attribute_filters(
+                chosen_type, crafts, get
+            )
+            if matching is not None:
+                crafts = crafts.filter(pk__in=matching)
     if community:
         crafts = crafts.filter(community__slug=community)
     if material:
@@ -225,7 +234,7 @@ def craft_list(request):
         "tag": tag.slug if tag else tag_query,
         "place": place,
     }
-    filters = {k: v for k, v in selected.items() if v}
+    filters = {k: v for k, v in selected.items() if v} | attribute_chosen
     if point:
         filters.update(lat=f"{point[0]:.5f}", lng=f"{point[1]:.5f}", km=km)
     if sort != default_sort:
@@ -275,6 +284,7 @@ def craft_list(request):
             if point
             else [],
             "sort": sort,
+            "attribute_specs": attribute_specs,
             "any_filter": bool(filters),
             "other_filters": any(
                 v for k, v in filters.items() if k not in ("q", "sort", "lat", "lng", "km")
