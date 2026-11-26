@@ -1,10 +1,10 @@
 # Tests
 
-The project has **256 automated tests** (207 test functions; some run several times with different inputs). They cover **96 %** of the code. GitHub runs all of them on every pull request and every push to `main` (see [CI](#how-the-tests-run)).
+The project has **277 automated tests** (227 test functions; some run several times with different inputs). They cover **96 %** of the code. GitHub runs all of them on every pull request and every push to `main` (see [CI](#how-the-tests-run)).
 
 | Kind | What it means | Where |
 |---|---|---|
-| **Unit** | Checks one small piece on its own, e.g. a unit conversion or a distance | `test_units_profiles.py` (units), `test_location.py::test_distance`, `test_flexibility.py::test_parse_tags`, `test_craft_types_admin.py::test_attribute_value_fits`, `test_models.py` |
+| **Unit** | Checks one small piece on its own, e.g. a unit conversion or a distance | `test_units_profiles.py` (units), `test_location.py::test_distance`, `test_flexibility.py::test_parse_tags`, `test_craft_types_admin.py::test_attribute_value_fits`, `test_taxonomies.py::test_split_and_join_names`, `test_models.py` |
 | **Integration** | Loads pages and submits forms through Django against a real PostgreSQL database, then checks the response and what was saved | Most files |
 | **End-to-end** | Opens the site in a real browser (Chromium, through Playwright) and clicks through it like a user | `test_e2e.py` |
 
@@ -13,9 +13,7 @@ The project has **256 automated tests** (207 test functions; some run several ti
 - `member_client`: a browser session already logged in as that user
 - `setup`: a craft type ("Carving", with *tools* and *finish* fields) and a community whose steward is that user
 
-The TK / BC label list is loaded by a migration; the browser tests empty the database, so `test_labels.py` reloads it before each test.
-
-The add-a-craft tests send one complete form (`payload()` in `test_contribute.py`, also used by the label, sensitive-photo and name tests): a carved meerschaum pipe from Eskişehir with two materials, one technique, size, weight, location and a consent record. Each test changes only the part it is checking.
+The add-a-craft tests send one complete form (`payload()` in `test_contribute.py`, also used by the name and taxonomy tests): a carved meerschaum pipe from Eskişehir with two materials, one technique, size, weight, location and a consent record. Each test changes only the part it is checking.
 
 ## How the tests run
 
@@ -255,7 +253,7 @@ Feedback FB-10.
 | `test_seed_is_idempotent_and_labelled` | Loads the fictional samples twice | Same counts the second time; at least 10 crafts over 4 types, all marked as samples |
 | `test_every_sample_credits_maker_and_has_alt_text` | Loads the samples | Every craft credits a maker; every photo has alt text |
 
-## 14. Real examples · `test_reference.py` (10)
+## 14. Real examples · `test_reference.py` (9)
 The 22 real crafts from public sources (`crafts/reference_data.py`).
 
 | Test | What it does | Expected result |
@@ -263,7 +261,6 @@ The 22 real crafts from public sources (`crafts/reference_data.py`).
 | `test_seed_creates_published_public_reference_crafts` | Loads the real examples | All 22 published and public, each with maker credit, https sources, photos with alt text and a Commons file, materials, techniques and its tags |
 | `test_seed_is_idempotent` | Loads them twice | No duplicates |
 | `test_seed_adds_names_in_other_languages_and_keeps_stewards_choices` | Loads the real examples; a steward then picks another name to show first; loads them again | 하회탈 (ko) shown first for the Hahoe masks; guksi, kuksa, kåsa for the Sámi cup; after reloading, the steward's choice is kept and nothing is duplicated |
-| `test_seed_restores_missing_labels_but_keeps_edits` | Rewords the TK A label and deletes TK O, then loads the real examples | TK A keeps the new wording; TK O is back |
 | `test_replace_samples_keeps_user_records` | Loads samples, a user adds a craft to a sample community, then real examples replace the samples | Samples gone; the user's craft and the community it uses kept |
 | `test_commons_urls_are_encoded` | Builds the photo address for "Kuksa, Inari åå.jpg" | Commas, spaces and å encoded correctly |
 | `test_craft_page_shows_sources_and_credits` | Opens the Pomo basket by Jenny Hughes | Maker, Wikipedia source, Commons photo, photo credit and licence link shown; no remark badges |
@@ -291,36 +288,7 @@ Story US-13 Manage craft types and attributes. An admin edits a "Pottery" type w
 | `test_attribute_value_fits` (×16) | Checks stored values against each data type, e.g. 30 as text, "30.5" and "tall" as a number, a list as text, "yes" as yes/no, a link | Fits or not, as expected (a choice outside the options counts as "Other") |
 | `test_start_up_seed_keeps_admin_changes` | Renames a starter type, relabels, reorders and retires a starter field, then runs the start-up seed again | All the admin's changes are kept |
 
-## 16. Traditional Knowledge labels · `test_labels.py` (12)
-Story US-26 Traditional Knowledge labels. A craft by a maker in a community with its own steward, a steward of another community, and an admin.
-
-| Test | What it does | Expected result |
-|---|---|---|
-| `test_managed_list_has_the_local_contexts_labels` | Reads the label list | 20 TK and 10 BC labels, each with an explanation and a link, in three categories |
-| `test_sets_labels_from_the_craft_page` | The steward saves TK Attribution on the craft page; a visitor opens it | Label saved; the visitor sees the "TK A" icon, name, explanation and "About TK Attribution (Local Contexts)", but no form |
-| `test_removes_all_labels` | The steward saves with nothing ticked | No labels left |
-| `test_sees_the_labels_form_with_current_labels_ticked` | The steward opens a craft that has TK Seasonal | Form shows it ticked, under "Change labels" |
-| `test_sets_labels_in_the_craft_form` | The steward publishes a new craft with two labels ticked | Both saved |
-| `test_others_cannot_set_labels` (×3) | The maker, a steward of another community and a visitor try to save labels | "Not found" (or log in for the visitor); no labels; no form on the page |
-| `test_admin_can_set_labels` | An admin saves TK Seasonal | Saved |
-| `test_maker_form_has_no_labels_field` | A maker opens Add a craft | No labels field |
-| `test_labels_for_another_community_are_not_applied` | A steward of another community adds a craft to this community with a label ticked | Craft saved without labels, with the message "The TK / BC labels were not changed" |
-| `test_retired_label_is_not_offered_but_kept_where_used` | Retires TK Seasonal, which a craft has | Not offered for new crafts; still shown on, and offered for, the craft that has it |
-
-## 17. Culturally sensitive photos · `test_sensitive_photos.py` (7)
-Story US-21 Sensitive image notice.
-
-| Test | What it does | Expected result |
-|---|---|---|
-| `test_upload_marked_sensitive_is_blurred_with_the_standard_notice` | Publishes a craft with a photo ticked as culturally sensitive | Photo marked; the page shows it blurred with the standard notice and "Show photo"; its alt text is held back until then |
-| `test_record_has_its_own_notice` | Sets the craft's own notice | That notice replaces the standard one |
-| `test_notice_is_set_in_the_form` | Types a notice with extra spaces in the form | Saved and shown trimmed |
-| `test_other_photos_are_not_blurred` | Opens a craft with an ordinary photo | Not blurred; alt text present; notice hidden |
-| `test_thumbnails_and_credits_do_not_describe_the_sensitive_photo` | Opens a craft with a sensitive and an ordinary photo | Sensitive thumbnail blurred, labelled "(culturally sensitive)"; the credits say "Culturally sensitive photo" instead of its description; the ordinary photo is described as usual |
-| `test_cards_show_a_blurred_cover` | Opens the catalogue | The card's cover is blurred, with "Sensitive photo" and no description |
-| `test_editor_marks_and_unmarks_an_existing_photo` | Ticks, then unticks "Culturally sensitive" on an existing photo when editing | Marked, shown ticked in the form, then unmarked |
-
-## 18. Names in other languages · `test_names.py` (13)
+## 16. Names in other languages · `test_names.py` (13)
 Story US-10 Names in multiple languages.
 
 | Test | What it does | Expected result |
@@ -339,7 +307,63 @@ Story US-10 Names in multiple languages.
 | `test_query_typed_in_another_unicode_form_matches` | Searches "Döşemealtı" typed with separate accent characters | Döşemealtı carpet |
 | `test_cards_show_the_primary_name_first` | Opens the catalogue | The card heading shows "attus" (`lang="ain"`) above "Ainu attus robe" |
 
-## 19. In a real browser · `test_e2e.py` (5)
+## 17. Favourites and collections · `test_collections.py` (12)
+Story US-18 Favourites and collections. A signed-in member and a published public craft "Coiled basket".
+
+| Test | What it does | Expected result |
+|---|---|---|
+| `test_favourite_and_unfavourite` | Presses ♡ on the craft page, checks Saved, presses it again | Saved: the button shows "In your favourites" (`aria-pressed="true"`) and Saved lists it; then removed |
+| `test_visitors_see_no_save_card_and_cannot_save` | A visitor opens the craft and tries to favourite it | No Save card; sent to log in; nothing saved |
+| `test_add_to_a_new_and_an_existing_collection` | Types a new collection name with extra spaces, then ticks only another collection | "Natural dyes" created, private, holding the craft; then the craft moves to "Gifts" only |
+| `test_collection_names_are_unique_per_member` | Creates "gifts" when "Gifts" exists; another member uses "Gifts" | Refused for the same member ("You already have a collection called…"); allowed for another |
+| `test_private_collection_is_hidden_from_others` | Another member and a visitor open a private collection; the owner's profile | "Not found" for both; not on the profile |
+| `test_public_collection_is_shown_on_the_profile` | Ticks "Show on my profile"; a visitor opens the profile and the collection | Listed with "1 craft"; the visitor sees the craft but no edit form |
+| `test_losing_access_hides_the_craft_from_collections_and_favourites` | Unpublishes a craft that is in a collection and in favourites, then publishes it again | Hidden from the collection, favourites and the count (0), but kept; back once published |
+| `test_members_only_craft_is_hidden_from_visitors_in_a_public_collection` | A visitor opens a public collection holding a members-only craft | No crafts shown |
+| `test_cannot_save_a_craft_you_cannot_see` | Tries to favourite, or collect, someone else's draft | "Not found"; no collection created |
+| `test_owner_edits_removes_and_deletes` | Renames and shows a collection, removes the craft, deletes the collection | Each change saved; the craft itself still exists |
+| `test_others_cannot_change_a_collection` | Another member tries to edit, delete or remove from a public collection | "Not found" each time; unchanged |
+| `test_back_link_only_to_this_site` | Sends `next=https://evil.example/` and `next=/saved/` with ♡ | Back to the craft page for the outside address; `/saved/` is allowed |
+
+## 18. Managing taxonomies · `test_taxonomies.py` (19)
+Story US-28 Manage taxonomies.
+
+| Test | What it does | Expected result |
+|---|---|---|
+| `test_split_and_join_names` | Splits " Navajo ,  Navaho,, "; joins names with repeats | "Navajo", "Navaho"; repeats (any capitals) and excluded names dropped |
+| `test_find_term_by_name_or_alternate_spelling` | Looks up "wool", "YÜN" and "sheep" for Wool (also: Yün, sheep's wool) | Wool, Wool, nothing (whole names only) |
+| `test_materials_keep_every_craft_link_and_fill_details` | Merges "wool yarn" into Wool; one craft uses both, another only the duplicate | 2 links moved; one row on the first craft, with the duplicate's origin; the second craft now uses Wool with its notes; "wool yarn, yün" become other spellings |
+| `test_techniques` | Merges "Twined weaving" into Twining | The craft now uses Twining |
+| `test_communities_move_crafts_members_and_stewards` | Merges "Navajo" into Diné | Its craft, member and steward move to Diné; "Navajo, Navaho" become other names; the empty description is filled |
+| `test_regions` | Merges "Black sea coast" into Black Sea | The community moves; the old name becomes another spelling |
+| `test_tags` | Merges "dyes" into "dye" | The craft has "dye" |
+| `test_confirm_page_then_merge` | In the admin, selects two materials → Merge → confirms keeping Wool | A page to choose which to keep (the one with most crafts suggested), then "Merged “Wool yarn” into “Wool”" |
+| `test_needs_two` | Runs Merge with one material selected | "Select two or more to merge." |
+| `test_other_lists_offer_merging` (×4) | Opens the admin lists of regions, communities, techniques and tags | Each offers "Merge selected" |
+| `test_material_and_technique` | Searches "yün" and "ghiordes" | Finds the rug through the material's and technique's other spellings |
+| `test_region_and_community` | Searches "toros" and "yuruk"; searches near the place "taurus" | Finds the rug by the region's and community's other spellings, and by region name |
+| `test_typed_material_matches_alternate_spelling` | Types material "yün" when Wool (also: Yün) exists | The craft uses Wool; no new material |
+| `test_typed_community_matches_alternate_spelling` | Types community "navajo" under "Other" | The craft goes to Diné |
+| `test_steward_region_matches_or_creates` | A steward types region "karadeniz", then "Pontic Alps" | First matches Black Sea; then adds Pontic Alps, shown in the form |
+| `test_start_up_seed_keeps_a_region_set_by_an_admin` | An admin changes the Yörük region, then the start-up seed runs again | The admin's region is kept |
+
+## 19. Filters for a craft type's own fields · `test_attribute_filters.py` (10)
+Story US-19 Filter by craft-specific attributes. Three textiles with *Dyes* (choice), *Fibres* (multiple choice), *Handmade* (yes/no), *Knot density* (number) and *Loom notes* (text), and a bowl of another type.
+
+| Test | What it does | Expected result |
+|---|---|---|
+| `test_filters_appear_only_once_a_single_type_is_chosen` | Opens the catalogue without, then with, Textile chosen | No extra filters; then "Textile details" with Dyes, Fibres, Handmade and Knot density (per dm²), not Loom notes |
+| `test_choice_options_include_values_typed_under_other` | Reads the Dyes options | Natural, Synthetic, and "Walnut husk" typed under "Other" |
+| `test_choice_filter` | Filters Dyes "natural" and "Walnut husk" | Kilim; Felt |
+| `test_multi_choice_filter_matches_lists_and_single_values` | Filters Fibres "Wool" | Felt (stored as one value) and Kilim (stored as a list) |
+| `test_yes_no_filter` | Filters Handmade yes, no and "maybe" | Kilim; Towel; all three (ignored) |
+| `test_number_range_includes_numbers_stored_as_text` | Knot density 10–20, from 25, and to "abc" | Towel (stored as "12"); Kilim; all three (ignored) |
+| `test_filters_combine_and_stay_in_page_links` | Filters Fibres Wool and Handmade yes | Kilim; the filter stays in the page links |
+| `test_attribute_params_are_ignored_without_a_type` | Sends a Dyes filter without a craft type | All crafts |
+| `test_retired_fields_are_not_offered` | Retires Dyes | Not offered |
+| `test_only_visible_crafts_feed_the_options` | Makes the Felt members-only and opens the catalogue as a visitor | "Walnut husk" isn't offered |
+
+## 20. In a real browser · `test_e2e.py` (5)
 Run in Chromium with Playwright against a running copy of the site loaded with the sample crafts.
 
 | Test | What it does | Expected result |
@@ -348,4 +372,4 @@ Run in Chromium with Playwright against a running copy of the site loaded with t
 | `test_no_horizontal_scroll_on_phone` | Opens 5 pages (home, catalogue, location search, a craft, login) at phone width (360 px) | No page scrolls sideways (this was a bug) |
 | `test_add_craft_in_browser` | Signs up, opens Add a craft, picks Basketry, waits for its fields, fills in materials (adding a second row with "+ Add material"), size and consent, publishes | Craft page shows the maker, "Spruce root, Bark", 2001, "30 cm" with "11.8 in", the material origin and an Edit link |
 | `test_other_choices_and_tags_in_browser` | Checks the "Other" box is hidden at first, then types a new craft type and community, a tag, a typed unit "karış" and an own detail, and publishes | The note about new types appears; the page shows "Felt making", "Yörük", "3 karış", "Madder root" and a "#nomadic" tag link |
-| `test_sensitive_photo_and_primary_name_in_browser` | Marks a sample craft's photo sensitive with its own notice and adds a primary name, then opens it and clicks "Show photo" | Heading starts with the primary name; the photo is blurred (CSS filter), with the notice and no alt text; after the click it is sharp, has its alt text, and the button is gone |
+| `test_primary_name_in_browser` | Adds a primary name to a sample craft and opens it | The heading starts with the primary name, marked with its language code, followed by the title |

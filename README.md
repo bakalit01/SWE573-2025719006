@@ -7,30 +7,30 @@ A website to document and showcase Indigenous crafts. Registered users can recor
 | **Author** | Ege Güçlü Asan |
 | **Course** | SWE 573, 2026/2027-1, Suzan Üsküdarlı |
 | **Stack** | Python 3.12 · Django 5.2 LTS · PostgreSQL 16 · server-rendered templates · pytest + Playwright ([ADR-001](docs/adr/001-tech-stack.md)) |
-| **Timeline** | 12 Oct – 6 Dec 2026 (feature-complete), buffer to 20 Dec |
+| **Timeline** | 12 Oct – 26 Nov 2026: complete with M4 ([v0.8.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.8.0)); final presentation by 20 Dec |
 
 ## Project status
-**M4 – Enrich is under way: the first four stories shipped on 16 Nov 2026 in [release v0.7.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.7.0).**
+**The project is complete: M4 – Enrich is the final milestone, shipped on 26 Nov 2026 in [release v0.8.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.8.0).** On 26 Nov the scope was closed at M4: M5 (hardening, performance, final handover) and three M4 stories (US-21 sensitive photos, US-26 TK labels, US-29 accessibility audit) were dropped. See [Project plan §1](docs/PROJECT_PLAN.md#1-milestones).
 
+M4 added:
 - **Craft types in the admin** (US-13): admins add craft types and add, reorder and retire their fields without a code change; edits that would break stored values are refused
-- **Traditional Knowledge labels** (US-26): the community's stewards attach Local Contexts TK / BC labels; every viewer sees each label's icon, name and explanation
-- **Culturally sensitive photos** (US-21): blurred behind the record's own notice until the viewer chooses **Show photo**
 - **Names in other languages** (US-10): the community's own name is shown first; search finds every name and ignores accents ("dosemealti" finds Döşemealtı)
-
-Still to come in M4 (week 6, due 22 Nov): favourites and collections (US-18), managing taxonomies (US-28), the accessibility pass (US-29) and, as a stretch, filtering by craft-specific attributes (US-19).
+- **Favourites and collections** (US-18): members save crafts with ♡ and group them into named collections, private unless shown on their profile; crafts they can no longer see drop out
+- **Managed taxonomies** (US-28): regions become managed terms; materials, techniques, communities and regions have alternate spellings that search uses; admins merge duplicates without losing links to crafts
+- **Filters for a craft type's own fields** (US-19): choose a craft type and filter by its choice, yes/no and number fields, e.g. dye source or threads per cm
 
 **M3 – MVP delivered on 2 Nov 2026, six days early: [release v0.6.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.6.0).** Roles (member, maker, community steward, admin) with logged role changes; four visibility levels enforced on every page, in search and on photo URLs; search, filters and sorting; consent records and steward review; report or request removal on every craft page; community pages; members' stories and search by location ([v0.6.1](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.6.1)).
 
-Earlier: M2 Contribute (25 Oct, [v0.4.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.4.0)) and feedback rounds FB-01–FB-11 (22 real examples, Boğaziçi colours, "Other" choices and tags, stories, location search); admin login on the live site fixed ([v0.6.2](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.6.2)).
+Earlier: M2 Contribute (25 Oct, [v0.4.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.4.0)) and feedback rounds FB-01–FB-11 (22 real examples, Boğaziçi colours, "Other" choices and tags, stories, location search); admin login on the live site fixed ([v0.6.2](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.6.2)). A first M4 release on 16 Nov ([v0.7.0](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.7.0), [v0.7.1](https://github.com/bakalit01/SWE573-2025719006/releases/tag/v0.7.1)) was withdrawn the same day and replaced by v0.8.0.
 
 | Milestone | Due | Deliverable |
 |---|---|---|
 | [M1 – Running demo](https://github.com/bakalit01/SWE573-2025719006/milestone/2) | ✅ 13 Oct (week 1) | Browse sample crafts, craft page, sign up / log in / log out |
 | [M2 – Contribute](https://github.com/bakalit01/SWE573-2025719006/milestone/3) | ✅ 25 Oct (week 2) | Add/edit crafts with photos, craft-type-specific fields, profiles |
 | [M3 – MVP](https://github.com/bakalit01/SWE573-2025719006/milestone/4) | ✅ 2 Nov (week 4) | Search & filter, roles, visibility & consent, steward review, reports, community pages |
-| [M4 – Enrich](https://github.com/bakalit01/SWE573-2025719006/milestone/5) | 22 Nov (week 6) · part 1 ✅ 16 Nov | Admin-managed attributes ✅, TK labels ✅, sensitive photos ✅, multilingual names ✅, collections, taxonomies, accessibility |
-| [M5 – Final product](https://github.com/bakalit01/SWE573-2025719006/milestone/6) | 6 Dec (week 8) | Hardened, documented, tested v1.0 |
-| Buffer | 7–20 Dec (weeks 9–10) | Feedback, polish, stretch goals, final presentation |
+| [M4 – Enrich](https://github.com/bakalit01/SWE573-2025719006/milestone/5) | ✅ 26 Nov (week 7) · **final** | Admin-managed craft types, multilingual names, favourites & collections, managed taxonomies, filters by craft-specific fields |
+| ~~[M5 – Final product](https://github.com/bakalit01/SWE573-2025719006/milestone/6)~~ | Dropped 26 Nov | Not needed: the project ends with M4 |
+| Until 20 Dec | | Final presentation |
 
 ![Home page](docs/design/screenshots/01-home.png)
 
@@ -39,8 +39,8 @@ Earlier: M2 Contribute (25 Oct, [v0.4.0](https://github.com/bakalit01/SWE573-202
 |---|---|
 | [Project plan](docs/PROJECT_PLAN.md) | Milestones, week-by-week plan, **story sequence** (§3a), tech stack, workflow, risks |
 | [Requirements](docs/REQUIREMENTS.md) | Roles, functional & non-functional requirements, data model, ethics |
-| [User stories](docs/USER_STORIES.md) | 32 user stories, 8 technical tasks and 11 feedback items (FB-01–FB-11) with acceptance criteria and delivery order |
-| [Tests](docs/TESTING.md) | Every automated test (256): what it does and the expected result, and how to run them |
+| [User stories](docs/USER_STORIES.md) | 25 user stories (7 more dropped on 26 Nov), 8 technical tasks and 11 feedback items (FB-01–FB-11) with acceptance criteria and delivery order |
+| [Tests](docs/TESTING.md) | Every automated test (277): what it does and the expected result, and how to run them |
 | [ADR-001 Tech stack](docs/adr/001-tech-stack.md) | Why Python / Django, hosting on Render |
 | [UI design](docs/design/README.md) | Screenshots of every page (desktop and phone) |
 | [Changelog](CHANGELOG.md) | What changed in each release |
@@ -84,15 +84,17 @@ uv run python manage.py runserver             # → http://localhost:8000
 10. Open a **community page** from any craft; as its steward, **Edit page** to change the description. Try **Search** on Browse crafts, e.g. "wool", with a country filter, and **Near a place**, e.g. "Antalya" within 250 km.
 11. As any signed-in member, open a craft and **Share your story** at the bottom of the page.
 
-### Demo script (M4 part 1, v0.7.0)
+### Demo script (M4, v0.8.0)
 12. Open the **Hahoe masks**: the Korean name 하회탈 is shown above the title, and "At a glance" lists every name with its language. Search Browse crafts for **dosemealti** or **kara cadir**: accents don't matter.
-13. In **Add a craft**, add a name under **Names in other languages** and tick "Show this name first". Add a photo and tick **Culturally sensitive**; optionally write your own notice under Photos. On the craft page the photo is blurred behind the notice (also on its catalogue card) until you click **Show photo**.
-14. As the community's **steward**, open the craft: under **Traditional Knowledge labels**, tick e.g. *TK A: Attribution* and *TK CV: Community Voice* and **Save labels**. Log out: visitors see each label's icon, name and explanation, but can't change them.
-15. In `/admin/` → **Craft types**, open *Textile*: add a field (choices one per line), move fields with ↑ ↓, untick **Active** to retire one, and save. The add form changes at once. Try changing *Fibre* to **Number**: it is refused, because crafts store text in it.
+13. In **Add a craft**, add a name under **Names in other languages** and tick "Show this name first"; it appears above the title on the craft page and on its card.
+14. Signed in, open any craft and use the **Save** card: **♡ Add to favourites**, then **Add to a collection** → type a new collection name → **Save**. Open **Saved** in the menu: favourites and collections (private by default; tick "Show on my profile" to share one).
+15. On Browse crafts, choose **Craft type: Textile**: a "Textile details" box adds filters for its own fields, e.g. *Dye source* or *Threads per cm* from–to.
+16. In `/admin/` → **Craft types**, open *Textile*: add a field (choices one per line), move fields with ↑ ↓, untick **Active** to retire one, and save. The add form changes at once. Try changing a field that stores text to **Number**: it is refused.
+17. In `/admin/` → **Materials** (or Techniques, Communities, Regions, Tags): add *Other names or spellings* (search finds them), or tick two duplicates → action **Merge selected into one** → choose which to keep → **Merge**. Every craft link moves to the one kept.
 
-**Adding crafts as an admin:** `/admin/` → Crafts. Names, materials, techniques and photos are inline rows; labels and the sensitive-photo notice are under "Cultural protocols". Craft types and communities that users typed under "Other" can be listed with the **added by** filter in the admin.
+**Adding crafts as an admin:** `/admin/` → Crafts. Names, materials, techniques and photos are inline rows. Craft types and communities that users typed under "Other" can be listed with the **added by** filter in the admin.
 
-**Craft types and labels belong to the admins:** edit them in `/admin/` (Craft types, TK / BC labels). The start-up seed only adds missing types, fields and labels, so your edits survive redeploys. Retire a field or label (untick Active) rather than deleting it: retired items keep their data, while a deleted starter label is added again on the next start-up.
+**Craft types, regions and terms belong to the admins:** edit them in `/admin/`. The start-up seed only adds missing craft types and fields, and sets a real example community's region only if it has none, so your edits survive redeploys. Retire a field (untick Active) rather than deleting it: retired fields keep their data.
 
 ## Working on the backlog
 - Branch per issue (`us-11-dynamic-fields`), PR with `Closes #n`, CI must pass. Feedback items get an `FB-xx` issue with the `feedback` label.

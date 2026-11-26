@@ -30,6 +30,6 @@ The project must be Python-based and deliver a running demo by week 2, an MVP by
 ## Update · 26 Oct 2026 (after M2)
 What was built differs from the plan above in a few places. The decision (Python / Django / PostgreSQL) stands.
 - **Front end:** plain CSS and small plain-JavaScript enhancements were enough for M1–M2 (dynamic craft-type fields, map picker, repeatable rows). HTMX was not needed; it can still be added if later pages need partial reloads.
-- **Images:** Pillow resizes uploads; files are stored on the server disk, which Render resets on each deploy. `django-storages` with S3-compatible storage is still planned before v1.0. The real examples show photos from Wikimedia Commons.
+- **Images:** Pillow resizes uploads; files are stored on the server disk, which Render resets on each deploy. `django-storages` with S3-compatible storage was planned for M5, which was dropped on 26 Nov 2026 (the project ends with M4), so uploads still reset on redeploys. The real examples show photos from Wikimedia Commons.
 - **Permissions:** author-or-staff checks in views so far; `rules` (django-rules) arrives with roles in M3 (US-05).
 - **Hosting:** Render, deployed from `main` by the Blueprint in `render.yaml`.

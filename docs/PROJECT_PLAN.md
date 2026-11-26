@@ -1,6 +1,6 @@
 # Indigenous Crafts Platform — 10-Week Project Plan
 
-**Start:** Mon 12 Oct 2026 · **Feature-complete:** Sun 6 Dec 2026 · **Course end:** Sun 20 Dec 2026
+**Start:** Mon 12 Oct 2026 · **Complete:** Thu 26 Nov 2026 (M4, v0.8.0; scope closed, M5 dropped) · **Course end:** Sun 20 Dec 2026
 **Way of working:** GitHub-driven (Issues, Milestones, Projects board, PRs, Actions CI), 2-week sprints, weekly tagged releases so every week shows a visible increment.
 
 ---
@@ -11,16 +11,18 @@ A website that documents and showcases Indigenous crafts, where registered users
 
 ## 2. Milestones & delivery gates
 
-> **Timeline accelerated on 13 Oct 2026.** M1 was delivered in week 1 instead of week 2, so every later milestone moves two weeks earlier. Weeks 9–10 are now buffer for user feedback, polish and stretch goals before the course deadline (20 Dec).
+> **Timeline accelerated on 13 Oct 2026.** M1 was delivered in week 1 instead of week 2, so every later milestone moves two weeks earlier.
+>
+> **Scope closed on 26 Nov 2026.** M4 is the final milestone. M5 (security hardening, performance, final documentation, user test #2) and three M4 stories (US-21 sensitive photos, US-26 TK labels, US-29 accessibility audit) were dropped; their issues are closed as not planned. The time until the course deadline (20 Dec) is for the final presentation.
 
 | Milestone | Due (new) | Was | Gate | What a viewer can do |
 |---|---|---|---|---|
 | **M1 — Running Demo** | ✅ **Tue 13 Oct** (wk 1) | 25 Oct | v0.2.0, CI green, deployable | Browse sample crafts, open a craft page, sign up / log in / log out |
 | **M2 — Contribute** | ✅ **Sun 25 Oct** (end wk 2) | 8 Nov | v0.4.0 (+ feedback releases v0.4.1–v0.4.5) | Logged-in users add/edit crafts with photos; attributes change by craft type; password reset and profiles |
 | **M3 — MVP** | ✅ **Mon 2 Nov** (start wk 4) | 22 Nov | v0.5.0 + v0.6.0 (+ v0.6.1–v0.6.2); user test #1 moved to week 5 | Search & filter, roles (maker / steward / admin), visibility & consent, steward review, reporting, community pages |
-| **M4 — Enrich** | Sun 22 Nov (end wk 6) | 6 Dec | v0.7.0 ✅ 16 Nov (part 1), v0.8 | Admin-managed craft types & attributes ✅, Traditional Knowledge labels ✅, sensitive-photo notices ✅, multilingual names ✅, favourites/collections, taxonomies, accessibility pass |
-| **M5 — Final** | Sun 6 Dec (end wk 8) | 20 Dec | v1.0, user test #2 | Hardened, documented, tested, performant production release |
-| Buffer | 7–20 Dec (wk 9–10) | — | Final presentation | Feedback fixes, stretch goals, course hand-in |
+| **M4 — Enrich (final)** | ✅ **Thu 26 Nov** (wk 7) | 6 Dec | v0.8.0 (v0.7.0/v0.7.1 of 16 Nov withdrawn) | Admin-managed craft types & fields, names in other languages, favourites & collections, managed taxonomies (merge, alternate spellings), filters by craft-specific fields |
+| ~~M5 — Final~~ | Dropped 26 Nov | 20 Dec | — | Not needed: the project ends with M4 |
+| Until 20 Dec | wk 8–10 | — | Final presentation | Course hand-in |
 
 ## 3. Week-by-week
 
@@ -30,11 +32,9 @@ A website that documents and showcases Indigenous crafts, where registered users
 | 2 | 19–25 Oct | ✅ Image upload, edit/delete, password reset, profiles, feedback FB-01–FB-04 | ✅ **v0.4.0 (M2)**, v0.4.1 map fix |
 | 3 | 26 Oct–1 Nov | ✅ Feedback FB-05–FB-09 (real examples, Boğaziçi colours, "Other" + tags, crafts from Türkiye and East Asia; 26 Oct) | ✅ v0.4.2–v0.4.9 |
 | 4 | 2–8 Nov | ✅ Roles, visibility levels, search & filters (from week 3), consent records, steward review queue, reporting, community pages (2 Nov); feedback FB-10–FB-11 (stories, location search); admin login fix (3 Nov) | ✅ v0.5.0, **v0.6.0 — MVP (M3)**, v0.6.1, v0.6.2 |
-| 5 | 9–15 Nov | User test #1 (moved from week 4); ✅ admin UI for craft types/attributes, TK labels, sensitive images, plus multilingual names from week 6 (16 Nov) | ✅ v0.7.0 |
-| 6 | 16–22 Nov | ~~Multilingual names~~ (✅ in v0.7.0), favourites/collections, taxonomies, accessibility audit | **v0.8 (M4)** |
-| 7 | 23–29 Nov | Security review, performance, user test #2 | v0.9 (RC) |
-| 8 | 30 Nov–6 Dec | Documentation, final fixes | **v1.0 — Final (M5)** |
-| 9–10 | 7–20 Dec | Buffer: feedback, polish, stretch goals, final presentation | v1.x |
+| 5–6 | 9–22 Nov | Admin UI for craft types/fields, multilingual names, TK labels and sensitive photos (16 Nov; released as v0.7.0/v0.7.1, then withdrawn the same day after a failed deploy caused by an expired database) | v0.7.0, v0.7.1 (withdrawn) |
+| 7 | 23–29 Nov | ✅ Craft types and names rebuilt without TK labels and sensitive photos; favourites & collections, managed taxonomies, filters by craft-specific fields (26 Nov); scope closed at M4 | ✅ **v0.8.0 — Enrich (M4, final)** |
+| 8–10 | 30 Nov–20 Dec | Final presentation (M5 dropped) | — |
 
 **Incremental-improvement evidence:** each release is tagged (`v0.x`) with GitHub-generated release notes listing closed issues; `CHANGELOG.md` is updated; screenshots per release live in `docs/design/`; milestone progress is visible on GitHub.
 
@@ -89,25 +89,15 @@ Each week's items build on the previous week's. "Depends on" lists what must be 
 |  |  | US-17 | [#48](https://github.com/bakalit01/SWE573-2025719006/issues/48) | Community pages | 3 | US-06 |
 |  |  | US-27 | [#58](https://github.com/bakalit01/SWE573-2025719006/issues/58) | Manage users (largely Django admin) | 3 | US-05 |
 | | | | | ➜ Release **v0.6.0: MVP (M3)** ✅ 2 Nov · 17 pts (user test #1 moved to week 5) | | |
-| 5 | 9–15 Nov | US-13 | [#44](https://github.com/bakalit01/SWE573-2025719006/issues/44) | Manage craft types and attributes | 8 | US-11 |
-|  |  | US-26 | [#57](https://github.com/bakalit01/SWE573-2025719006/issues/57) | Traditional Knowledge labels | 3 | US-24 |
-|  |  | US-21 | [#52](https://github.com/bakalit01/SWE573-2025719006/issues/52) | Sensitive image notice | 2 | US-20 |
-| | | | | ➜ Release **v0.7.0** ✅ 16 Nov, with US-10 from week 6 · 16 pts | | |
-| 6 | 16–22 Nov | US-10 | [#41](https://github.com/bakalit01/SWE573-2025719006/issues/41) | Names in multiple languages (✅ shipped in v0.7.0) | 3 | US-08 |
+| 5–7 | 16–26 Nov | US-13 | [#44](https://github.com/bakalit01/SWE573-2025719006/issues/44) | Manage craft types and attributes | 8 | US-11 |
+|  |  | US-10 | [#41](https://github.com/bakalit01/SWE573-2025719006/issues/41) | Names in multiple languages | 3 | US-08 |
 |  |  | US-18 | [#49](https://github.com/bakalit01/SWE573-2025719006/issues/49) | Favourites and collections | 5 | US-22 |
 |  |  | US-28 | [#59](https://github.com/bakalit01/SWE573-2025719006/issues/59) | Manage taxonomies | 3 | US-27 |
-|  |  | US-29 | [#60](https://github.com/bakalit01/SWE573-2025719006/issues/60) | Accessible site | 5 | — |
-|  |  | US-19 | [#50](https://github.com/bakalit01/SWE573-2025719006/issues/50) | Filter by craft-specific attributes *(stretch)* | 5 | US-16, US-13 |
-| | | | | ➜ Release **v0.8: enrich (M4)** · 21 pts | | |
-| 7 | 23–29 Nov | US-30 | [#61](https://github.com/bakalit01/SWE573-2025719006/issues/61) | Security and privacy hardening | 5 | — |
-|  |  | US-31 | [#62](https://github.com/bakalit01/SWE573-2025719006/issues/62) | Fast on mobile | 3 | — |
-|  |  | US-14 | [#45](https://github.com/bakalit01/SWE573-2025719006/issues/45) | Suggest a new craft type or attribute *(stretch)* | 3 | US-13 |
-| | | | | ➜ Release v0.9: release candidate + user test #2 · 11 pts | | |
-| 8 | 30 Nov–6 Dec | US-32 | [#63](https://github.com/bakalit01/SWE573-2025719006/issues/63) | Final documentation and handover | 3 | all |
-| | | | | ➜ Release **v1.0: final product (M5)** · 3 pts | | |
-| 9–10 | 7–20 Dec | | | Buffer: user feedback, polish, stretch goals (map view, edit history), final presentation | | |
+|  |  | US-19 | [#50](https://github.com/bakalit01/SWE573-2025719006/issues/50) | Filter by craft-specific attributes | 5 | US-16, US-13 |
+| | | | | ➜ Release **v0.8.0: enrich (M4, final)** ✅ 26 Nov · 24 pts | | |
+| — | dropped 26 Nov | US-21, US-26, US-29 (M4); US-30, US-31, US-14, US-32 (M5) | [#52](https://github.com/bakalit01/SWE573-2025719006/issues/52), [#57](https://github.com/bakalit01/SWE573-2025719006/issues/57), [#60](https://github.com/bakalit01/SWE573-2025719006/issues/60), [#61](https://github.com/bakalit01/SWE573-2025719006/issues/61), [#62](https://github.com/bakalit01/SWE573-2025719006/issues/62), [#45](https://github.com/bakalit01/SWE573-2025719006/issues/45), [#63](https://github.com/bakalit01/SWE573-2025719006/issues/63) | Not planned: scope closed at M4 | 24 | |
 
-**Capacity note:** roughly 12–20 points per week. Items marked *stretch* are dropped first if time runs short; weeks 9–10 absorb any slip.
+**Capacity note:** roughly 12–20 points per week. Delivered: M1–M4. Dropped on 26 Nov: 24 points (see the last row).
 
 ## 4. Tech stack — Python (recorded in ADR-001, issue T-02)
 
@@ -121,14 +111,14 @@ Each week's items build on the previous week's. "Depends on" lists what must be 
 | Dynamic attributes | `AttributeDefinition` model → Django form fields built at runtime; values validated in `clean()` (optionally via `pydantic`) | Forms and validation generated from data, no deploy to add a field |
 | Admin back-office | Django admin (customised) | Users, roles, taxonomies and craft types for free in M1–M3; in M4, craft types with sortable, retirable fields and checks that protect stored values, and the TK / BC label list |
 | Front end | Server-rendered Django templates, hand-written CSS (Boğaziçi colours) and small plain-JavaScript enhancements; HTMX only if pages need partial reloads *(Tailwind dropped: no build step needed)* | No separate JS app; fast pages on low bandwidth; easier accessibility |
-| Images | Pillow resizes uploads to 1600 px; stored on the server disk for the demo (reset on Render redeploys). `django-storages` (S3-compatible) planned before v1.0. Real examples show Wikimedia Commons photos | Images outside the DB, resized variants |
+| Images | Pillow resizes uploads to 1600 px; stored on the server disk for the demo (reset on Render redeploys). `django-storages` (S3-compatible) was planned for M5 and dropped with it. Real examples show Wikimedia Commons photos | Images outside the DB, resized variants |
 | Search | Every word matched across fields (incl. names in every language, materials, techniques, community, tags), ignoring accents (PostgreSQL `unaccent`), ranked with PostgreSQL full-text (`SearchVector`, `SearchRank`); filters in the view *(django-filter not needed)* | No extra search service needed for v1 |
-| Testing | `pytest`, `pytest-django`, `factory_boy`, `coverage`; Playwright for Python + `axe-playwright-python` for e2e/a11y | All Python, all in CI |
+| Testing | `pytest`, `pytest-django`, `factory_boy`, `coverage`; Playwright for Python for browser tests (`axe-playwright-python` was planned for US-29, dropped) | All Python, all in CI |
 | Code quality | `ruff` (lint + format), `mypy` + `django-stubs` (optional), `pre-commit` | Consistent style, fast |
 | Dependencies | `uv` with `pyproject.toml` (or pip + `requirements.txt`) | Reproducible installs |
 | Serving | `gunicorn` + `whitenoise` for static files, Docker image | Works on any host |
 | Hosting / CI | GitHub Actions CI; Render Blueprint (`render.yaml`) deploys `main` | Every PR is demoable |
-| Optional API | Django REST Framework or Django Ninja (M4+, only if a mobile app or external partners need it) | Not required for v1 |
+| Optional API | Django REST Framework or Django Ninja (only if a mobile app or external partners need it) | Not built |
 
 **Why Django suits this project:** the built-in admin, auth and forms remove most of the effort behind the week-2 demo, so the team can spend its time on the parts specific to this project: flexible attributes, visibility rules and community review.
 
@@ -146,7 +136,7 @@ Each week's items build on the previous week's. "Depends on" lists what must be 
 | Risk | Mitigation |
 |---|---|
 | Craft attributes are too diverse for a fixed schema | Core fields + per-craft-type attribute schemas stored as data (see REQUIREMENTS §4) |
-| Cultural harm from publishing restricted/sacred knowledge | Visibility levels, consent records, steward review, TK labels, takedown process |
+| Cultural harm from publishing restricted/sacred knowledge | Visibility levels, consent records, steward review, takedown process (TK labels were dropped with US-26) |
 | Scope creep before MVP | MoSCoW priorities; only `Must` items in M1–M3 |
 | Lack of real community input | Involve at least one community advisor; use placeholder/clearly-marked sample data until consent is obtained |
 | Image storage costs / sizes | Client-side resize, size limits, CDN |
