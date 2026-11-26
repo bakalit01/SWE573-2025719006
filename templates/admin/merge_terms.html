@@ -1,0 +1,23 @@
+{% extends "admin/base_site.html" %}
+{% load admin_urls %}
+{% block breadcrumbs %}<div class="breadcrumbs"><a href="{% url 'admin:index' %}">Home</a> › <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a> › Merge</div>{% endblock %}
+{% block content %}
+<p>Choose the one to keep. Every link from the others moves to it, their names are added to its other names or spellings (so search still finds them), and the others are deleted.</p>
+<form method="post">
+  {% csrf_token %}
+  <fieldset class="module aligned">
+    {% for item, count in items %}
+      <div class="form-row">
+        <label><input type="radio" name="keep" value="{{ item.pk }}"{% if item.pk == suggested %} checked{% endif %}> <strong>{{ item }}</strong> · {{ count }} {{ uses }}{% if item.other_names %} · also: {{ item.other_names }}{% endif %}</label>
+      </div>
+      <input type="hidden" name="{{ action_checkbox_name }}" value="{{ item.pk }}">
+    {% endfor %}
+  </fieldset>
+  <input type="hidden" name="action" value="merge_selected">
+  <input type="hidden" name="confirm" value="yes">
+  <div class="submit-row">
+    <input type="submit" value="Merge">
+    <a href="{% url opts|admin_urlname:'changelist' %}" class="button cancel-link">Cancel</a>
+  </div>
+</form>
+{% endblock %}

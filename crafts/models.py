@@ -26,6 +26,12 @@ class Term(models.Model):
     """Base for small controlled vocabularies (materials, techniques)."""
 
     name = models.CharField(max_length=120, unique=True)
+    other_names = models.CharField(
+        "Other names or spellings",
+        max_length=300,
+        blank=True,
+        help_text="Comma-separated; search finds the term by these too (US-28)",
+    )
     description = models.TextField(blank=True, help_text="Short general explanation (glossary)")
 
     class Meta:

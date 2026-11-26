@@ -2,6 +2,7 @@ from django import forms
 from django.contrib import admin
 from django.db.models import Count
 
+from .admin_merge import merge_selected
 from .models import (
     AttributeDefinition,
     Collection,
@@ -200,8 +201,19 @@ class CraftAdmin(admin.ModelAdmin):
 
 @admin.register(Material, Technique)
 class TermAdmin(admin.ModelAdmin):
-    list_display = ["name", "description"]
-    search_fields = ["name"]
+    """Materials and techniques (US-28): alternate spellings, and merging duplicates."""
+
+    list_display = ["name", "other_names", "craft_count"]
+    search_fields = ["name", "other_names", "description"]
+    fields = ["name", "other_names", "description"]
+    actions = [merge_selected]
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(n_crafts=Count("crafts", distinct=True))
+
+    @admin.display(description="Crafts", ordering="n_crafts")
+    def craft_count(self, obj):
+        return obj.n_crafts
 
 
 @admin.register(Collection)
@@ -227,6 +239,7 @@ class TagAdmin(admin.ModelAdmin):
     list_display = ["name", "slug"]
     search_fields = ["name"]
     prepopulated_fields = {"slug": ("name",)}
+    actions = [merge_selected]
 
 
 @admin.register(Consent)

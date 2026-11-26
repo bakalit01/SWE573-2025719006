@@ -3,7 +3,7 @@ from decimal import Decimal
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from communities.models import Community
+from communities.models import Community, Region
 from crafts import reference_data as data
 from crafts.forms import unique_slug_for
 from crafts.models import (
@@ -50,13 +50,11 @@ class Command(BaseCommand):
         for slug, name, region in data.COMMUNITIES:
             communities[slug], _ = Community.objects.update_or_create(
                 slug=slug,
-                defaults={
-                    "name": name,
-                    "region": region,
-                    "description": COMMUNITY_NOTE,
-                    "is_sample": False,
-                },
+                defaults={"name": name, "description": COMMUNITY_NOTE, "is_sample": False},
             )
+            if communities[slug].region_id is None:  # admins manage regions after that (US-28)
+                communities[slug].region = Region.for_name(region)
+                communities[slug].save(update_fields=["region"])
 
         for record in data.CRAFTS:
             place_name, country, lat, lng = record["place"]

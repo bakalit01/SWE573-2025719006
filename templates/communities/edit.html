@@ -11,6 +11,7 @@
   {% csrf_token %}
   {% include "crafts/_field.html" with field=form.other_names %}
   {% include "crafts/_field.html" with field=form.region %}
+  <datalist id="region-options">{% for r in form.region_options %}<option value="{{ r }}">{% endfor %}</datalist>
   {% include "crafts/_field.html" with field=form.description %}
   <div class="form-actions">
     <button type="submit" class="btn btn-primary">Save</button>

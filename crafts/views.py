@@ -54,6 +54,7 @@ from .models import (
 )
 from .search_support import contains_lookup
 from .story_views import visible_stories
+from .terms import find_term
 
 PAGE_SIZE = 24
 
@@ -93,9 +94,13 @@ SEARCH_FIELDS = [
     "country",
     "community__name",
     "community__other_names",
+    "community__region__name",
+    "community__region__other_names",
     "craft_type__name",
     "craft_materials__material__name",
+    "craft_materials__material__other_names",
     "craft_techniques__technique__name",
+    "craft_techniques__technique__other_names",
     "tags__name",
 ]
 SORTS = {
@@ -172,7 +177,8 @@ def craft_list(request):
             crafts = crafts.filter(
                 Q(place_name__icontains=word)
                 | Q(country__icontains=word)
-                | Q(community__region__icontains=word)
+                | Q(community__region__name__icontains=word)
+                | Q(community__region__other_names__icontains=word)
             )
     if tag:
         crafts = crafts.filter(tags=tag)
@@ -482,7 +488,7 @@ def _save_names(craft, rows):
 def _save_rows(craft, material_rows, technique_rows):
     craft.craft_materials.all().delete()
     for order, row in enumerate(material_rows):
-        material = Material.objects.filter(name__iexact=row["name"]).first()
+        material = find_term(Material, row["name"])  # alternate spellings too (US-28)
         material = material or Material.objects.create(name=row["name"])
         CraftMaterial.objects.create(
             craft=craft,
@@ -493,7 +499,7 @@ def _save_rows(craft, material_rows, technique_rows):
         )
     craft.craft_techniques.all().delete()
     for order, row in enumerate(technique_rows):
-        technique = Technique.objects.filter(name__iexact=row["name"]).first()
+        technique = find_term(Technique, row["name"])
         technique = technique or Technique.objects.create(name=row["name"])
         CraftTechnique.objects.create(
             craft=craft, technique=technique, notes=row.get("notes", ""), order=order

@@ -4,7 +4,7 @@ from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from communities.models import Community
+from communities.models import Community, Region
 from crafts import sample_data as data
 from crafts.models import (
     Craft,
@@ -50,7 +50,7 @@ class Command(BaseCommand):
                 slug=c["slug"],
                 defaults={
                     "name": c["name"],
-                    "region": c["region"],
+                    "region": Region.for_name(c["region"]),
                     "description": c["description"],
                     "is_sample": True,
                 },
@@ -88,7 +88,7 @@ class Command(BaseCommand):
                     "year_made": extra.get("year_made"),
                     "year_is_approximate": extra.get("year_is_approximate", False),
                     "period": "",
-                    "place_name": place_name or community.region,
+                    "place_name": place_name or (community.region.name if community.region else ""),
                     "country": country,
                     "latitude": _dec(lat),
                     "longitude": _dec(lng),

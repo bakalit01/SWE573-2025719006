@@ -24,6 +24,7 @@ from .models import (
     Tag,
     nfc,
 )
+from .terms import find_term
 
 OTHER = "__other__"  # "Other (type your own)" in craft type, community and choice fields
 MAX_TAGS = 15
@@ -215,7 +216,12 @@ class CraftForm(forms.ModelForm):
         if not typed:
             self.add_error(f"{name}_other", "Type the name, or choose one from the list.")
             return None
-        return model.objects.filter(name__iexact=typed).first() or typed[:max_length]
+        existing = (
+            find_term(model, typed)  # e.g. "Navajo" picks Diné (US-28)
+            if model is Community
+            else model.objects.filter(name__iexact=typed).first()
+        )
+        return existing or typed[:max_length]
 
     def clean(self):
         data = super().clean()

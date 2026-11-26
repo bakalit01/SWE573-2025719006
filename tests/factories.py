@@ -2,7 +2,7 @@ import factory
 from django.utils.text import slugify
 
 from accounts.models import User
-from communities.models import Community
+from communities.models import Community, Region
 from crafts.models import AttributeDefinition, Craft, CraftType
 
 
@@ -27,7 +27,13 @@ class CommunityFactory(factory.django.DjangoModelFactory):
 
     name = factory.Sequence(lambda n: f"Community {n}")
     slug = factory.LazyAttribute(lambda o: slugify(o.name))
-    region = "Somewhere"
+    region = "Somewhere"  # a name; turned into a Region (US-28)
+
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        if isinstance(kwargs.get("region"), str):
+            kwargs["region"] = Region.for_name(kwargs["region"])
+        return super()._create(model_class, *args, **kwargs)
 
 
 class CraftTypeFactory(factory.django.DjangoModelFactory):
