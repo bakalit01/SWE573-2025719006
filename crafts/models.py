@@ -170,42 +170,6 @@ class AttributeDefinition(models.Model):
         return f"{value} {self.unit}".strip() if self.unit else str(value)
 
 
-class TKLabel(models.Model):
-    """A Traditional Knowledge or Biocultural label from a managed list (US-26).
-
-    The names and codes follow the Local Contexts labels (localcontexts.org). The
-    explanations are our own summaries; a community can reword them in the admin.
-    """
-
-    class Kind(models.TextChoices):
-        TK = "tk", "Traditional Knowledge (TK) label"
-        BC = "bc", "Biocultural (BC) label"
-
-    class Category(models.TextChoices):
-        PROVENANCE = "provenance", "Provenance: who it comes from"
-        PROTOCOL = "protocol", "Protocol: how to treat it"
-        PERMISSION = "permission", "Permission: how it may be used"
-
-    name = models.CharField(max_length=120, unique=True)
-    code = models.CharField(max_length=8, help_text="Short code shown in the icon, e.g. 'TK A'")
-    kind = models.CharField(max_length=2, choices=Kind.choices, default=Kind.TK)
-    category = models.CharField(max_length=12, choices=Category.choices)
-    description = models.TextField(help_text="Explanation shown to everyone on the craft page")
-    url = models.URLField("More information", blank=True)
-    order = models.PositiveSmallIntegerField(default=0)
-    is_active = models.BooleanField(
-        default=True, help_text="Retired labels can't be chosen; crafts that have them keep them"
-    )
-
-    class Meta:
-        ordering = ["kind", "order", "name"]
-        verbose_name = "TK / BC label"
-        verbose_name_plural = "TK / BC labels"
-
-    def __str__(self):
-        return self.name
-
-
 def _is_scalar(value):
     return isinstance(value, (str, int, float)) and not isinstance(value, bool)
 
@@ -273,12 +237,6 @@ class CraftQuerySet(models.QuerySet):
     def listed_for(self, user):
         """What appears in public lists: visible AND published (own drafts live in My crafts)."""
         return self.visible_to(user).filter(status=Craft.Status.PUBLISHED)
-
-
-DEFAULT_SENSITIVE_NOTICE = (
-    "This photo may show culturally sensitive content. The community asks that you "
-    "choose whether to see it."
-)
 
 
 class Craft(models.Model):
@@ -379,20 +337,6 @@ class Craft(models.Model):
         default=list, blank=True, help_text='Contributor\'s own details: [{"label": …, "value": …}]'
     )
     tags = models.ManyToManyField(Tag, blank=True, related_name="crafts")
-    tk_labels = models.ManyToManyField(
-        TKLabel,
-        blank=True,
-        related_name="crafts",
-        verbose_name="TK / BC labels",
-        help_text="Set by the community's stewards (US-26)",
-    )
-    sensitive_notice = models.CharField(
-        "Notice over sensitive photos",
-        max_length=300,
-        blank=True,
-        help_text="Shown over photos marked as culturally sensitive; leave empty for the "
-        "standard notice",
-    )
     visibility = models.CharField(
         max_length=20, choices=Visibility.choices, default=Visibility.MEMBERS
     )
@@ -430,11 +374,6 @@ class Craft(models.Model):
     @property
     def cover(self):
         return self.media.first()
-
-    @property
-    def photo_notice(self):
-        """Text over photos marked as culturally sensitive (US-21)."""
-        return self.sensitive_notice.strip() or DEFAULT_SENSITIVE_NOTICE
 
     # ---- Names in other languages (US-10) ----
     @property
@@ -628,11 +567,7 @@ class Media(models.Model):
     alt_text = models.CharField(max_length=300)
     caption = models.CharField(max_length=300, blank=True)
     credit = models.CharField(max_length=200, blank=True)
-    is_sensitive = models.BooleanField(
-        "Culturally sensitive",
-        default=False,
-        help_text="Blurred behind the craft's notice until the viewer chooses to see it (US-21)",
-    )
+    is_sensitive = models.BooleanField(default=False)
     order = models.PositiveSmallIntegerField(default=0)
 
     class Meta:

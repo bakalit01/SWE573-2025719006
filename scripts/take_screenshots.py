@@ -9,10 +9,8 @@ in GitHub Actions (workflow "UI screenshots").
 
 import os
 import sys
-import tempfile
 from pathlib import Path
 
-from PIL import Image, ImageDraw
 from playwright.sync_api import Page, sync_playwright
 from playwright.sync_api import TimeoutError as PlaywrightTimeout
 
@@ -45,17 +43,6 @@ def shot(page: Page, name, full=True, maps=False):
     settle(page, maps)
     page.screenshot(path=OUT / name, full_page=full)
     print("saved", name)
-
-
-def demo_photo():
-    """A plain woven-pattern picture to upload as a demo photo (no real cultural content)."""
-    img = Image.new("RGB", (1200, 900), (30, 74, 139))
-    draw = ImageDraw.Draw(img)
-    for i in range(0, 1200, 60):
-        draw.polygon([(i, 450), (i + 30, 380), (i + 60, 450), (i + 30, 520)], fill=(140, 200, 234))
-    path = Path(tempfile.mkdtemp()) / "felt-rug.png"
-    img.save(path)
-    return str(path)
 
 
 def sign_up(page: Page, email):
@@ -149,10 +136,6 @@ def main():
         page.fill("#id_weight_unit_other", "okka")
         page.fill("#id_det-0-label", "Dye source")
         page.fill("#id_det-0-value", "Madder root")
-        page.set_input_files("#id_img-0-image", demo_photo())  # US-21: a sensitive photo
-        page.fill("#id_img-0-alt_text", "A felt rug with a row of light-blue diamonds")
-        page.check("#id_img-0-is_sensitive")
-        page.fill("#id_sensitive_notice", "Shown with the family's permission. Please don't copy.")
         page.fill("#id_description", "Made for the family's winter tent.")
         page.check("input[name=visibility][value=public]")
         page.fill("#id_consent-granted_by", "A Yörük family workshop")
@@ -168,9 +151,6 @@ def main():
         page.wait_for_load_state()
         shot(page, "14-craft-page-own-entries.png", maps=True)
         profile_url = page.locator(".craft-meta a").first.get_attribute("href")
-        felt_url = page.url
-        page.locator(".gallery").screenshot(path=OUT / "23-sensitive-photo.png")
-        print("saved 23-sensitive-photo.png")
 
         # A draft, so "My crafts" shows both states.
         page.goto(BASE + "/crafts/add/")
@@ -217,15 +197,6 @@ def main():
         page.wait_for_load_state()
         page.goto(BASE + profile_url)
         shot(page, "12-maker-profile.png")
-        # US-26: the steward adds the community's TK labels from the craft page.
-        page.goto(felt_url)
-        page.get_by_label("TK A: Attribution").check()
-        page.get_by_label("TK CV: Community Voice").check()
-        page.get_by_role("button", name="Save labels").click()
-        page.wait_for_load_state()
-        settle(page)
-        page.locator(".tk-labels").screenshot(path=OUT / "22-tk-labels.png")
-        print("saved 22-tk-labels.png")
         steward.close()
 
         # ---- Admin: craft types and their fields (US-13) ----

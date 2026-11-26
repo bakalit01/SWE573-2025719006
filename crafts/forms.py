@@ -1,15 +1,13 @@
-"""Forms for adding and editing crafts (US-08–US-11, US-20, US-21, US-26; FB-01…FB-05)."""
+"""Forms for adding and editing crafts (US-08–US-11, US-20; feedback FB-01…FB-05)."""
 
 import io
 from decimal import Decimal
 
 from django import forms
 from django.core.files.base import ContentFile
-from django.db.models import Q
 from django.utils.text import slugify
 from PIL import Image, ImageOps
 
-from accounts.permissions import can_set_labels_somewhere
 from communities.models import Community
 
 from . import units
@@ -23,7 +21,6 @@ from .models import (
     Report,
     ReviewDecision,
     Tag,
-    TKLabel,
     nfc,
 )
 
@@ -123,7 +120,6 @@ class CraftForm(forms.ModelForm):
             "description",
             "cultural_context",
             "visibility",
-            "sensitive_notice",
         ]
         labels = {
             "title": "Name",
@@ -141,7 +137,6 @@ class CraftForm(forms.ModelForm):
             "weight_unit_other": "Your unit",
             "description": "About this craft",
             "cultural_context": "Cultural context",
-            "sensitive_notice": "Notice shown over sensitive photos",
         }
         help_texts = {
             "maker_credit": "Name the makers, or the family or workshop. Required.",
@@ -149,8 +144,6 @@ class CraftForm(forms.ModelForm):
             "process": "Describe the steps, from preparing materials to finishing.",
             "cultural_context": "How it is used, what it means, who may make or see it.",
             "traditional_measure": "Optional, e.g. 'two hand spans long' or '1 arşın'.",
-            "sensitive_notice": "Optional: your own words for the notice, e.g. 'Shown with "
-            "the family's permission. Please do not copy.' Leave empty for the standard notice.",
         }
         widgets = {
             "summary": forms.TextInput(attrs={"maxlength": 300}),
@@ -171,7 +164,6 @@ class CraftForm(forms.ModelForm):
             "weight_unit_other": forms.TextInput(
                 attrs={"data-other-for": "weight_unit", "placeholder": "e.g. okka, dirhem"}
             ),
-            "sensitive_notice": forms.TextInput(attrs={"maxlength": 300}),
         }
 
     field_order = ["title", "craft_type", "craft_type_other", "community", "community_other"]
@@ -212,10 +204,6 @@ class CraftForm(forms.ModelForm):
             self.fields[name].widget.attrs.update({"min": 0, "step": "any"})
         self.fields["latitude"].label = "Latitude"
         self.fields["longitude"].label = "Longitude"
-        if can_set_labels_somewhere(user):  # stewards and admins only (US-26)
-            self.fields["tk_labels"] = label_choice_field(self.instance)
-            if self.instance.pk:
-                self.initial.setdefault("tk_labels", list(self.instance.tk_labels.all()))
 
     def _pick(self, name, model, max_length):
         """The chosen entry, or the name typed under "Other" (validated, not yet saved)."""
@@ -277,36 +265,6 @@ class CraftForm(forms.ModelForm):
             tag = Tag.objects.filter(name__iexact=name).first()
             tags.append(tag or Tag.objects.create(name=name, slug=unique_slug_for(Tag, name)))
         craft.tags.set(tags)
-
-
-class LabelChoiceField(forms.ModelMultipleChoiceField):
-    def label_from_instance(self, obj):
-        return f"{obj.code}: {obj.name.removeprefix(obj.code.split()[0]).strip()}"
-
-
-def label_choice_field(craft=None):
-    """Active TK / BC labels, plus any retired label the craft already has (US-26)."""
-    labels = TKLabel.objects.filter(is_active=True)
-    if craft is not None and craft.pk:
-        labels = TKLabel.objects.filter(Q(is_active=True) | Q(crafts=craft)).distinct()
-    return LabelChoiceField(
-        queryset=labels.order_by("kind", "order", "name"),
-        required=False,
-        label="Traditional Knowledge (TK) and Biocultural (BC) labels",
-        help_text="Only this community's stewards and site admins can set labels. They tell "
-        "viewers the community's conditions for using this knowledge (Local Contexts labels).",
-        widget=forms.CheckboxSelectMultiple,
-    )
-
-
-class LabelsForm(forms.Form):
-    """Stewards set a craft's labels from the review panel (US-26)."""
-
-    def __init__(self, *args, craft=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["tk_labels"] = label_choice_field(craft)
-        if craft is not None and not self.is_bound:
-            self.initial["tk_labels"] = list(craft.tk_labels.all())
 
 
 RESERVED_SLUGS = {"add", "mine", "fields", "review", "stories"}
@@ -634,9 +592,6 @@ class ImageRowForm(forms.Form):
     )
     credit = forms.CharField(label="Photo credit", max_length=200, required=False)
     caption = forms.CharField(label="Caption", max_length=300, required=False)
-    is_sensitive = forms.BooleanField(
-        label="Culturally sensitive: blur it until the viewer chooses to see it", required=False
-    )
 
     def clean_image(self):
         image = self.cleaned_data.get("image")

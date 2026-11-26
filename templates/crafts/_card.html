@@ -1,12 +1,7 @@
 <li class="card">
   <a class="card-link" href="{{ craft.get_absolute_url }}">
     {% with cover=craft.cover %}
-      {% if cover and cover.is_sensitive %}
-        <div class="card-img-wrap">
-          <img class="card-img card-img-sensitive" src="{{ cover.url }}" alt="" loading="lazy" width="480" height="360">
-          <span class="sensitive-tag">Sensitive photo</span>
-        </div>
-      {% elif cover %}
+      {% if cover %}
         <img class="card-img" src="{{ cover.url }}" alt="{{ cover.alt_text }}" loading="lazy" width="480" height="360">
       {% else %}
         <div class="card-img card-img-empty" aria-hidden="true"></div>

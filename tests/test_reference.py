@@ -5,8 +5,7 @@ from django.core.management import call_command
 
 from communities.models import Community
 from crafts import reference_data
-from crafts.models import Craft, CraftName, Media, TKLabel, commons_image_url
-from crafts.seeding import ensure_tk_labels
+from crafts.models import Craft, CraftName, Media, commons_image_url
 
 from .factories import CraftFactory
 
@@ -52,15 +51,6 @@ def test_seed_adds_names_in_other_languages_and_keeps_stewards_choices():
     )
     call_command("seed_reference_crafts")
     assert masks.primary_name.name == "Hahoe-tal" and masks.names.count() == 2
-
-
-def test_seed_restores_missing_labels_but_keeps_edits():
-    ensure_tk_labels()
-    TKLabel.objects.filter(code="TK A").update(description="Our own wording")
-    TKLabel.objects.filter(code="TK O").delete()
-    call_command("seed_reference_crafts")
-    assert TKLabel.objects.get(code="TK A").description == "Our own wording"
-    assert TKLabel.objects.filter(code="TK O").exists()
 
 
 def test_replace_samples_keeps_user_records():

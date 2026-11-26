@@ -19,7 +19,6 @@ from accounts.permissions import (
     can_delete,
     can_edit,
     can_review,
-    can_set_labels,
     is_site_admin,
     stewarded_community_ids,
 )
@@ -34,7 +33,6 @@ from .forms import (
     DecisionForm,
     DetailRows,
     ImageRows,
-    LabelsForm,
     MaterialRows,
     NameRows,
     StoryForm,
@@ -289,14 +287,12 @@ def craft_detail(request, slug):
             "media",
             "tags",
             "names",
-            "tk_labels",
             "craft_materials__material",
             "craft_techniques__technique",
         ),
         slug=slug,
     )
     reviewer = can_review(request.user, craft)
-    sets_labels = can_set_labels(request.user, craft)
     is_author = request.user.is_authenticated and craft.created_by_id == request.user.pk
     return render(
         request,
@@ -316,8 +312,6 @@ def craft_detail(request, slug):
             "open_reports": craft.reports.filter(status="open") if reviewer else [],
             "stories": visible_stories(craft, request.user),
             "story_form": StoryForm() if can_add_story(request.user) else None,
-            "labels": craft.tk_labels.all(),
-            "labels_form": LabelsForm(craft=craft) if sets_labels else None,
         },
     )
 
@@ -405,18 +399,11 @@ def _craft_form_page(request, craft=None):
                     _save_names(craft, names.filled_rows())
                 _save_rows(craft, materials.filled_rows(), techniques.filled_rows())
                 _save_images(request, craft, images)
-                labels_ignored = _save_labels(request, craft, form)
                 if consent_form.has_data:
                     consent = consent_form.save(commit=False)
                     consent.craft = craft
                     consent.recorded_by = consent.recorded_by or request.user
                     consent.save()
-            if labels_ignored:
-                messages.warning(
-                    request,
-                    f"The TK / BC labels were not changed: only the {craft.community.name} "
-                    "stewards and site admins can set them.",
-                )
             if craft.status == Craft.Status.PUBLISHED:
                 messages.success(request, f"“{craft.title}” is published.")
             elif craft.status == Craft.Status.PENDING:
@@ -479,18 +466,6 @@ def _save_names(craft, rows):
         )
 
 
-def _save_labels(request, craft, form):
-    """Apply the TK / BC labels if this user may set them for the craft's community (US-26).
-    Returns True when changes were submitted but not allowed."""
-    if "tk_labels" not in form.fields:
-        return False
-    chosen = set(form.cleaned_data.get("tk_labels") or [])
-    if can_set_labels(request.user, craft):
-        craft.tk_labels.set(chosen)
-        return False
-    return chosen != set(craft.tk_labels.all())
-
-
 def _save_rows(craft, material_rows, technique_rows):
     craft.craft_materials.all().delete()
     for order, row in enumerate(material_rows):
@@ -516,15 +491,11 @@ def _save_images(request, craft, images):
     remove_ids = request.POST.getlist("remove_media")
     if remove_ids:
         craft.media.filter(pk__in=remove_ids).delete()
-    for media in craft.media.all():  # alt text and "sensitive" edits on existing photos
+    for media in craft.media.all():  # alt text edits on existing photos
         alt = request.POST.get(f"media-{media.pk}-alt_text")
-        if alt is None:  # this photo wasn't in the form
-            continue
-        sensitive = bool(request.POST.get(f"media-{media.pk}-sensitive"))
-        if (alt.strip() and alt.strip() != media.alt_text) or sensitive != media.is_sensitive:
-            media.alt_text = alt.strip() or media.alt_text
-            media.is_sensitive = sensitive
-            media.save(update_fields=["alt_text", "is_sensitive"])
+        if alt is not None and alt.strip() and alt.strip() != media.alt_text:
+            media.alt_text = alt.strip()
+            media.save(update_fields=["alt_text"])
     next_order = (craft.media.order_by("-order").values_list("order", flat=True).first() or 0) + 1
     for form in images:
         upload = form.cleaned_data.get("image") if form.is_valid() else None
@@ -536,7 +507,6 @@ def _save_images(request, craft, images):
             alt_text=form.cleaned_data["alt_text"].strip(),
             credit=form.cleaned_data.get("credit", ""),
             caption=form.cleaned_data.get("caption", ""),
-            is_sensitive=form.cleaned_data.get("is_sensitive", False),
             order=next_order,
         )
         media.image.save(name, content, save=True)

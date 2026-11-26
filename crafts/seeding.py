@@ -1,8 +1,7 @@
 """Helpers shared by the seed commands."""
 
 from . import sample_data
-from .models import AttributeDefinition, CraftType, TKLabel
-from .tk_labels_data import BC, BC_LABELS, TK, TK_LABELS
+from .models import AttributeDefinition, CraftType
 
 
 def ensure_craft_types():
@@ -31,21 +30,3 @@ def ensure_craft_types():
                 },
             )
     return types
-
-
-def ensure_tk_labels():
-    """Add any missing label of the managed TK / BC list (US-26). Labels admins edited or
-    retired are left as they are."""
-    for kind, url, labels in (("tk", TK, TK_LABELS), ("bc", BC, BC_LABELS)):
-        for order, (code, name, category, description) in enumerate(labels):
-            TKLabel.objects.get_or_create(
-                name=name,
-                defaults={
-                    "code": code,
-                    "kind": kind,
-                    "category": category,
-                    "description": description,
-                    "url": url,
-                    "order": order,
-                },
-            )

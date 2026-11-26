@@ -16,7 +16,6 @@ from .models import (
     ReviewDecision,
     Tag,
     Technique,
-    TKLabel,
 )
 
 # ---------- Craft types and their fields, managed in the admin (US-13) ----------
@@ -164,11 +163,11 @@ class CraftAdmin(admin.ModelAdmin):
         "status",
         "is_sample",
     ]
-    list_filter = ["status", "visibility", "craft_type", "tk_labels", "is_sample"]
+    list_filter = ["status", "visibility", "craft_type", "is_sample"]
     search_fields = ["title", "names__name", "summary", "description", "maker_credit", "place_name"]
     prepopulated_fields = {"slug": ("title",)}
     inlines = [CraftNameInline, CraftMaterialInline, CraftTechniqueInline, MediaInline]
-    filter_horizontal = ["tags", "tk_labels"]
+    filter_horizontal = ["tags"]
     fieldsets = (
         (None, {"fields": ("title", "slug", "craft_type", "community", "summary")}),
         ("Story", {"fields": ("description", "process", "cultural_context")}),
@@ -194,7 +193,6 @@ class CraftAdmin(admin.ModelAdmin):
             },
         ),
         ("Details", {"fields": ("attributes", "extra_details", "tags")}),
-        ("Cultural protocols", {"fields": ("tk_labels", "sensitive_notice")}),
         ("Publishing", {"fields": ("visibility", "status", "is_sample", "created_by")}),
     )
 
@@ -203,24 +201,6 @@ class CraftAdmin(admin.ModelAdmin):
 class TermAdmin(admin.ModelAdmin):
     list_display = ["name", "description"]
     search_fields = ["name"]
-
-
-@admin.register(TKLabel)
-class TKLabelAdmin(admin.ModelAdmin):
-    """The managed list of TK / BC labels stewards choose from (US-26)."""
-
-    list_display = ["code", "name", "kind", "category", "is_active", "craft_count"]
-    list_filter = ["kind", "category", "is_active"]
-    search_fields = ["name", "code", "description"]
-    list_editable = ["is_active"]
-    ordering = ["kind", "order", "name"]
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).annotate(n_crafts=Count("crafts"))
-
-    @admin.display(description="Crafts", ordering="n_crafts")
-    def craft_count(self, obj):
-        return obj.n_crafts
 
 
 @admin.register(Tag)

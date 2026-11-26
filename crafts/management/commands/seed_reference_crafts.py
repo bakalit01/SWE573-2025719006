@@ -16,7 +16,7 @@ from crafts.models import (
     Tag,
     Technique,
 )
-from crafts.seeding import ensure_craft_types, ensure_tk_labels
+from crafts.seeding import ensure_craft_types
 
 COMMUNITY_NOTE = (
     "Records about this community are compiled from public sources such as museums and "
@@ -46,7 +46,6 @@ class Command(BaseCommand):
             self.stdout.write(f"Removed sample records ({removed} rows).")
 
         types = ensure_craft_types()
-        ensure_tk_labels()
         communities = {}
         for slug, name, region in data.COMMUNITIES:
             communities[slug], _ = Community.objects.update_or_create(
