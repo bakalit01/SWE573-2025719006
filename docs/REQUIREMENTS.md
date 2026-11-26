@@ -1,6 +1,6 @@
 # Requirements — Indigenous Crafts Platform
 
-Version 0.3 · 2 Nov 2026 · Status: updated after M3 and feedback FB-01–FB-11 (✅ = delivered)
+Version 0.4 · 16 Nov 2026 · Status: updated after M4 part 1 (v0.7.0) (✅ = delivered)
 
 ## 1. Purpose & scope
 
@@ -21,7 +21,7 @@ The platform documents, preserves and showcases Indigenous crafts. It lets regis
 
 ## 3. Functional requirements
 
-Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oct), M3 MVP (delivered 2 Nov), M4 (wk 6), M5 Final (wk 8); weeks 9–10 buffer. ✅ marks delivered requirements.
+Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oct), M3 MVP (delivered 2 Nov), M4 (wk 6; part 1 delivered 16 Nov), M5 Final (wk 8); weeks 9–10 buffer. ✅ marks delivered requirements.
 
 ### 3.1 Accounts & authentication
 | ID | Requirement | Priority | Milestone |
@@ -45,7 +45,7 @@ Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oc
 | FR-C6 | Attributes support types: text, long text, number+unit, single select, multi select, boolean, date/period, URL | Must | M2 ✅ |
 | FR-C7 | Upload multiple images per craft with alt text and credit/caption | Must | M2 ✅ |
 | FR-C8 | Records keep an edit history (who/when) | Could | M5 |
-| FR-C9 | Crafts can have multiple names in different languages (incl. Indigenous language name) | Should | M4 |
+| FR-C9 | Crafts can have multiple names in different languages (incl. Indigenous language name, which can be shown first); search covers all names and ignores accents | Should | M4 ✅ |
 | FR-C10 | Where a list doesn't fit, users choose "Other (type your own)": craft type, community, size and weight units, and choice fields; typed craft types and communities are added and marked for review (FB-05) | Should | M2 ✅ |
 | FR-C11 | Users add their own details (any label + value) and their own tags; tags link to the crafts that share them (FB-05) | Should | M2 ✅ |
 | FR-C13 | Signed-in members add their own stories to crafts; stewards can hide them (FB-10) | Should | M3 ✅ |
@@ -69,15 +69,15 @@ Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oc
 | FR-P1 | Each record has a visibility level: Public, Members only, Community only, Restricted (steward/admin only) | Must | M3 ✅ |
 | FR-P2 | Contributors record consent (who gave permission, date, scope) before publishing | Must | M3 ✅ |
 | FR-P3 | Records attributed to a community enter a moderation queue for steward review before going public | Must | M3 ✅ |
-| FR-P4 | Records can carry Traditional Knowledge / Biocultural labels (e.g. Local Contexts TK labels) shown on the detail page | Should | M4 |
+| FR-P4 | Records can carry Traditional Knowledge / Biocultural labels (e.g. Local Contexts TK labels) shown on the detail page; set by the community's stewards and admins from a managed list | Should | M4 ✅ |
 | FR-P5 | Anyone can report a record; stewards/admins can unpublish within the workflow | Must | M3 ✅ |
 | FR-P6 | Makers and communities are always credited; credit fields cannot be blank on published records | Must | M2 ✅ |
-| FR-P7 | Sacred/sensitive images can be hidden behind a content notice | Should | M4 |
+| FR-P7 | Sacred/sensitive images can be hidden behind a content notice (blurred until the viewer chooses; notice text per record) | Should | M4 ✅ |
 
 ### 3.5 Administration
 | ID | Requirement | Priority | Milestone |
 |---|---|---|---|
-| FR-M1 | Admins manage craft types and their attribute definitions without code changes | Should | M4 |
+| FR-M1 | Admins manage craft types and their attribute definitions without code changes (add, reorder, retire; changes that would invalidate stored values are refused) | Should | M4 ✅ |
 | FR-M2 | Admins manage taxonomies: communities/nations, regions, materials, techniques | Should | M4 |
 | FR-M3 | Admins manage users and roles | Must | M3 ✅ |
 | FR-M4 | Audit log of moderation actions | Could | M5 |
@@ -87,9 +87,11 @@ Priority uses MoSCoW. Milestone: M1 Demo (delivered 13 Oct), M2 (delivered 25 Oc
 ### 4.1 Core entities
 - **User** — id, email, password hash, display name, bio, avatar, role(s), community affiliations, created_at
 - **Community** — id, name(s) (self-designated name first), region, description, steward users, added_by (set when a user typed it under "Other")
-- **Craft** — id, slug, title, names[] (lang, text), summary, description, process (how it is made), craft_type_id, community_id, maker credit (made by), year made + circa flag or period (made in), **place name, country, latitude, longitude, location precision (exact / approximate / hidden)**, **height × width × depth + length unit (or a typed unit), weight + weight unit (or a typed unit), local/traditional measure**, materials[] and techniques[] (via CraftMaterial: origin, notes; CraftTechnique: notes), cultural_context, **attributes (JSONB)**, extra_details (the contributor's own label/value pairs), tags[], sources and is_reference (real examples from public sources), visibility, status (draft / pending review / published / unpublished), consent_id, tk_labels[], created_by, timestamps
+- **Craft** — id, slug, title, names[] (CraftName), summary, description, process (how it is made), craft_type_id, community_id, maker credit (made by), year made + circa flag or period (made in), **place name, country, latitude, longitude, location precision (exact / approximate / hidden)**, **height × width × depth + length unit (or a typed unit), weight + weight unit (or a typed unit), local/traditional measure**, materials[] and techniques[] (via CraftMaterial: origin, notes; CraftTechnique: notes), cultural_context, **attributes (JSONB)**, extra_details (the contributor's own label/value pairs), tags[], sources and is_reference (real examples from public sources), visibility, status (draft / pending review / published / unpublished), consent_id, tk_labels[], sensitive_notice (text over sensitive photos), created_by, timestamps
 - **CraftType** — id, name (Textile, Pottery, Beadwork, Basketry, Carving, Metalwork, Leatherwork, Jewellery, …), description, attribute definitions, added_by (set when a user typed it under "Other")
-- **AttributeDefinition** — id, craft_type_id, key, label, data type, unit, options[], required, help text, order
+- **AttributeDefinition** — id, craft_type_id, key, label, data type, unit, options[], required, help text, order, is_active (retired fields keep their data)
+- **CraftName** — craft_id, name, language, language code (optional, BCP 47), is_primary (at most one per craft), order
+- **TKLabel** — code (e.g. TK A), name, kind (TK / BC), category (provenance / protocol / permission), explanation, link, order, is_active
 - **Media** — id, craft_id, url, alt_text, caption, credit, is_sensitive, order
 - **Consent** — id, craft_id, granted_by (name/role), date, scope, notes, document (optional)
 - **Material / Technique** — controlled vocabularies with a short description; linked to crafts through CraftMaterial / CraftTechnique, which hold per-craft detail

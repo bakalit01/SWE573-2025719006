@@ -18,6 +18,7 @@ urlpatterns = [
     path("<slug:slug>/edit/", views.craft_edit, name="edit"),
     path("<slug:slug>/delete/", views.craft_delete, name="delete"),
     path("<slug:slug>/review/", review_views.review_craft, name="review"),
+    path("<slug:slug>/labels/", review_views.craft_labels, name="labels"),
     path("<slug:slug>/report/", review_views.report_craft, name="report"),
     path("<slug:slug>/stories/", story_views.add_story, name="add_story"),
 ]

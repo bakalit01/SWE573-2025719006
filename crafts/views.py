@@ -19,6 +19,7 @@ from accounts.permissions import (
     can_delete,
     can_edit,
     can_review,
+    can_set_labels,
     is_site_admin,
     stewarded_community_ids,
 )
@@ -33,7 +34,9 @@ from .forms import (
     DecisionForm,
     DetailRows,
     ImageRows,
+    LabelsForm,
     MaterialRows,
+    NameRows,
     StoryForm,
     TechniqueRows,
     craft_type_from,
@@ -42,13 +45,16 @@ from .forms import (
 from .models import (
     Craft,
     CraftMaterial,
+    CraftName,
     CraftTechnique,
     CraftType,
     Material,
     Media,
     Tag,
     Technique,
+    nfc,
 )
+from .search_support import contains_lookup
 from .story_views import visible_stories
 
 PAGE_SIZE = 24
@@ -58,7 +64,7 @@ def _listed(request):
     return (
         Craft.objects.listed_for(request.user)
         .select_related("craft_type", "community")
-        .prefetch_related("media")
+        .prefetch_related("media", "names")
     )
 
 
@@ -78,6 +84,8 @@ def home(request):
 
 SEARCH_FIELDS = [
     "title",
+    "names__name",
+    "names__language",
     "summary",
     "description",
     "process",
@@ -103,13 +111,15 @@ SORTS = {
 
 
 def search(crafts, query):
-    """US-15: every word must appear somewhere (names, text, materials, techniques, community,
-    tags); results are ranked by full-text relevance of the craft's own text."""
+    """US-15: every word must appear somewhere (names in every language, text, materials,
+    techniques, community, tags); results are ranked by full-text relevance of the craft's own
+    text. Matching ignores capitals and accents (US-10): "dosemealti" finds "Döşemealtı"."""
     words = query.split()[:8]
+    lookup = contains_lookup()
     for word in words:
         match = Q()
         for field in SEARCH_FIELDS:
-            match |= Q(**{f"{field}__icontains": word})
+            match |= Q(**{f"{field}__{lookup}": word})
         crafts = crafts.filter(pk__in=Craft.objects.filter(match).values("pk"))
     vector = SearchVector("title", weight="A", config="simple") + SearchVector(
         "summary", "description", "process", "cultural_context", weight="B", config="simple"
@@ -121,7 +131,7 @@ def craft_list(request):
     visible = _listed(request)
     crafts = visible
     get = request.GET
-    query = " ".join(get.get("q", "").split())[:100]
+    query = " ".join(nfc(get.get("q", "")).split())[:100]
     craft_type = get.get("type", "")
     community = get.get("community", "")
     material = get.get("material", "")
@@ -276,11 +286,17 @@ def craft_detail(request, slug):
         Craft.objects.visible_to(request.user)
         .select_related("craft_type", "community", "created_by")
         .prefetch_related(
-            "media", "tags", "craft_materials__material", "craft_techniques__technique"
+            "media",
+            "tags",
+            "names",
+            "tk_labels",
+            "craft_materials__material",
+            "craft_techniques__technique",
         ),
         slug=slug,
     )
     reviewer = can_review(request.user, craft)
+    sets_labels = can_set_labels(request.user, craft)
     is_author = request.user.is_authenticated and craft.created_by_id == request.user.pk
     return render(
         request,
@@ -300,11 +316,26 @@ def craft_detail(request, slug):
             "open_reports": craft.reports.filter(status="open") if reviewer else [],
             "stories": visible_stories(craft, request.user),
             "story_form": StoryForm() if can_add_story(request.user) else None,
+            "labels": craft.tk_labels.all(),
+            "labels_form": LabelsForm(craft=craft) if sets_labels else None,
         },
     )
 
 
 # ---------- Add / edit / delete (US-08, US-09, US-11, US-20) ----------
+
+
+def _name_initial(craft):
+    names = [
+        {
+            "name": n.name,
+            "language": n.language,
+            "lang_code": n.lang_code,
+            "is_primary": n.is_primary,
+        }
+        for n in (craft.names.all() if craft else [])
+    ]
+    return names or [{}]
 
 
 def _row_initial(craft):
@@ -332,6 +363,13 @@ def _craft_form_page(request, craft=None):
         data, craft_type=craft_type, values=craft.attributes if craft else None
     )
     material_initial, technique_initial = _row_initial(craft)
+    # A form rendered before names existed (e.g. open during a deploy) leaves names alone.
+    names_posted = data is not None and "nam-TOTAL_FORMS" in data
+    names = NameRows(
+        data if names_posted else None,
+        prefix="nam",
+        initial=None if names_posted else _name_initial(craft),
+    )
     materials = MaterialRows(data, prefix="mat", initial=None if data else material_initial)
     techniques = TechniqueRows(data, prefix="tec", initial=None if data else technique_initial)
     details = DetailRows(
@@ -346,6 +384,7 @@ def _craft_form_page(request, craft=None):
         materials.require_one = submit
         consent_form.require = submit
         parts = (form, attr_form, materials, techniques, details, images, consent_form)
+        parts += (names,) if names_posted else ()
         valid = all([f.is_valid() for f in parts])
         if valid:
             was_published = editing and craft.status == Craft.Status.PUBLISHED
@@ -362,13 +401,22 @@ def _craft_form_page(request, craft=None):
                 )
                 craft.save()
                 form.save_tags(craft)
+                if names_posted:
+                    _save_names(craft, names.filled_rows())
                 _save_rows(craft, materials.filled_rows(), techniques.filled_rows())
                 _save_images(request, craft, images)
+                labels_ignored = _save_labels(request, craft, form)
                 if consent_form.has_data:
                     consent = consent_form.save(commit=False)
                     consent.craft = craft
                     consent.recorded_by = consent.recorded_by or request.user
                     consent.save()
+            if labels_ignored:
+                messages.warning(
+                    request,
+                    f"The TK / BC labels were not changed: only the {craft.community.name} "
+                    "stewards and site admins can set them.",
+                )
             if craft.status == Craft.Status.PUBLISHED:
                 messages.success(request, f"“{craft.title}” is published.")
             elif craft.status == Craft.Status.PENDING:
@@ -398,6 +446,7 @@ def _craft_form_page(request, craft=None):
         {
             "form": form,
             "attr_form": attr_form,
+            "names": names,
             "materials": materials,
             "techniques": techniques,
             "details": details,
@@ -415,6 +464,31 @@ def _craft_form_page(request, craft=None):
             "technique_names": Technique.objects.values_list("name", flat=True),
         },
     )
+
+
+def _save_names(craft, rows):
+    craft.names.all().delete()
+    for order, row in enumerate(rows):
+        CraftName.objects.create(
+            craft=craft,
+            name=row["name"],
+            language=row["language"],
+            lang_code=row.get("lang_code", ""),
+            is_primary=row.get("is_primary", False),
+            order=order,
+        )
+
+
+def _save_labels(request, craft, form):
+    """Apply the TK / BC labels if this user may set them for the craft's community (US-26).
+    Returns True when changes were submitted but not allowed."""
+    if "tk_labels" not in form.fields:
+        return False
+    chosen = set(form.cleaned_data.get("tk_labels") or [])
+    if can_set_labels(request.user, craft):
+        craft.tk_labels.set(chosen)
+        return False
+    return chosen != set(craft.tk_labels.all())
 
 
 def _save_rows(craft, material_rows, technique_rows):
@@ -442,11 +516,15 @@ def _save_images(request, craft, images):
     remove_ids = request.POST.getlist("remove_media")
     if remove_ids:
         craft.media.filter(pk__in=remove_ids).delete()
-    for media in craft.media.all():  # alt text edits on existing photos
+    for media in craft.media.all():  # alt text and "sensitive" edits on existing photos
         alt = request.POST.get(f"media-{media.pk}-alt_text")
-        if alt is not None and alt.strip() and alt.strip() != media.alt_text:
-            media.alt_text = alt.strip()
-            media.save(update_fields=["alt_text"])
+        if alt is None:  # this photo wasn't in the form
+            continue
+        sensitive = bool(request.POST.get(f"media-{media.pk}-sensitive"))
+        if (alt.strip() and alt.strip() != media.alt_text) or sensitive != media.is_sensitive:
+            media.alt_text = alt.strip() or media.alt_text
+            media.is_sensitive = sensitive
+            media.save(update_fields=["alt_text", "is_sensitive"])
     next_order = (craft.media.order_by("-order").values_list("order", flat=True).first() or 0) + 1
     for form in images:
         upload = form.cleaned_data.get("image") if form.is_valid() else None
@@ -458,6 +536,7 @@ def _save_images(request, craft, images):
             alt_text=form.cleaned_data["alt_text"].strip(),
             credit=form.cleaned_data.get("credit", ""),
             caption=form.cleaned_data.get("caption", ""),
+            is_sensitive=form.cleaned_data.get("is_sensitive", False),
             order=next_order,
         )
         media.image.save(name, content, save=True)

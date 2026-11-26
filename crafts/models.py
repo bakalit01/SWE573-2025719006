@@ -1,10 +1,18 @@
 import datetime
+import math
+import unicodedata
+from decimal import Decimal, InvalidOperation
 from urllib.parse import quote
 
 from django.conf import settings
 from django.contrib.postgres.indexes import GinIndex
 from django.core.exceptions import ValidationError
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import (
+    MaxValueValidator,
+    MinValueValidator,
+    RegexValidator,
+    URLValidator,
+)
 from django.db import models
 from django.db.models import Q
 from django.templatetags.static import static
@@ -106,6 +114,51 @@ class AttributeDefinition(models.Model):
     def __str__(self):
         return f"{self.craft_type}: {self.label}"
 
+    def crafts_with_values(self, key=None, craft_type_id=None):
+        """Crafts of this type that store a value under this field's key (US-13)."""
+        return Craft.objects.filter(
+            craft_type_id=craft_type_id or self.craft_type_id,
+            attributes__has_key=key or self.key,
+        )
+
+    def clean(self):
+        """Admins edit fields in the UI (US-13). Edits that would strand or break stored
+        values are refused: retire the field and add a new one instead."""
+        super().clean()
+        if not isinstance(self.options, list) or not all(
+            isinstance(o, str) and o.strip() for o in self.options
+        ):
+            raise ValidationError({"options": "Give the choices as a list of names."})
+        if not self.pk:
+            return
+        old = AttributeDefinition.objects.filter(pk=self.pk).first()
+        if old is None:
+            return
+        if old.key != self.key or old.craft_type_id != self.craft_type_id:
+            count = old.crafts_with_values().count()
+            if count:
+                raise ValidationError(
+                    {
+                        "key": f"{count} craft(s) store values under “{old.key}”. Keep the "
+                        "key, or retire this field and add a new one."
+                    }
+                )
+        if old.data_type != self.data_type:
+            misfits = [
+                (title, value)
+                for title, attributes in old.crafts_with_values().values_list("title", "attributes")
+                if not attribute_value_fits(self.data_type, (value := attributes.get(old.key)))
+            ]
+            if misfits:
+                title, value = misfits[0]
+                raise ValidationError(
+                    {
+                        "data_type": f"Can't change to “{self.get_data_type_display()}”: "
+                        f"{len(misfits)} craft(s) have values that don't fit, e.g. “{title}”: "
+                        f"{value!r}. Retire this field and add a new one instead."
+                    }
+                )
+
     def display_value(self, value):
         """Human-readable value for the detail page."""
         if value in (None, "", []):
@@ -115,6 +168,75 @@ class AttributeDefinition(models.Model):
         if isinstance(value, list):
             value = ", ".join(str(v) for v in value)
         return f"{value} {self.unit}".strip() if self.unit else str(value)
+
+
+class TKLabel(models.Model):
+    """A Traditional Knowledge or Biocultural label from a managed list (US-26).
+
+    The names and codes follow the Local Contexts labels (localcontexts.org). The
+    explanations are our own summaries; a community can reword them in the admin.
+    """
+
+    class Kind(models.TextChoices):
+        TK = "tk", "Traditional Knowledge (TK) label"
+        BC = "bc", "Biocultural (BC) label"
+
+    class Category(models.TextChoices):
+        PROVENANCE = "provenance", "Provenance: who it comes from"
+        PROTOCOL = "protocol", "Protocol: how to treat it"
+        PERMISSION = "permission", "Permission: how it may be used"
+
+    name = models.CharField(max_length=120, unique=True)
+    code = models.CharField(max_length=8, help_text="Short code shown in the icon, e.g. 'TK A'")
+    kind = models.CharField(max_length=2, choices=Kind.choices, default=Kind.TK)
+    category = models.CharField(max_length=12, choices=Category.choices)
+    description = models.TextField(help_text="Explanation shown to everyone on the craft page")
+    url = models.URLField("More information", blank=True)
+    order = models.PositiveSmallIntegerField(default=0)
+    is_active = models.BooleanField(
+        default=True, help_text="Retired labels can't be chosen; crafts that have them keep them"
+    )
+
+    class Meta:
+        ordering = ["kind", "order", "name"]
+        verbose_name = "TK / BC label"
+        verbose_name_plural = "TK / BC labels"
+
+    def __str__(self):
+        return self.name
+
+
+def _is_scalar(value):
+    return isinstance(value, (str, int, float)) and not isinstance(value, bool)
+
+
+def attribute_value_fits(data_type, value):
+    """Would a stored value still be valid if its field had this data type? (US-13)"""
+    T = AttributeDefinition.DataType
+    if value in (None, "", []):
+        return True
+    if data_type in (T.TEXT, T.LONG_TEXT, T.CHOICE, T.DATE):
+        return _is_scalar(value)  # a choice outside the options counts as "Other"
+    if data_type == T.MULTI_CHOICE:
+        return _is_scalar(value) or (isinstance(value, list) and all(_is_scalar(v) for v in value))
+    if data_type == T.NUMBER:
+        if isinstance(value, bool):
+            return False
+        if isinstance(value, (int, float)):
+            return math.isfinite(value)
+        try:
+            return isinstance(value, str) and Decimal(value.strip()).is_finite()
+        except InvalidOperation:
+            return False
+    if data_type == T.BOOLEAN:
+        return isinstance(value, bool)
+    if data_type == T.URL:
+        try:
+            URLValidator(schemes=["http", "https"])(value)
+        except (ValidationError, TypeError):
+            return False
+        return True
+    return False
 
 
 class CraftQuerySet(models.QuerySet):
@@ -151,6 +273,12 @@ class CraftQuerySet(models.QuerySet):
     def listed_for(self, user):
         """What appears in public lists: visible AND published (own drafts live in My crafts)."""
         return self.visible_to(user).filter(status=Craft.Status.PUBLISHED)
+
+
+DEFAULT_SENSITIVE_NOTICE = (
+    "This photo may show culturally sensitive content. The community asks that you "
+    "choose whether to see it."
+)
 
 
 class Craft(models.Model):
@@ -251,6 +379,20 @@ class Craft(models.Model):
         default=list, blank=True, help_text='Contributor\'s own details: [{"label": …, "value": …}]'
     )
     tags = models.ManyToManyField(Tag, blank=True, related_name="crafts")
+    tk_labels = models.ManyToManyField(
+        TKLabel,
+        blank=True,
+        related_name="crafts",
+        verbose_name="TK / BC labels",
+        help_text="Set by the community's stewards (US-26)",
+    )
+    sensitive_notice = models.CharField(
+        "Notice over sensitive photos",
+        max_length=300,
+        blank=True,
+        help_text="Shown over photos marked as culturally sensitive; leave empty for the "
+        "standard notice",
+    )
     visibility = models.CharField(
         max_length=20, choices=Visibility.choices, default=Visibility.MEMBERS
     )
@@ -288,6 +430,21 @@ class Craft(models.Model):
     @property
     def cover(self):
         return self.media.first()
+
+    @property
+    def photo_notice(self):
+        """Text over photos marked as culturally sensitive (US-21)."""
+        return self.sensitive_notice.strip() or DEFAULT_SENSITIVE_NOTICE
+
+    # ---- Names in other languages (US-10) ----
+    @property
+    def primary_name(self):
+        """The name marked as primary (usually in the community's own language), or None."""
+        return next((n for n in self.names.all() if n.is_primary), None)
+
+    @property
+    def other_names(self):
+        return [n for n in self.names.all() if not n.is_primary]
 
     def clean(self):
         super().clean()
@@ -408,6 +565,55 @@ class CraftTechnique(models.Model):
         return f"{self.craft}: {self.technique}"
 
 
+LANGUAGE_TAG = RegexValidator(
+    r"^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$",
+    "Use a language code such as 'tr', 'ain' or 'zh-Hant', or leave it empty.",
+)
+
+
+def nfc(text):
+    """One Unicode form for typed text, so 'í' typed two ways is stored and searched alike."""
+    return unicodedata.normalize("NFC", text or "")
+
+
+class CraftName(models.Model):
+    """The craft's name in one language (US-10). One name per craft may be primary: it is
+    shown first, above the title."""
+
+    craft = models.ForeignKey(Craft, on_delete=models.CASCADE, related_name="names")
+    name = models.CharField(max_length=200)
+    language = models.CharField(
+        max_length=80, help_text="In the language's own name if you like, e.g. 'Ainu (Aynu itak)'"
+    )
+    lang_code = models.CharField(
+        "Language code",
+        max_length=20,
+        blank=True,
+        validators=[LANGUAGE_TAG],
+        help_text="Optional, e.g. 'ain' or 'tr'; helps screen readers pronounce the name",
+    )
+    is_primary = models.BooleanField(
+        "Primary name", default=False, help_text="Shown first, above the title"
+    )
+    order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["-is_primary", "order", "id"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["craft"], condition=Q(is_primary=True), name="one_primary_name"
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.name} ({self.language})"
+
+    def save(self, *args, **kwargs):
+        self.name = nfc(self.name).strip()
+        self.language = nfc(self.language).strip()
+        super().save(*args, **kwargs)
+
+
 class Media(models.Model):
     craft = models.ForeignKey(Craft, on_delete=models.CASCADE, related_name="media")
     image = models.ImageField(upload_to="crafts/%Y/%m/", blank=True)
@@ -422,7 +628,11 @@ class Media(models.Model):
     alt_text = models.CharField(max_length=300)
     caption = models.CharField(max_length=300, blank=True)
     credit = models.CharField(max_length=200, blank=True)
-    is_sensitive = models.BooleanField(default=False)
+    is_sensitive = models.BooleanField(
+        "Culturally sensitive",
+        default=False,
+        help_text="Blurred behind the craft's notice until the viewer chooses to see it (US-21)",
+    )
     order = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
